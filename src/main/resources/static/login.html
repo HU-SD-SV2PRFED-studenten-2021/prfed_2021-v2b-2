@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<img class="sideBanner" id="companyIllustration" src="resources/canvas-backdrop.jpg" alt="Foto van school">
+<div id="loginArea">
+    <img class="logoImage" id="companyLogo" src="resources/hboilogo.png" alt="HBO-I logo">
+    <div id="loginMessage" class="groupMargin">Sign in</div>
+
+    <form method="post" id="loginForm" autocomplete="off">
+
+        <div id="formsAuthenticationArea">
+            <div id="userNameArea">
+                <label id="userNameInputLabel" for="userNameInput" class="hidden">User Account</label>
+                <input id="userNameInput" name="UserName" type="email" value="" tabindex="1" class="text fullWidth"
+                       spellcheck="false" placeholder="someone@example.com" autocomplete="off">
+            </div>
+
+            <div id="passwordArea">
+                <label id="passwordInputLabel" for="passwordInput" class="hidden">Password</label>
+                <input id="passwordInput" name="Password" type="password" tabindex="2" class="text fullWidth"
+                       placeholder="Password" autocomplete="off">
+            </div>
+            <div id="submissionArea" class="submitMargin">
+                <button id="submitButton" class="submit" tabindex="3">Sign in</button>
+            </div>
+        </div>
+        <input id="optionForms" type="hidden" name="AuthMethod" value="FormsAuthentication">
+    </form>
+</div>
+</body>
+</html>
