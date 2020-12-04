@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Billy</title>
     <link rel="stylesheet" href="styles/main.css">
+    <script src="script/namecheck.js"></script>
 </head>
-<script src="script/namecheck.js"></script>
 <body>
 <div class="header-container">
     <div class="top-container">
-        <button class="login-button" type="button" onclick="window.location = '/login.html'" id="loginBtn">Aanmelden</button>
+        <button id="loginBtn" class="login-button" type="button" onclick="window.location='/test.html'">Aanmelden</button>
     </div>
     <div class="bottom-container">
         <nav class="top-navigation">
@@ -20,26 +20,26 @@
                 <li><a href="#">Lezen</a></li>
                 <li><a href="#">Brontext bekijken</a></li>
                 <li><a href="#">Geschiedenis weergeven</a></li>
-                <li><input type="text"></li>
+                <li><label>
+                    <input type="text">
+                </label></li>
             </ul>
         </nav>
     </div>
 </div>
 <div class="side-container">
-    <div class="content-container">
-        <img src="resources/hboilogo.png" alt="Website Logo">
-        <nav class="bottom-navigation">
-            <ul class="bottom-navigation-list">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Navigatie</a></li>
-                <li><a href="#">Hoofdpagina</a></li>
-                <li><a href="#">Recente wijzigingen</a></li>
-                <li><a href="#">Hulpmiddelen</a></li>
-                <li><a href="#">...</a></li>
-                <li><a href="#">...</a></li>
-            </ul>
-        </nav>
-    </div>
+    <img src="resources/hboilogo.png" alt="Website Logo">
+    <nav class="bottom-navigation">
+        <ul class="bottom-navigation-list">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Navigatie</a></li>
+            <li><a href="#">Hoofdpagina</a></li>
+            <li><a href="#">Recente wijzigingen</a></li>
+            <li><a href="#">Hulpmiddelen</a></li>
+            <li><a href="#">...</a></li>
+            <li><a href="#">...</a></li>
+        </ul>
+    </nav>
 </div>
 </body>
 </html>

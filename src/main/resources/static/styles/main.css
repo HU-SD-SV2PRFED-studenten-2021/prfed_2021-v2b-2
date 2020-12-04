@@ -27,6 +27,7 @@ ul{
 
 .bottom-container{
     margin-top: 50px;
+    border-bottom: 1px solid black;
 }
 
 .top-navigation-list{
@@ -36,10 +37,11 @@ ul{
 
 .bottom-navigation-list{
     display: flex;
+    height: 600px;
+    border-right: 1px solid black;
     flex-direction: column;
     justify-content: space-around;
 }
 img {
-    width: 75%;
-    height: 75%;
+    width: 85%;
 }
