@@ -4,5 +4,5 @@ Welcome to the Billy project.
 Setting up the database:
 ```sql
     CREATE USER "groep2" WITH CREATEDB PASSWORD 'groep2-password';
-    CREATE DATABASE "v2b-2-prfed" OWNER "groep2";
+    CREATE DATABASE "v2b2-prfed" OWNER "groep2";
 ```
