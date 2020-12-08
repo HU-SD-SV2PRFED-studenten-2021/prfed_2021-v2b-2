@@ -1,9 +1,15 @@
 window.onload = function () {
     const jwt = window.sessionStorage.getItem('myJWT')
     if (jwt !== null) {
+        const loginBtn = document.getElementById('loginBtn')
         const resultJWT = parseJwt(jwt.substr(jwt.indexOf(' ') + 1))
-        document.getElementById('loginBtn').innerText = `Welcome back, ${resultJWT.sub}!`
-        document.getElementById('loginBtn').href = '/logout.html'
+        loginBtn.innerText = `Welcome back, ${resultJWT.sub}!`
+        loginBtn.onclick = function () {
+            if (confirm("Wil je uitloggen?")) {
+                window.location = '/logout.html'
+            }
+        }
+        loginBtn.title = 'Klik om uit te loggen'
     }
 
     function parseJwt (token) {
