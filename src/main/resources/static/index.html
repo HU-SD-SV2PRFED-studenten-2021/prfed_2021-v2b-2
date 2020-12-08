@@ -6,22 +6,23 @@
     <meta name="description" content="Billy boekenkast">
     <title>Billy</title>
     <link rel="stylesheet" href="styles/main.css">
-    <script src="script/namecheck.js"></script>
-    <script src="script/loadfile.js"></script>
 </head>
 <body>
+    <script src="script/namecheck.js"></script>
+    <script src="script/loadfile.js"></script>
+    <script src="script/eventlistener.js"></script>
 <div class="header-container">
     <div class="top-container">
         <button id="loginBtn" class="login-button" type="button" onclick="window.location='/test.html'">Aanmelden</button>
     </div>
     <div class="bottom-container">
         <nav class="top-navigation">
-            <ul class="top-navigation-list">
-                <li><a href="/">Hoofdpagina</a></li>
-                <li><a href="#">Overleg</a></li>
-                <li><a href="#">Lezen</a></li>
+            <ul class="top-navigation-list" id="topnav">
+                <li><a href="" class="active" id="hoofdpagina">Hoofdpagina</a></li>
+                <li><a href="" id="overleg">Overleg</a></li>
+                <li><a href="#" id="lezen">Lezen</a></li>
                 <li><a href="#" id="brontext">Brontext bekijken</a></li>
-                <li><a href="#">Geschiedenis weergeven</a></li>
+                <li><a href="#" id="geschiedenis">Geschiedenis weergeven</a></li>
                 <li><label><input type="text" id="searchField"/><a id="searchBtn" href="">🔎</a></label></li>
             </ul>
         </nav>
@@ -31,7 +32,7 @@
     <main>
     <h1 class="title" id="maintitle">Homepage</h1>
     <div class="content" id="maincontent">
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+        <p></p>
     </div>
     </main>
     <footer class="footer-info">
@@ -40,7 +41,7 @@
     </footer>
 </div>
 <div class="side-container">
-    <img src="resources/HBOIlogo.jpg" alt="Website Logo">
+    <img src="resources/hboilogo-nobg.png" alt="Website Logo">
     <nav class="bottom-navigation">
         <ul class="bottom-navigation-list">
             <li><a href="#">Home</a></li>
