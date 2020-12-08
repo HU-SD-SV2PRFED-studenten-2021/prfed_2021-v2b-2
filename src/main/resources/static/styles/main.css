@@ -1,4 +1,4 @@
-*{
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
@@ -7,50 +7,54 @@
 body {
     display: grid;
     grid-area: auto;
-    font-family: 'Linux Libertine','Georgia','Times',serif;
+    font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
 }
 
-a{
+a {
     text-decoration: none;
 }
 
-ul{
+ul {
     list-style-type: none;
 }
 
-.header-container{
+.header-container {
     margin-left: 25%;
 }
 
-.side-container{
+.side-container {
     width: 20%;
-    height: 800px;
+    height: 100vh;
 }
 
-.top-container{
-    margin-right: 70px;
+.top-container {
+    margin-right: 2.5%;
     margin-top: 20px;
     display: flex;
     justify-content: flex-end;
 }
 
-.bottom-container{
+.bottom-container {
     margin-top: 50px;
     border-bottom: 1px solid black;
+    padding-bottom: 5px;
+    margin-left: -5%;
 }
 
-.top-navigation-list{
+.top-navigation-list {
     display: flex;
     justify-content: space-around;
 }
 
-.bottom-navigation-list{
+.bottom-navigation-list {
     display: flex;
-    height: 600px;
     border-right: 1px solid black;
     flex-direction: column;
     justify-content: space-around;
-    margin-left: 20%;
+    margin-left: 5%;
+    height: 100vh;
+}
+.bottom-navigation-list li {
 }
 
 .main-container {
@@ -58,12 +62,10 @@ ul{
     height: 100%;
     width: auto;
     position: absolute;
-    top: 150px;
+    top: 125px;
     left: 22%;
     margin-right: 1%;
-    margin-bottom: 30%;
     background: #ffffff;
-
 }
 
 .main-container main {
@@ -71,7 +73,8 @@ ul{
     border-bottom: 1px solid black;
 }
 
-div.content p{
+div.content p {
+    padding-top: 5px;
     border-top: 1px solid black;
     font-family: sans-serif;
 }
@@ -84,7 +87,7 @@ div.content p{
     margin-top: 1px;
 }
 
-.footer-info p, .footer-info a{
+.footer-info p, .footer-info a {
     margin: 10px;
 }
 
@@ -93,6 +96,8 @@ div.content p{
 }
 
 img {
+    max-width: 275px;
     width: 85%;
-    margin-top: -30%;
+    margin-top: -100%;
+    margin-left: 5%;
 }
