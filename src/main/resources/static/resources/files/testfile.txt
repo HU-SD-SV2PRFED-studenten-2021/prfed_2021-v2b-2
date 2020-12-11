@@ -1,1 +1,1 @@
-<p>banaan</p>
+<p>Dit is een testbestand, om te laten zien dat je dit kunt ophalen uit de database</p>

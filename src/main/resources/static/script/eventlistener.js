@@ -11,7 +11,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 topNavAList.forEach(topNavChild => {
                     const topNavActualA = topNavChild.childNodes
                     if (topNavActualA.length > 0) {
-                        topNavActualA[0].className = ''
+                        const topNavActualAItem = topNavActualA[0]
+                        topNavActualAItem.className = ''
                     }
                 })
                 actualAItem.className = 'active'
