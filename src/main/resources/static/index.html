@@ -9,61 +9,14 @@
 </head>
 <body>
     <script src="script/namecheck.js"></script>
-    <script src="script/loadfile.js"></script>
-    <script src="script/eventlistener.js"></script>
+    <script src="script/CustomElements.js"></script>
 <div class="header-container">
     <div class="top-container">
         <button id="loginBtn" class="login-button" type="button" onclick="window.location='/test.html'">Aanmelden</button>
     </div>
-    <div class="bottom-container">
-        <nav class="top-navigation">
-            <ul class="top-navigation-list" id="topnav">
-                <li><a href="" class="active" id="hoofdpagina">Hoofdpagina</a></li>
-                <li><a href="" id="overleg">Overleg</a></li>
-                <li><a href="#" id="lezen">Lezen</a></li>
-                <li><a href="#" id="brontext">Brontext bekijken</a></li>
-                <li><a href="#" id="geschiedenis">Geschiedenis weergeven</a></li>
-                <li><label><input type="text" id="searchField"/><a id="searchBtn" href="">🔎</a></label></li>
-            </ul>
-        </nav>
-    </div>
+    <billy-topnav></billy-topnav>
 </div>
-<div class="main-container">
-    <main>
-    <h1 class="title" id="maintitle">Homepage</h1>
-    <div class="content" id="maincontent">
-        <p></p>
-    </div>
-    </main>
-    <footer class="footer-info">
-        <p id="footerdate">Deze pagina is voor het laatst bewerkt op</p>
-        <a href="#">Privacybeleid</a> <a href="#">Over HBO-i-methoden-toolkit</a> <a href="#">Voorbehoud</a>
-    </footer>
-</div>
-<div class="side-container">
-    <img src="resources/hboilogo-nobg.png" alt="Website Logo">
-    <nav class="bottom-navigation">
-        <ul class="bottom-navigation-list">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Navigatie</a></li>
-            <li><a href="#">Hoofdpagina</a></li>
-            <li><a href="#">Recente wijzigingen</a></li>
-            <li><a href="#">Hulpmiddelen</a></li>
-            <li><a href="#">...</a></li>
-            <li><a href="#">...</a></li>
-        </ul>
-    </nav>
-</div>
-<script>
-    document.getElementById('searchField').addEventListener('keypress', function (key) {
-        if (key.key === 'Enter') {
-            window.location = document.getElementById('searchField').value + '.html'
-        }
-    })
-    document.getElementById('searchBtn').addEventListener('click', function (e) {
-        e.preventDefault()
-        window.location = document.getElementById('searchField').value + '.html'
-    })
-</script>
+<billy-main></billy-main>
+<billy-sidebar></billy-sidebar>
 </body>
 </html>
