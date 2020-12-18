@@ -27,3 +27,8 @@ body {
         display: inline;
     }
 }
+@media (max-width: 850px) {
+    .header-container {
+        margin-left: 0;
+    }
+}
