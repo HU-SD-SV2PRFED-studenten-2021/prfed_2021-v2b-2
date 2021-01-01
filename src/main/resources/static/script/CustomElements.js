@@ -130,8 +130,14 @@ class mainContainer extends HTMLElement {
                 }
                 .categories-list{
                     display: flex;
+                    color: black;
+                    border-right: 1px solid black;
+                    border-left: 1px solid black;
                     justify-content: space-evenly;
                     margin: 20px 0px;
+                }
+                .categories-list a{
+                    color: black;
                 }
                 .main-container {
                     place-self: center;
