@@ -6,11 +6,13 @@ import com.v2b2.Billy.application.data.Category;
 import com.v2b2.Billy.application.data.CategoryRepository;
 import com.v2b2.Billy.application.dto.ArticleDTO;
 import com.v2b2.Billy.application.dto.ArticleCreateDTO;
+import com.v2b2.Billy.application.dto.CategoryDTO;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -72,6 +74,10 @@ public class MainService {
             c.getArticles().forEach(article -> articleDTOs.add(new ArticleDTO(article)));
             return articleDTOs;
         } else return null;
+    }
+
+    public List<Category> getAllCategories(){
+        return categoryRepository.findAll();
     }
 
     public ArticleDTO createArticle(ArticleCreateDTO acd) {
