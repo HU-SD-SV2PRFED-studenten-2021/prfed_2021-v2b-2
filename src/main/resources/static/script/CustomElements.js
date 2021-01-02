@@ -138,10 +138,21 @@ class mainContainer extends HTMLElement {
                     border-right: 1px solid black;
                     border-left: 1px solid black;
                     justify-content: space-evenly;
-                    margin: 20px 0px;
+                    margin: 20px 0;
                 }
                 .categories-list a{
                     color: black;
+                }
+                .categories-list a::after {
+                    content: '';
+                    width: 0;
+                    height: 1px;
+                    display: block;
+                    background: black;
+                    transition: 300ms;
+                }
+                .categories-list a:hover::after {
+                    width: 100%;
                 }
                 .main-container {
                     place-self: center;
@@ -197,6 +208,9 @@ class mainContainer extends HTMLElement {
                     .footer-info {
                         margin-left: 20px;
                     }
+                    .categories-list {
+                        display: inline-block;
+                    }
                 }
                 @media (max-width: 620px) {
                     div.main-container {
@@ -248,10 +262,10 @@ class mainContainer extends HTMLElement {
                                     #messages {
                                         list-style-type: none;
                                     }
-                                    li:first-of-type {
+                                    li:first-of-type.message {
                                         margin-top: 5px;
                                     }
-                                    li {
+                                    li.message {
                                         border: solid black 1px;
                                         padding: 1px 1px 1px 5px;
                                         margin-top: 2px;
@@ -274,7 +288,7 @@ class mainContainer extends HTMLElement {
                                     </label>
                                 </form>
                                 <ul id="messages" class="fade">
-                                    <li class="show">Wat een goede pagina! || anonymous</li>
+                                    <li class="show message">Wat een goede pagina! || anonymous</li>
                                 </ul>`
                 mc.querySelector('#submitBtn').addEventListener('click', function (e) {
                     e.preventDefault()
@@ -296,7 +310,7 @@ class mainContainer extends HTMLElement {
                     messageInput.value = ''
                     mc.querySelector('#messages').appendChild(listElement)
                     setTimeout(function () {
-                        listElement.className = listElement.className + ' show'
+                        listElement.className = listElement.className + ' show message'
                     }, 10)
                 })
                 return
