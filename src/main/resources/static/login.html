@@ -1,35 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>Sign In</title>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Billy Inlogpagina">
+    <link rel="stylesheet" type="text/css" href="styles/test.css"/>
+    <style>.illustrationClass {background-image:url(resources/canvas-backdrop.jpg);}</style>
+    <script src="script/login.js"></script>
 </head>
-<body>
-<img class="sideBanner" id="companyIllustration" src="resources/canvas-backdrop.jpg" alt="Foto van school">
-<div id="loginArea">
-    <img class="logoImage" id="companyLogo" src="resources/hboilogo.png" alt="HBO-I logo">
-    <div id="loginMessage" class="groupMargin">Sign in</div>
-
-    <form method="post" id="loginForm" autocomplete="off">
-
-        <div id="formsAuthenticationArea">
-            <div id="userNameArea">
-                <label id="userNameInputLabel" for="userNameInput" class="hidden">User Account</label>
-                <input id="userNameInput" name="UserName" type="email" value="" tabindex="1" class="text fullWidth"
-                       spellcheck="false" placeholder="someone@example.com" autocomplete="off">
+<body class="body">
+<div id="fullPage">
+    <div id="brandingWrapper" class="float">
+        <div id="branding" class="illustrationClass"></div>
+    </div>
+    <div id="contentWrapper" class="float">
+        <div id="content">
+            <div id="header">
+                <img class='logoImage' id='companyLogo' src='resources/hboilogo.png' alt='hbo-i logo'/>
             </div>
+            <main>
+                <div id="workArea">
+                    <div id="authArea" class="groupMargin">
+                        <div id="loginArea">
+                            <div id="loginMessage" class="groupMargin">Sign in</div>
+                            <form id="loginForm" autocomplete="off">
+                                <div id="formsAuthenticationArea">
+                                    <div id="userNameArea">
+                                        <label id="userNameInputLabel" for="userNameInput" class="hidden">User Account</label>
+                                        <input id="userNameInput" name="UserName" type="email" value="" class="text fullWidth"
+                                               spellcheck="false" placeholder="someone@example.com" />
+                                    </div>
 
-            <div id="passwordArea">
-                <label id="passwordInputLabel" for="passwordInput" class="hidden">Password</label>
-                <input id="passwordInput" name="Password" type="password" tabindex="2" class="text fullWidth"
-                       placeholder="Password" autocomplete="off">
-            </div>
-            <div id="submissionArea" class="submitMargin">
-                <button id="submitButton" class="submit" tabindex="3">Sign in</button>
-            </div>
+                                    <div id="passwordArea">
+                                        <label id="passwordInputLabel" for="passwordInput" class="hidden">Password</label>
+                                        <input id="passwordInput" name="Password" type="password" class="text fullWidth"
+                                               placeholder="Password"/>
+                                    </div>
+                                    <button id="submitButton" title="Sign in">Sign in</button>
+                                </div>
+                                <input id="optionForms" type="hidden" name="AuthMethod" value="FormsAuthentication"/>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
+            </main>
+            <div id="footerPlaceholder"></div>
         </div>
-        <input id="optionForms" type="hidden" name="AuthMethod" value="FormsAuthentication">
-    </form>
+        <footer id="footer">
+            <div id="footerLinks" class="floatReverse">
+                <div><span id="copyright">&#169; 2020 V2B-2</span></div>
+            </div>
+        </footer>
+    </div>
 </div>
 </body>
-</html>
+</html> 
+

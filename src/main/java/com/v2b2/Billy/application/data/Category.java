@@ -55,4 +55,12 @@ public class Category {
     public void setArticles(List<Article> articles) {
         this.articles = articles;
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "category_id=" + category_id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
