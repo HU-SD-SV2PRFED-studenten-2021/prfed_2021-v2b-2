@@ -126,6 +126,23 @@ class mainContainer extends HTMLElement {
                     margin: 0;
                     box-sizing: border-box;
                 }
+                a{
+                    text-decoration: none;
+                }
+                ul{
+                    list-style-type: none;
+                }
+                .categories-list{
+                    display: flex;
+                    color: black;
+                    border-right: 1px solid black;
+                    border-left: 1px solid black;
+                    justify-content: space-evenly;
+                    margin: 20px 0px;
+                }
+                .categories-list a{
+                    color: black;
+                }
                 .main-container {
                     place-self: center;
                     width: auto;
@@ -196,12 +213,14 @@ class mainContainer extends HTMLElement {
                     </main>
                     <footer class="footer-info" id="billyfooter">
                         <p id="footercats">Categorieën: </p>
+                        <ul class="categories-list" id="categories-list"></ul>                       
                         <p id="footerdate">Deze pagina is voor het laatst bewerkt op</p>
                         <a href="/privacy.html">Privacybeleid</a> <a href="/over.html">Over Billy</a> <a href="/voorbehoud.html">Voorbehoud</a>
                     </footer>
                 </div>
         `
         this.loadFile()
+        this.getCategories();
     }
 
     evListener() {
@@ -302,7 +321,7 @@ class mainContainer extends HTMLElement {
                 } else {
                     response.json().then(response => {
                         this._shadowRoot.getElementById('footerdate').innerText += ' ' + response.lastEdited
-                        this._shadowRoot.getElementById('footercats').innerHTML += this.getCatString(response.categories)
+                        //this._shadowRoot.getElementById('footercats').innerHTML += this.getCatString(response.categories)
                         const mc = this._shadowRoot.getElementById('maincontent')
                         this.originalText = response.content.replaceAll('\n', '<br>')
                         mc.innerHTML = this.originalText
@@ -332,6 +351,42 @@ class mainContainer extends HTMLElement {
             })
         }
         return string;
+    }
+
+    getCategories(){
+        let URL = "http://localhost:8080/rest/categories";
+
+        //Maybe sort categories by student's study and interests which will be highlighted first.
+
+        fetch(URL)
+            .then(response => {
+                if(response.status !== 200){
+                    throw response.status;
+                }
+                else{
+                    response.json().then(response => {
+                        let categoriesFromResponse = response;
+                        let categories = this._shadowRoot.querySelector('#categories-list');
+
+                        let categoryItems = categories.getElementsByTagName("li");
+                        for(let i = 0; i < categoriesFromResponse.length; i++){
+                            console.log(categoriesFromResponse[i].name);
+                            let createLI = document.createElement('li');
+                            let createA = document.createElement('a');
+                            let aNode = document.createTextNode(categoriesFromResponse[i].name);
+
+                            //LOCATION FOR CATEGORES (Needs to be implemented with switch case in future)
+
+                            createA.setAttribute("href", "#");
+
+                            createA.appendChild(aNode);
+                            let LiA = createLI.appendChild(createA);
+                            categories.appendChild(createLI);
+                            createLI.appendChild(LiA);
+                        }
+                    })
+                }
+            })
     }
 }
 
@@ -612,3 +667,32 @@ class navButton extends HTMLElement {
 }
 
 window.customElements.define('billy-navbutton', navButton)
+
+
+class showCategories extends HTMLElement{
+
+    constructor() {
+        super();
+        this._shadowRoot = this.attachShadow({mode: "open"})
+    }
+
+    connectedCallback(){
+        this._shadowRoot.innerHTML = `<!-- HTML -->
+        <style>
+            a{
+                text-decoration: none;
+            }
+            .categories-list{
+                list-style-type: none;
+            }
+        </style> 
+        <ul class="categories-list">
+            <li><a>Software</a></li>
+            <li><a>Gebruikersinteractie</a></li>
+            <li><a>Organisatieprocessen</a></li>
+            <li><a>Hardware interfacing</a></li>
+        </ul>`
+    }
+}
+
+window.customElements.define('billy-categories', showCategories);
