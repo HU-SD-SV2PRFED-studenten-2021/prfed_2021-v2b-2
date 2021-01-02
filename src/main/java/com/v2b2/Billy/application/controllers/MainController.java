@@ -1,7 +1,10 @@
 package com.v2b2.Billy.application.controllers;
 
+import com.v2b2.Billy.application.data.Category;
 import com.v2b2.Billy.application.dto.ArticleCreateDTO;
 import com.v2b2.Billy.application.dto.ArticleDTO;
+import com.v2b2.Billy.application.dto.CategoryDTO;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +39,17 @@ public class MainController {
         if (articleDTOs != null) {
             return new ResponseEntity<>(articleDTOs, HttpStatus.OK);
         } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<?> getCategories(){
+        List<Category> categoryDTOS = this.mainService.getAllCategories();
+        if(categoryDTOS != null) {
+            return new ResponseEntity<>(categoryDTOS, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/article")
