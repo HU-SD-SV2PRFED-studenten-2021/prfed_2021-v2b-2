@@ -24,6 +24,12 @@ class logoElement extends HTMLElement {
                         width: 40%;
                         max-width: 125px;
                         margin-left: 0;
+                        top: 125px;
+                      }
+                    }
+                    @media (max-width: 140px) {
+                      * {
+                        display:none;
                       }
                     }
                 </style>
@@ -51,6 +57,7 @@ class sideNavigation extends HTMLElement {
                     }
                     a {
                         text-decoration: none;
+                        color: #0000EE;
                     }
                     ul {
                         list-style-type: none;
@@ -93,8 +100,6 @@ class sideNavigation extends HTMLElement {
                             <li><a href="">Hoofdpagina</a></li>
                             <li><a href="">Recente wijzigingen</a></li>
                             <li><a href="">Hulpmiddelen</a></li>
-                            <li><a href="">...</a></li>
-                            <li><a href="">...</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -159,6 +164,9 @@ class mainContainer extends HTMLElement {
                 .footer-info p, .footer-info a {
                     margin: 0 10px 10px 0;
                 }
+                a {
+                    color: #0000EE;
+                }
                 @media (max-width: 850px) {
                     div.main-container {
                         left: 0;
@@ -171,6 +179,11 @@ class mainContainer extends HTMLElement {
                     }
                     .footer-info {
                         margin-left: 20px;
+                    }
+                }
+                @media (max-width: 620px) {
+                    div.main-container {
+                        top: 80px;
                     }
                 }
                 </style>
@@ -225,6 +238,15 @@ class mainContainer extends HTMLElement {
                                         margin-top: 2px;
                                         width: 90%;
                                     }
+                                    .fade li {
+                                        transition: all 0.4s ease-out;
+                                        opacity: 0;
+                                        height: 0;
+                                    }
+                                    .fade li.show {
+                                        opacity: 1;
+                                        height: 1.5em;
+                                    }
                                 </style>
                                 <form>
                                     <label>
@@ -232,8 +254,8 @@ class mainContainer extends HTMLElement {
                                         <button type="submit" id="submitBtn">Verzend</button>
                                     </label>
                                 </form>
-                                <ul id="messages">
-                                    <li>Wat een goede pagina! || anonymous</li>
+                                <ul id="messages" class="fade">
+                                    <li class="show">Wat een goede pagina! || anonymous</li>
                                 </ul>`
                 mc.querySelector('#submitBtn').addEventListener('click', function (e) {
                     e.preventDefault()
@@ -254,6 +276,9 @@ class mainContainer extends HTMLElement {
                     listElement.innerText = messageInput.value + ` || ${this.name}`
                     messageInput.value = ''
                     mc.querySelector('#messages').appendChild(listElement)
+                    setTimeout(function () {
+                        listElement.className = listElement.className + ' show'
+                    }, 10)
                 })
                 return
             default:
@@ -269,7 +294,7 @@ class mainContainer extends HTMLElement {
         if (filename.length === 0) {
             window.location = "/index.html"
         }
-        const filenameHigh = filename.charAt(0).toUpperCase() + filename.slice(1)
+        let filenameHigh = decodeURI(filename.charAt(0).toUpperCase() + filename.slice(1))
         fetch("/rest/" + filename)
             .then(response => {
                 if (response.status !== 200) {
@@ -335,6 +360,14 @@ class searchBar extends HTMLElement {
                     width: 75%;
                 }
             }
+            @media (max-width: 620px) {
+                a {
+                    display: inline;
+                }
+                input#searchField {
+                    width: 45%;
+                }
+            }
             </style>
             <label><input type="text" id="searchField" placeholder="Wiki doorzoeken"/><a id="searchBtn" href="">🔎</a></label>
         `
@@ -370,6 +403,7 @@ class topNav extends HTMLElement {
         this._shadowRoot.innerHTML = `<!-- HTML -->
             <style>
                 a {
+                    color: #0000EE;
                     text-decoration: none;
                     padding: 0 5px 3px 5px;
                     background-clip: padding-box;
@@ -409,6 +443,10 @@ class topNav extends HTMLElement {
                     }
                 }
                 @media (max-width: 850px) {
+                    a {
+                        background-image: none;
+                        background-color: #f6f6f6;
+                    }
                     .top-navigation-list {
                         border-bottom: 0;
                         margin-left: -12px;
@@ -416,6 +454,16 @@ class topNav extends HTMLElement {
                     .top-navigation-list li {
                         border: none;
                         text-indent: -0.5em;
+                        background-color: #f6f6f6;
+                    }
+                    .top-navigation-list li a.active {
+                        background-color: #f6f6f6;
+                        color: red;
+                    }
+                }
+                @media (max-width: 620px) {
+                    * {
+                        display: none;
                     }
                 }
             </style>
@@ -460,3 +508,107 @@ class topNav extends HTMLElement {
 }
 
 window.customElements.define('billy-topnav', topNav)
+
+class navButton extends HTMLElement {
+    constructor() {
+        super();
+        this._shadowRoot = this.attachShadow({mode: "open"})
+    }
+
+    connectedCallback() {
+        this._shadowRoot.innerHTML = `
+            <!-- HTML -->
+            <style>
+            @media (min-width: 620px) {
+                * {
+                display: none;
+                }            
+            }
+            button {
+                width: 55px;
+                height: 55px;
+                position: fixed;
+                bottom: 0;
+                right: 0;
+                margin-right: 5px;
+                margin-bottom: 5px;
+                background-color: cornflowerblue;
+                color: white;
+                font-size: 1.5em;
+                border-color: cornflowerblue;
+                border-width: 2px;
+                border-radius: 5px;
+            }
+            #navdiv {
+                opacity: 0;
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                top: 100%;
+                background-color: lightgrey;
+                text-align: center;
+            }
+            #navdiv.invisible {
+                animation-name: disappear;
+                animation-duration: 0.5s;
+            }
+            #navdiv.visible {
+                opacity: 1;
+                top: 0;
+                animation-name: appear;
+                animation-duration: 0.5s;
+            }
+            ul {
+                list-style: none;
+                padding-inline-start: 0;
+            }
+            a {
+                color: black;
+                text-underline: black;
+            }
+            @keyframes appear {
+                0% {opacity: 0; top: 100%; left: 100%; border-radius: 100%}
+                5% {opacity: 1;}
+                100% {top: 0; left: 0; border-radius: 0}            
+            }
+            @keyframes disappear {
+                0% {opacity: 1; top: 0; left: 0; border-radius: 0}
+                100% {top: 100%; left: 100%; border-radius: 100%; opacity: 0;}            
+            }
+            </style>
+            <button id="toggler">
+            ☰
+            </button>
+            <div id="navdiv" class="">
+                <h1>Menu</h1>
+                <billy-search></billy-search>
+                <ul>
+                <li><a href="/privacy.html">Privacy beleid</a></li>
+                </ul>
+                <button id="toggler2">
+                ☰
+                </button>
+            </div>
+`
+        const navdiv = this._shadowRoot.querySelector('#navdiv')
+        this._shadowRoot.querySelector('#toggler').addEventListener('click', function (e){
+            e.preventDefault()
+            if (navdiv.classList.contains('visible')) {
+                navdiv.classList.remove('visible')
+                navdiv.classList.add('invisible')
+            }
+        })
+        this._shadowRoot.querySelector('#toggler2').addEventListener('click', function (e){
+            e.preventDefault()
+            if (navdiv.classList.contains('visible')) {
+                navdiv.classList.remove('visible')
+                navdiv.classList.add('invisible')
+            } else {
+                navdiv.classList.remove('invisible')
+                navdiv.classList.add('visible')
+            }
+        })
+    }
+}
+
+window.customElements.define('billy-navbutton', navButton)

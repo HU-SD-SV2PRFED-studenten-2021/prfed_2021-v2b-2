@@ -62,6 +62,30 @@ public class MainService {
             a.setContent("<p>Welkom op Billy!</p>");
             a.setLastEdited(LocalDateTime.now());
             this.articleRepository.save(a);
+
+            Article b = new Article();
+            b.setTitle("privacy");
+            b.setContent("<p>Privacy is belangrijk en we hechten er veel waarde aan.\nDaarom zullen we nooit je gegevens delen of verkopen aan een derde partij.</p>");
+            b.setLastEdited(LocalDateTime.now());
+            this.articleRepository.save(b);
+
+            Article d = new Article();
+            d.setTitle("over");
+            d.setContent("<p>Billy is een digitale boekenkast voor leerlingen aan HBO-i opleidingen.\nDeze boekenkast is gemaakt door V2B-2.</p>");
+            d.setLastEdited(LocalDateTime.now());
+            this.articleRepository.save(d);
+
+            Article e = new Article();
+            e.setTitle("voorbehoud");
+            e.setContent("<p>De informatie op Billy is geschreven voor en door studenten. \nEr kunnen geen rechten aan ontleent worden en informatie kan ten aller tijden verwijdert of veranderd worden.</p>");
+            e.setLastEdited(LocalDateTime.now());
+            this.articleRepository.save(e);
+
+            Article f = new Article();
+            f.setTitle("lorem ipsum");
+            f.setContent("<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fermentum, metus a cursus porttitor, augue ex dictum nisi, vitae tincidunt orci mauris eu risus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Duis tincidunt finibus elit. In in faucibus dui. Donec gravida sollicitudin eros, ac porttitor dolor rutrum a. Sed elementum tortor magna, in semper dolor pharetra consequat. Proin lacus orci, eleifend ac nisl sed, consectetur condimentum erat. Donec laoreet urna orci, at vulputate arcu auctor eu. Phasellus id molestie neque. Morbi suscipit semper ante, at hendrerit tortor posuere eu. Pellentesque pharetra tellus vel sapien lacinia, malesuada pharetra tellus faucibus. Fusce mattis arcu non dui consectetur, id porta urna pretium. Nam facilisis lobortis est, vel euismod elit commodo nec.</p>");
+            f.setLastEdited(LocalDateTime.now());
+            this.articleRepository.save(f);
         }
     }
 
@@ -88,7 +112,9 @@ public class MainService {
             });
             a.setLastEdited(LocalDateTime.now());
             this.articleRepository.save(a);
-            a.getCategories().forEach(this.categoryRepository::save);
+            for (int i = 0; i < a.getCategories().size(); i++) {
+                this.categoryRepository.save(a.getCategories().get(i));
+            }
             return new ArticleDTO(a);
         } else return null;
     }
