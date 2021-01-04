@@ -220,9 +220,14 @@ class mainContainer extends HTMLElement {
                 </style>
                 <div class="main-container">
                     <main>
+                    <div class="font-size-container" style="float: right">
+                        <a style="font-size: small" href="#small" id="fontSizeSmall">Aa</a>
+                        <a style="font-size: medium" href="#medium" id="fontSizeMedium">Aa</a>
+                        <a style="font-size: large" href="#large" id="fontSizeLarge">Aa</a>
+                    </div>
                     <h1 class="title" id="maintitle">Loading</h1>
                     <div class="content" id="maincontent">
-                        <p><img src="https://i.giphy.com/3oEjI6SIIHBdRxXI40.gif" alt="loading gif"></p>
+                        <p class="paragraph-content"><img src="https://i.giphy.com/3oEjI6SIIHBdRxXI40.gif" alt="loading gif"></p>
                     </div>
                     </main>
                     <footer class="footer-info" id="billyfooter">
@@ -235,6 +240,7 @@ class mainContainer extends HTMLElement {
         `
         this.loadFile()
         this.getCategories();
+        this.fontSize();
     }
 
     evListener() {
@@ -339,6 +345,7 @@ class mainContainer extends HTMLElement {
                         const mc = this._shadowRoot.getElementById('maincontent')
                         this.originalText = response.content.replaceAll('\n', '<br>')
                         mc.innerHTML = this.originalText
+                        mc.querySelector('p').className += "paragraph-content";
                         document.title = filenameHigh + ' | Billy'
                         this._shadowRoot.getElementById('maintitle').innerText = filenameHigh
                         this.evListener()
@@ -402,6 +409,20 @@ class mainContainer extends HTMLElement {
                 }
             })
     }
+
+    fontSize() {
+        let font = document.querySelector("billy-main");
+        this._shadowRoot.querySelector("#fontSizeSmall").addEventListener("click", function () {
+            font.style = "font-size: x-small";
+        });
+        this._shadowRoot.querySelector("#fontSizeMedium").addEventListener("click", function () {
+            font.style = "font-size: medium";
+        });
+        this._shadowRoot.querySelector("#fontSizeLarge").addEventListener("click", function () {
+            font.style = "font-size: x-large";
+        });
+    }
+
 }
 
 window.customElements.define('billy-main', mainContainer)
@@ -708,5 +729,7 @@ class showCategories extends HTMLElement{
         </ul>`
     }
 }
+
+
 
 window.customElements.define('billy-categories', showCategories);
