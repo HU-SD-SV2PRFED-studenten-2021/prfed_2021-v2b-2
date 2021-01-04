@@ -197,6 +197,8 @@ class mainContainer extends HTMLElement {
                 }
                 #editButton{
                     float: right;
+                    margin: 2px 5px 0 5px;
+                    padding: 0 2px 0 2px;
                 }
                 .modal {
                     display: none;
@@ -236,7 +238,7 @@ class mainContainer extends HTMLElement {
                     display: none; /* Hidden by default */
                     position: fixed; /* Stay in place */
                     z-index: 1; /* Sit on top */
-                    padding-top: 100px; /* Location of the box */
+                    padding-top: 30vh; /* Location of the box */
                     left: 0;
                     top: 0;
                     width: 100%; /* Full width */
@@ -258,6 +260,7 @@ class mainContainer extends HTMLElement {
                   resize: none;
                   width : 100%;
                   height: 100%;
+                  padding-left: 2px;
                 }
             
                 .close {
@@ -299,11 +302,11 @@ class mainContainer extends HTMLElement {
                 </style>
                 <div class="main-container">
                     <main>
-                    <button id="editButton">edit</button>
+                    <button id="editButton">Edit</button>
                     <div class="font-size-container" style="float: right">
-                        <a style="font-size: small" href="#small" id="fontSizeSmall">Aa</a>
-                        <a style="font-size: medium" href="#medium" id="fontSizeMedium">Aa</a>
-                        <a style="font-size: large" href="#large" id="fontSizeLarge">Aa</a>
+                        <a style="font-size: small" href="#fontSizeSmall" id="fontSizeSmall">Aa</a>
+                        <a style="font-size: medium" href="#fontSizeMedium" id="fontSizeMedium">Aa</a>
+                        <a style="font-size: large" href="#fontSizeLarge" id="fontSizeLarge">Aa</a>
                     </div>
                     <h1 class="title" id="maintitle">Loading</h1>
                     <div class="content" id="maincontent">
@@ -321,6 +324,7 @@ class mainContainer extends HTMLElement {
                                 <span class="close">&times;</span>
                                 <h1 id="editTitle"></h1>
                                 <textarea id="editArea" class="editArea"></textarea>
+                                <button style="width: 100%">Save</button>
                             </div>
                         </div>
                 </div>
@@ -429,7 +433,6 @@ class mainContainer extends HTMLElement {
                 } else {
                     response.json().then(response => {
                         this._shadowRoot.getElementById('footerdate').innerText += ' ' + response.lastEdited
-                        //this._shadowRoot.getElementById('footercats').innerHTML += this.getCatString(response.categories)
                         const mc = this._shadowRoot.getElementById('maincontent')
                         this.editAreaText = response.content.replaceAll('\n', '\r\n')
                         this.originalText = response.content.replaceAll('\n', '<br>')
@@ -451,12 +454,13 @@ class mainContainer extends HTMLElement {
 
                             editText.onkeyup = function () {
                                 this.style.height = 'auto';
-                                this.style.height = (this.scrollHeight) + 'px'
+                                this.style.height = (this.scrollHeight + 5) + 'px'
                             }
 
                             editButton.onclick = function () {
                                 modal.style.display = "block";
                                 editText.focus(editButton)
+                                editText.style.height = (editText.scrollHeight + 5) + 'px'
                             }
 
                             closeModal.onclick = function () {
@@ -514,7 +518,6 @@ class mainContainer extends HTMLElement {
 
                         let categoryItems = categories.getElementsByTagName("li");
                         for (let i = 0; i < categoriesFromResponse.length; i++) {
-                            console.log(categoriesFromResponse[i].name);
                             let createLI = document.createElement('li');
                             let createA = document.createElement('a');
                             let aNode = document.createTextNode(categoriesFromResponse[i].name);
