@@ -1,1 +1,1 @@
-java $JAVA_OPTS -cp target/classes:target/dependency/* com.v2b2.Billy.BillyApplication
+web: java -cp "target/dependency/*" $JAVA_OPTS webapp.runner.launch.Main  --port $PORT target/*.war
