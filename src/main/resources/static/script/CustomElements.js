@@ -209,7 +209,8 @@ class mainContainer extends HTMLElement {
                         margin-left: 20px;
                     }
                     .categories-list {
-                        display: inline-block;
+                        display: block;
+                        padding-left: 5px;
                     }
                 }
                 @media (max-width: 620px) {
@@ -328,7 +329,8 @@ class mainContainer extends HTMLElement {
             window.location = "/index.html"
         }
         let filenameHigh = decodeURI(filename.charAt(0).toUpperCase() + filename.slice(1))
-        fetch("/rest/" + filename)
+        this.fetchurl = `/rest/${filename}`
+        fetch(this.fetchurl)
             .then(response => {
                 if (response.status !== 200) {
                     throw response.status
@@ -338,6 +340,7 @@ class mainContainer extends HTMLElement {
                         //this._shadowRoot.getElementById('footercats').innerHTML += this.getCatString(response.categories)
                         const mc = this._shadowRoot.getElementById('maincontent')
                         this.originalText = response.content.replaceAll('\n', '<br>')
+                        mc.innerHTML = ``
                         mc.innerHTML = this.originalText
                         document.title = filenameHigh + ' | Billy'
                         this._shadowRoot.getElementById('maintitle').innerText = filenameHigh
@@ -368,8 +371,7 @@ class mainContainer extends HTMLElement {
     }
 
     getCategories(){
-        let URL = "http://localhost:8080/rest/categories";
-
+        let URL = '/rest/categories'
         //Maybe sort categories by student's study and interests which will be highlighted first.
 
         fetch(URL)
@@ -601,10 +603,10 @@ class navButton extends HTMLElement {
                 right: 0;
                 margin-right: 5px;
                 margin-bottom: 5px;
-                background-color: cornflowerblue;
+                background-color: black;
                 color: white;
                 font-size: 1.5em;
-                border-color: cornflowerblue;
+                border-color: black;
                 border-width: 2px;
                 border-radius: 5px;
             }
@@ -631,9 +633,12 @@ class navButton extends HTMLElement {
                 list-style: none;
                 padding-inline-start: 0;
             }
+            li {
+                padding-top: 5px;
+            }
             a {
                 color: black;
-                text-underline: black;
+                text-decoration: underline;
             }
             @keyframes appear {
                 0% {opacity: 0; top: 100%; left: 100%; border-radius: 100%}
@@ -652,7 +657,10 @@ class navButton extends HTMLElement {
                 <h1>Menu</h1>
                 <billy-search></billy-search>
                 <ul>
-                <li><a href="/privacy.html">Privacy beleid</a></li>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/navigatie.html">Navigatie</a></li>
+                <li><a href="/recent.html">Recente wijzigingen</a></li>
+                <li><a href="/">Hoofdpagina</a></li>
                 </ul>
                 <button id="toggler2">
                 ☰
