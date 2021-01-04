@@ -115,7 +115,7 @@
 									<groupId>com.heroku</groupId>
 									<artifactId>webapp-runner</artifactId>
 									<version>9.0.30.0</version>
-									<destFileName>webapp-runner.war</destFileName>
+									<destFileName>webapp-runner.jar</destFileName>
 									<configuration>
 										<appName>cryptic-lake-16139</appName>
 									</configuration>
