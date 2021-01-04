@@ -195,6 +195,84 @@ class mainContainer extends HTMLElement {
                 a {
                     color: #0000EE;
                 }
+                #editButton{
+                    float: right;
+                }
+                .modal {
+                    display: none;
+                    position: fixed;
+                    z-index: 1;
+                    padding-top: 100px;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    background-color: rgb(0,0,0);
+                    background-color: rgba(0,0,0,0.4);
+                }
+            
+                .modal-content {
+                    background-color: #fefefe;
+                    margin: auto;
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 80%;
+                }
+            
+                .close {
+                    color: #aaaaaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                }
+            
+                .close:hover,
+                .close:focus {
+                    color: #000;
+                    text-decoration: none;
+                    cursor: pointer;
+                }.modal {
+                    display: none; /* Hidden by default */
+                    position: fixed; /* Stay in place */
+                    z-index: 1; /* Sit on top */
+                    padding-top: 100px; /* Location of the box */
+                    left: 0;
+                    top: 0;
+                    width: 100%; /* Full width */
+                    height: 100%; /* Full height */
+                    overflow: auto; /* Enable scroll if needed */
+                    background-color: rgb(0,0,0); /* Fallback color */
+                    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+                }
+            
+                .modal-content {
+                    background-color: #fefefe;
+                    margin: auto;
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 80%;
+                }
+                
+                .editArea{
+                  resize: none;
+                  width : 100%;
+                  height: 100%;
+                }
+            
+                .close {
+                    color: #aaaaaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                }
+            
+                .close:hover,
+                .close:focus {
+                    color: #000;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
                 @media (max-width: 850px) {
                     div.main-container {
                         left: 0;
@@ -221,6 +299,7 @@ class mainContainer extends HTMLElement {
                 </style>
                 <div class="main-container">
                     <main>
+                    <button id="editButton">edit</button>
                     <div class="font-size-container" style="float: right">
                         <a style="font-size: small" href="#small" id="fontSizeSmall">Aa</a>
                         <a style="font-size: medium" href="#medium" id="fontSizeMedium">Aa</a>
@@ -228,7 +307,7 @@ class mainContainer extends HTMLElement {
                     </div>
                     <h1 class="title" id="maintitle">Loading</h1>
                     <div class="content" id="maincontent">
-                        <p class="paragraph-content"><img src="https://i.giphy.com/3oEjI6SIIHBdRxXI40.gif" alt="loading gif"></p>
+                        <p><img src="https://i.giphy.com/3oEjI6SIIHBdRxXI40.gif" alt="loading gif"></p>     
                     </div>
                     </main>
                     <footer class="footer-info" id="billyfooter">
@@ -237,6 +316,13 @@ class mainContainer extends HTMLElement {
                         <p id="footerdate">Deze pagina is voor het laatst bewerkt op</p>
                         <a href="/privacy.html">Privacybeleid</a> <a href="/over.html">Over Billy</a> <a href="/voorbehoud.html">Voorbehoud</a>
                     </footer>
+                        <div id="myModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h1 id="editTitle"></h1>
+                                <textarea id="editArea" class="editArea"></textarea>
+                            </div>
+                        </div>
                 </div>
         `
         this.loadFile()
@@ -345,8 +431,44 @@ class mainContainer extends HTMLElement {
                         this._shadowRoot.getElementById('footerdate').innerText += ' ' + response.lastEdited
                         //this._shadowRoot.getElementById('footercats').innerHTML += this.getCatString(response.categories)
                         const mc = this._shadowRoot.getElementById('maincontent')
+                        this.editAreaText = response.content.replaceAll('\n', '\r\n')
                         this.originalText = response.content.replaceAll('\n', '<br>')
                         mc.innerHTML = ``
+                        if (filenameHigh === "Index") {
+                            let editButton = this._shadowRoot.querySelector("#editButton");
+                            let modal = this._shadowRoot.getElementById("myModal");
+                            this._shadowRoot.querySelector(".main-container").querySelector("main").removeChild(editButton);
+                            this._shadowRoot.querySelector(".main-container").removeChild(modal);
+                        } else {
+                            const modal = this._shadowRoot.getElementById("myModal");
+                            const editButton = this._shadowRoot.querySelector("#editButton");
+                            const closeModal = this._shadowRoot.querySelector(".close");
+                            let editTitle = this._shadowRoot.querySelector("#editTitle")
+                            editTitle.innerText = filenameHigh;
+                            let editText = this._shadowRoot.querySelector("#editArea");
+                            editText.textContent = this.editAreaText.slice(3, -4)
+                            editText.setAttribute("rows", ((this.editAreaText.match("\r\n") || []).length + 1).toString())
+
+                            editText.onkeyup = function () {
+                                this.style.height = 'auto';
+                                this.style.height = (this.scrollHeight) + 'px'
+                            }
+
+                            editButton.onclick = function () {
+                                modal.style.display = "block";
+                                editText.focus(editButton)
+                            }
+
+                            closeModal.onclick = function () {
+                                modal.style.display = "none";
+                            }
+
+                            window.onclick = function (event) {
+                                if (event.target === modal) {
+                                    modal.style.display = "none";
+                                }
+                            }
+                        }
                         mc.innerHTML = this.originalText
                         mc.querySelector('p').className += "paragraph-content";
                         document.title = filenameHigh + ' | Billy'
@@ -383,16 +505,15 @@ class mainContainer extends HTMLElement {
 
         fetch(URL)
             .then(response => {
-                if(response.status !== 200){
+                if (response.status !== 200) {
                     throw response.status;
-                }
-                else{
+                } else {
                     response.json().then(response => {
                         let categoriesFromResponse = response;
                         let categories = this._shadowRoot.querySelector('#categories-list');
 
                         let categoryItems = categories.getElementsByTagName("li");
-                        for(let i = 0; i < categoriesFromResponse.length; i++){
+                        for (let i = 0; i < categoriesFromResponse.length; i++) {
                             console.log(categoriesFromResponse[i].name);
                             let createLI = document.createElement('li');
                             let createA = document.createElement('a');
@@ -689,14 +810,14 @@ class navButton extends HTMLElement {
             </div>
 `
         const navdiv = this._shadowRoot.querySelector('#navdiv')
-        this._shadowRoot.querySelector('#toggler').addEventListener('click', function (e){
+        this._shadowRoot.querySelector('#toggler').addEventListener('click', function (e) {
             e.preventDefault()
             if (navdiv.classList.contains('visible')) {
                 navdiv.classList.remove('visible')
                 navdiv.classList.add('invisible')
             }
         })
-        this._shadowRoot.querySelector('#toggler2').addEventListener('click', function (e){
+        this._shadowRoot.querySelector('#toggler2').addEventListener('click', function (e) {
             e.preventDefault()
             if (navdiv.classList.contains('visible')) {
                 navdiv.classList.remove('visible')
@@ -712,14 +833,14 @@ class navButton extends HTMLElement {
 window.customElements.define('billy-navbutton', navButton)
 
 
-class showCategories extends HTMLElement{
+class showCategories extends HTMLElement {
 
     constructor() {
         super();
         this._shadowRoot = this.attachShadow({mode: "open"})
     }
 
-    connectedCallback(){
+    connectedCallback() {
         this._shadowRoot.innerHTML = `<!-- HTML -->
         <style>
             a{
@@ -737,7 +858,5 @@ class showCategories extends HTMLElement{
         </ul>`
     }
 }
-
-
 
 window.customElements.define('billy-categories', showCategories);
