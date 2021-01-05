@@ -34,30 +34,18 @@ public class MainService {
 
     public void insertFirst() {
         if (this.categoryRepository.findAllByName("Software") == null) {
-            Category c = new Category();
-            c.setName("Software");
-            c.setCategory_id(this.categoryRepository.getId().orElse(0) + 1);
-            this.categoryRepository.save(c);
-
-            Category c2 = new Category();
-            c2.setName("Gebruikersinteractie");
-            c2.setCategory_id(this.categoryRepository.getId().orElse(0) + 1);
-            this.categoryRepository.save(c2);
-
-            Category c3 = new Category();
-            c3.setName("Organisatieprocessen");
-            c3.setCategory_id(this.categoryRepository.getId().orElse(0) + 1);
-            this.categoryRepository.save(c3);
-
-            Category c4 = new Category();
-            c4.setName("Infrastructuur");
-            c4.setCategory_id(this.categoryRepository.getId().orElse(0) + 1);
-            this.categoryRepository.save(c4);
-
-            Category c5 = new Category();
-            c5.setName("Hardware interfacing");
-            c5.setCategory_id(this.categoryRepository.getId().orElse(0) + 1);
-            this.categoryRepository.save(c5);
+            ArrayList<String> categories = new ArrayList<>();
+            categories.add("Software");
+            categories.add("Gebruikersinteractie");
+            categories.add("Organisatieprocessen");
+            categories.add("Infrastructuur");
+            categories.add("Hardware interfacing");
+            categories.forEach(category -> {
+                Category category1 = new Category();
+                category1.setName(category);
+                category1.setCategory_id(this.categoryRepository.getId().orElse(0) + 1);
+                this.categoryRepository.save(category1);
+            });
 
             Article a = new Article();
             a.setTitle("index");
@@ -88,6 +76,18 @@ public class MainService {
             f.setContent("<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fermentum, metus a cursus porttitor, augue ex dictum nisi, vitae tincidunt orci mauris eu risus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Duis tincidunt finibus elit. In in faucibus dui. Donec gravida sollicitudin eros, ac porttitor dolor rutrum a. Sed elementum tortor magna, in semper dolor pharetra consequat. Proin lacus orci, eleifend ac nisl sed, consectetur condimentum erat. Donec laoreet urna orci, at vulputate arcu auctor eu. Phasellus id molestie neque. Morbi suscipit semper ante, at hendrerit tortor posuere eu. Pellentesque pharetra tellus vel sapien lacinia, malesuada pharetra tellus faucibus. Fusce mattis arcu non dui consectetur, id porta urna pretium. Nam facilisis lobortis est, vel euismod elit commodo nec.</p>");
             f.setLastEdited(LocalDateTime.now());
             this.articleRepository.save(f);
+
+            this.categoryRepository.findAll().forEach(category -> {
+                String catName = category.getName().toLowerCase();
+                Article article = new Article();
+                article.setTitle(catName);
+                article.setContent(String.format("<p>Welkom op de %s categorie pagina</p>", catName));
+                article.addCategory(category);
+                article.setLastEdited(LocalDateTime.now());
+                category.addArticle(article);
+                this.articleRepository.save(article);
+                this.categoryRepository.save(category);
+            });
         }
     }
 
@@ -107,7 +107,7 @@ public class MainService {
     public ArticleDTO createArticle(ArticleCreateDTO acd) {
         if (this.getArticle(acd.getTitle()) == null) {
             Article a = new Article();
-            a.setTitle(acd.getTitle());
+            a.setTitle(acd.getTitle().toLowerCase());
             a.setContent(acd.getContent());
             acd.getCategoryDTOs().forEach(categoryDTO -> {
                 Category c = this.categoryRepository.findAllByName(categoryDTO.getName());

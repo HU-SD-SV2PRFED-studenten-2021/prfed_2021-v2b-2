@@ -1,10 +1,8 @@
 package com.v2b2.Billy.application.controllers;
 
-import com.v2b2.Billy.application.data.Category;
 import com.v2b2.Billy.application.dto.ArticleCreateDTO;
 import com.v2b2.Billy.application.dto.ArticleDTO;
 import com.v2b2.Billy.application.dto.CategoryDTO;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +18,7 @@ public class MainController {
         this.mainService = mainService;
     }
 
-    @GetMapping("/get")
+    @PostMapping("/test")
     public boolean getTest() {
         return true;
     }

@@ -115,6 +115,7 @@ class mainContainer extends HTMLElement {
         super();
         this._shadowRoot = this.attachShadow({mode: "open"})
         this.originalText = ''
+        this.cats = []
     }
 
     connectedCallback() {
@@ -143,20 +144,9 @@ class mainContainer extends HTMLElement {
                 .categories-list a{
                     color: black;
                 }
-                .categories-list a::after {
-                    content: '';
-                    width: 0;
-                    height: 1px;
-                    display: block;
-                    background: black;
-                    transition: 300ms;
-                }
-                .categories-list a:hover::after {
-                    width: 100%;
-                }
                 .main-container {
                     place-self: center;
-                    width: auto;
+                    width: 80%;
                     position: absolute;
                     top: 119px;
                     left: 22%;
@@ -277,6 +267,21 @@ class mainContainer extends HTMLElement {
                     text-decoration: none;
                     cursor: pointer;
                 }
+                
+                .editTitle{
+                display: inline-block;
+                padding-right: 5px;
+                }
+                .categoryEdit{
+                display: inline-block;
+                }
+                .editButtons{
+                width: 25px;
+                display: inline-block;
+                }
+                #saveButton {
+                    width: 100%;
+                }
                 @media (max-width: 850px) {
                     div.main-container {
                         left: 0;
@@ -294,20 +299,16 @@ class mainContainer extends HTMLElement {
                         display: block;
                         padding-left: 5px;
                     }
-                }
-                .editTitle{
-                display: inline-block;
-                }
-                .categoryEdit{
-                display: inline-block;
-                }
-                .editButtons{
-                width: 25px;
-                display: inline-block;
+                    .categories-list li {
+                        padding-bottom: 2px;
+                    }
                 }
                 @media (max-width: 620px) {
                     div.main-container {
                         top: 80px;
+                    }
+                    .editTitle {
+                        display: block;
                     }
                 }
                 </style>
@@ -343,13 +344,12 @@ class mainContainer extends HTMLElement {
                                 </select>
                                 <button class = "editButtons">-</button>
                                 <textarea id="editArea" class="editArea"></textarea>
-                                <button style="width: 100%">Save</button>
+                                <button id="saveButton">Save</button>
                             </div>
                         </div>
                 </div>
         `
         this.loadFile()
-        this.getCategories();
         this.fontSize();
     }
 
@@ -437,15 +437,26 @@ class mainContainer extends HTMLElement {
     }
 
     makeEditModal(filename, text) {
+        let editButton = this._shadowRoot.querySelector("#editButton");
+        let modal = this._shadowRoot.getElementById("myModal");
+        fetch("/rest/test", {
+            method: 'POST',
+            headers: {
+                'Authorization': window.sessionStorage.getItem('myJWT')
+            }
+        }).then(function (response){
+            if (response.status !== 200) {
+                let mc = document.querySelector("billy-main")._shadowRoot.querySelector('.main-container');
+                mc.querySelector("main").removeChild(editButton);
+                mc.removeChild(modal);
+            }
+        })
         if (filename === "Index") {
-            let editButton = this._shadowRoot.querySelector("#editButton");
-            let modal = this._shadowRoot.getElementById("myModal");
             this._shadowRoot.querySelector(".main-container").querySelector("main").removeChild(editButton);
             this._shadowRoot.querySelector(".main-container").removeChild(modal);
         } else {
-            const modal = this._shadowRoot.getElementById("myModal");
-            const editButton = this._shadowRoot.querySelector("#editButton");
             const closeModal = this._shadowRoot.querySelector(".close");
+            const saveModal = this._shadowRoot.querySelector('#saveButton');
             let editTitle = this._shadowRoot.querySelector("#editTitle")
             editTitle.innerText = filename;
             let editText = this._shadowRoot.querySelector("#editArea");
@@ -464,6 +475,10 @@ class mainContainer extends HTMLElement {
             }
 
             closeModal.onclick = function () {
+                modal.style.display = "none";
+            }
+
+            saveModal.onclick = function () {
                 modal.style.display = "none";
             }
 
@@ -490,6 +505,7 @@ class mainContainer extends HTMLElement {
                     throw response.status
                 } else {
                     response.json().then(response => {
+                        this.cats = response.categories
                         this._shadowRoot.getElementById('footerdate').innerText += ' ' + response.lastEdited
                         const mc = this._shadowRoot.getElementById('maincontent')
                         const editAreaText = response.content.replaceAll('\n', '\r\n')
@@ -500,6 +516,7 @@ class mainContainer extends HTMLElement {
                         mc.querySelector('p').className += "paragraph-content";
                         document.title = filenameHigh + ' | Billy'
                         this._shadowRoot.getElementById('maintitle').innerText = filenameHigh
+                        this.getCategories()
                         this.evListener()
                     })
                 }
@@ -541,13 +558,18 @@ class mainContainer extends HTMLElement {
 
                         let categoryItems = categories.getElementsByTagName("li");
                         for (let i = 0; i < categoriesFromResponse.length; i++) {
+                            let catName = categoriesFromResponse[i].name
                             let createLI = document.createElement('li');
                             let createA = document.createElement('a');
-                            let aNode = document.createTextNode(categoriesFromResponse[i].name);
+                            let aNode = document.createTextNode(catName);
 
-                            //LOCATION FOR CATEGORES (Needs to be implemented with switch case in future)
-
-                            createA.setAttribute("href", "#");
+                            this.cats.forEach(cat => {
+                                if (cat.name === catName) {
+                                    createA.style.border = "solid 1px black"
+                                    createA.style.padding = "0 2px 0 2px"
+                                }
+                            })
+                            createA.setAttribute("href", `/${catName.toLowerCase()}.html`);
 
                             createA.appendChild(aNode);
                             let LiA = createLI.appendChild(createA);
