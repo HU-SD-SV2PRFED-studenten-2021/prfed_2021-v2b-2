@@ -33,6 +33,14 @@ public class MainController {
         } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateArticle(@PathVariable String id, @RequestBody ArticleCreateDTO articleDTO) {
+        ArticleDTO newArticle = this.mainService.updateArticle(id, articleDTO);
+        if (newArticle != null) {
+            return new ResponseEntity<>(newArticle, HttpStatus.OK);
+        } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+    }
+
     @GetMapping("/category/{id}")
     public ResponseEntity<?> getArticlesByCategory(@PathVariable String id) {
         List<ArticleDTO> articleDTOs = this.mainService.getFromCat(id);
@@ -43,7 +51,7 @@ public class MainController {
 
     @GetMapping("/categories")
     public ResponseEntity<?> getCategories(){
-        List<Category> categoryDTOS = this.mainService.getAllCategories();
+        List<CategoryDTO> categoryDTOS = this.mainService.getAllCategories();
         if(categoryDTOS != null) {
             return new ResponseEntity<>(categoryDTOS, HttpStatus.OK);
         }
