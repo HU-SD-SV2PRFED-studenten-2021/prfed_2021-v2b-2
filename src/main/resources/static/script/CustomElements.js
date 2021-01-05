@@ -195,6 +195,7 @@ class mainContainer extends HTMLElement {
                 a {
                     color: #0000EE;
                 }
+                
                 #editButton{
                     float: right;
                     margin: 2px 5px 0 5px;
@@ -235,18 +236,18 @@ class mainContainer extends HTMLElement {
                     text-decoration: none;
                     cursor: pointer;
                 }.modal {
-                    display: none; /* Hidden by default */
-                    position: fixed; /* Stay in place */
-                    z-index: 1; /* Sit on top */
-                    padding-top: 30vh; /* Location of the box */
+                    display: none;
+                    position: fixed;
+                    z-index: 1;
+                    padding-top: 30vh;
                     left: 0;
                     top: 0;
-                    width: 100%; /* Full width */
-                    height: 100%; /* Full height */
-                    overflow: auto; /* Enable scroll if needed */
-                    background-color: rgb(0,0,0); /* Fallback color */
-                    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-                }
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    background-color: rgb(0,0,0);
+                    background-color: rgba(0,0,0,0.4);
+                }   
             
                 .modal-content {
                     background-color: #fefefe;
@@ -294,6 +295,16 @@ class mainContainer extends HTMLElement {
                         padding-left: 5px;
                     }
                 }
+                .editTitle{
+                display: inline-block;
+                }
+                .categoryEdit{
+                display: inline-block;
+                }
+                .editButtons{
+                width: 25px;
+                display: inline-block;
+                }
                 @media (max-width: 620px) {
                     div.main-container {
                         top: 80px;
@@ -322,7 +333,15 @@ class mainContainer extends HTMLElement {
                         <div id="myModal" class="modal">
                             <div class="modal-content">
                                 <span class="close">&times;</span>
-                                <h1 id="editTitle"></h1>
+                                <h1 id="editTitle" class = "editTitle"></h1>
+                                <select id="categoryEditPlus" class="categoryEdit">
+                                <option value="" disabled selected>voeg toe:</option>
+                                </select>
+                                <button class = "editButtons">+</button>
+                                <select id="categoryEditMinus" class="categoryEdit">
+                                <option value="" disabled selected>verwijder:</option>
+                                </select>
+                                <button class = "editButtons">-</button>
                                 <textarea id="editArea" class="editArea"></textarea>
                                 <button style="width: 100%">Save</button>
                             </div>
@@ -417,6 +436,45 @@ class mainContainer extends HTMLElement {
         }
     }
 
+    makeEditModal(filename, text) {
+        if (filename === "Index") {
+            let editButton = this._shadowRoot.querySelector("#editButton");
+            let modal = this._shadowRoot.getElementById("myModal");
+            this._shadowRoot.querySelector(".main-container").querySelector("main").removeChild(editButton);
+            this._shadowRoot.querySelector(".main-container").removeChild(modal);
+        } else {
+            const modal = this._shadowRoot.getElementById("myModal");
+            const editButton = this._shadowRoot.querySelector("#editButton");
+            const closeModal = this._shadowRoot.querySelector(".close");
+            let editTitle = this._shadowRoot.querySelector("#editTitle")
+            editTitle.innerText = filename;
+            let editText = this._shadowRoot.querySelector("#editArea");
+            editText.textContent = text.slice(3, -4)
+            editText.setAttribute("rows", ((text.match("\r\n") || []).length + 1).toString())
+
+            editText.onkeyup = function () {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight + 5) + 'px'
+            }
+
+            editButton.onclick = function () {
+                modal.style.display = "block";
+                editText.focus(editButton)
+                editText.style.height = (editText.scrollHeight + 5) + 'px'
+            }
+
+            closeModal.onclick = function () {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function (event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            }
+        }
+    }
+
     loadFile() {
         let url = window.location.href;
         let filename = url.split('/').pop();
@@ -434,45 +492,10 @@ class mainContainer extends HTMLElement {
                     response.json().then(response => {
                         this._shadowRoot.getElementById('footerdate').innerText += ' ' + response.lastEdited
                         const mc = this._shadowRoot.getElementById('maincontent')
-                        this.editAreaText = response.content.replaceAll('\n', '\r\n')
+                        const editAreaText = response.content.replaceAll('\n', '\r\n')
                         this.originalText = response.content.replaceAll('\n', '<br>')
+                        this.makeEditModal(filenameHigh, editAreaText)
                         mc.innerHTML = ``
-                        if (filenameHigh === "Index") {
-                            let editButton = this._shadowRoot.querySelector("#editButton");
-                            let modal = this._shadowRoot.getElementById("myModal");
-                            this._shadowRoot.querySelector(".main-container").querySelector("main").removeChild(editButton);
-                            this._shadowRoot.querySelector(".main-container").removeChild(modal);
-                        } else {
-                            const modal = this._shadowRoot.getElementById("myModal");
-                            const editButton = this._shadowRoot.querySelector("#editButton");
-                            const closeModal = this._shadowRoot.querySelector(".close");
-                            let editTitle = this._shadowRoot.querySelector("#editTitle")
-                            editTitle.innerText = filenameHigh;
-                            let editText = this._shadowRoot.querySelector("#editArea");
-                            editText.textContent = this.editAreaText.slice(3, -4)
-                            editText.setAttribute("rows", ((this.editAreaText.match("\r\n") || []).length + 1).toString())
-
-                            editText.onkeyup = function () {
-                                this.style.height = 'auto';
-                                this.style.height = (this.scrollHeight + 5) + 'px'
-                            }
-
-                            editButton.onclick = function () {
-                                modal.style.display = "block";
-                                editText.focus(editButton)
-                                editText.style.height = (editText.scrollHeight + 5) + 'px'
-                            }
-
-                            closeModal.onclick = function () {
-                                modal.style.display = "none";
-                            }
-
-                            window.onclick = function (event) {
-                                if (event.target === modal) {
-                                    modal.style.display = "none";
-                                }
-                            }
-                        }
                         mc.innerHTML = this.originalText
                         mc.querySelector('p').className += "paragraph-content";
                         document.title = filenameHigh + ' | Billy'
@@ -503,7 +526,7 @@ class mainContainer extends HTMLElement {
         return string;
     }
 
-    getCategories(){
+    getCategories() {
         let URL = '/rest/categories'
         //Maybe sort categories by student's study and interests which will be highlighted first.
 
