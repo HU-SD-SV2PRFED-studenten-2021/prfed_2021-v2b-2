@@ -32,6 +32,10 @@ public class Category {
         this.articles.add(a);
     }
 
+    public void removeArticle(Article a) {
+        this.articles.remove(a);
+    }
+
     public int getCategory_id() {
         return category_id;
     }

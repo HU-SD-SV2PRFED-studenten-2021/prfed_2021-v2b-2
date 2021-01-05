@@ -100,8 +100,8 @@ public class MainService {
         } else return null;
     }
 
-    public List<Category> getAllCategories(){
-        return categoryRepository.findAll();
+    public List<CategoryDTO> getAllCategories(){
+        return CategoryDTO.getCatDTOFromList(categoryRepository.findAll());
     }
 
     public ArticleDTO createArticle(ArticleCreateDTO acd) {
@@ -122,6 +122,30 @@ public class MainService {
                 this.categoryRepository.save(a.getCategories().get(i));
             }
             return new ArticleDTO(a);
+        } else return null;
+    }
+
+    public ArticleDTO updateArticle(String id, ArticleCreateDTO articleDTO) {
+        Article article = this.articleRepository.findArticleByTitle(id);
+        if (article != null) {
+            article.setContent(articleDTO.getContent());
+            article.setLastEdited(LocalDateTime.now());
+            List<Category> cats = article.getCategories();
+            cats.forEach(category -> category.removeArticle(article));
+            cats.forEach(this.categoryRepository::saveAndFlush);
+            article.setCategories(new ArrayList<>());
+            articleDTO.getCategoryDTOs().forEach(categoryDTO -> {
+                Category c = this.categoryRepository.findAllByName(categoryDTO.getName());
+                if (c != null) {
+                    article.addCategory(c);
+                    c.addArticle(article);
+                }
+            });
+            this.articleRepository.save(article);
+            for (int i = 0; i < article.getCategories().size(); i++) {
+                this.categoryRepository.save(article.getCategories().get(i));
+            }
+            return new ArticleDTO(article);
         } else return null;
     }
 }

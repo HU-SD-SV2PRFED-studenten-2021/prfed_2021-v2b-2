@@ -1,5 +1,12 @@
 package com.v2b2.Billy.application.dto;
 
+import com.sun.xml.bind.v2.runtime.reflect.Lister;
+import com.v2b2.Billy.application.data.Article;
+import com.v2b2.Billy.application.data.Category;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class CategoryDTO {
     public String name;
 
@@ -15,5 +22,13 @@ public class CategoryDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public static List<CategoryDTO> getCatDTOFromList(List<Category> categories) {
+        ArrayList<CategoryDTO> categoryDTOS = new ArrayList<>();
+        for (Category c : categories) {
+            categoryDTOS.add(new CategoryDTO(c.getName()));
+        }
+        return categoryDTOS;
     }
 }
