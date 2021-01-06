@@ -344,7 +344,7 @@ class mainContainer extends HTMLElement {
                                 </select>
                                 <button class = "editButtons">-</button>
                                 <textarea id="editArea" class="editArea"></textarea>
-                                <button id="saveButton">Save</button>
+                                <button id="saveEdit" style="width: 100%">Save</button>
                             </div>
                         </div>
                 </div>
@@ -437,8 +437,8 @@ class mainContainer extends HTMLElement {
     }
 
     makeEditModal(filename, text) {
-        let editButton = this._shadowRoot.querySelector("#editButton");
         let modal = this._shadowRoot.getElementById("myModal");
+        let editButton = this._shadowRoot.querySelector("#editButton");
         fetch("/rest/test", {
             method: 'POST',
             headers: {
@@ -450,35 +450,58 @@ class mainContainer extends HTMLElement {
                 mc.querySelector("main").removeChild(editButton);
                 mc.removeChild(modal);
             }
-        })
+        });
         if (filename === "Index") {
             this._shadowRoot.querySelector(".main-container").querySelector("main").removeChild(editButton);
             this._shadowRoot.querySelector(".main-container").removeChild(modal);
         } else {
             const closeModal = this._shadowRoot.querySelector(".close");
-            const saveModal = this._shadowRoot.querySelector('#saveButton');
-            let editTitle = this._shadowRoot.querySelector("#editTitle")
-            editTitle.innerText = filename;
-            let editText = this._shadowRoot.querySelector("#editArea");
-            editText.textContent = text.slice(3, -4)
-            editText.setAttribute("rows", ((text.match("\r\n") || []).length + 1).toString())
+            const editTitle = this._shadowRoot.querySelector("#editTitle")
+            const editText = this._shadowRoot.querySelector("#editArea");
+            const saveButton = this._shadowRoot.querySelector("#saveEdit");
 
             editText.onkeyup = function () {
                 this.style.height = 'auto';
                 this.style.height = (this.scrollHeight + 5) + 'px'
             }
 
+            saveButton.onclick = function (event) {
+                event.preventDefault();
+                const data = {
+                    title: `${filename}`,
+                    content: `${editText.value}`,
+                    categoryDTOs: [
+                        {name: "Hardware interfacing"}
+                    ]
+                };
+
+                fetch(`/rest/${filename.toLowerCase()}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `${window.sessionStorage.getItem("myJWT")}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                }).then(response => {
+                    if (response.status !== 200) {
+                        console.log(response)
+                        throw response.status
+                    } else {
+                        modal.style.display = "none"
+                    }
+                });
+            }
+
             editButton.onclick = function () {
+                editTitle.innerText = filename;
+                editText.textContent = text.slice(3, -4)
+                editText.setAttribute("rows", ((text.match("\r\n") || []).length + 1).toString())
                 modal.style.display = "block";
-                editText.focus(editButton)
                 editText.style.height = (editText.scrollHeight + 5) + 'px'
             }
 
-            closeModal.onclick = function () {
-                modal.style.display = "none";
-            }
 
-            saveModal.onclick = function () {
+            closeModal.onclick = function () {
                 modal.style.display = "none";
             }
 
@@ -513,11 +536,11 @@ class mainContainer extends HTMLElement {
                         this.makeEditModal(filenameHigh, editAreaText)
                         mc.innerHTML = ``
                         mc.innerHTML = this.originalText
-                        mc.querySelector('p').className += "paragraph-content";
                         document.title = filenameHigh + ' | Billy'
                         this._shadowRoot.getElementById('maintitle').innerText = filenameHigh
                         this.getCategories()
                         this.evListener()
+                        mc.querySelector('p').className += "paragraph-content";
                     })
                 }
             }).catch(err => {
