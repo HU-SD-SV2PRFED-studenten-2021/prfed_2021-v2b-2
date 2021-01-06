@@ -5,38 +5,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "category")
-public class Category {
+@Table(name = "subcategory")
+public class Subcategory {
     @Id
     @Column(columnDefinition = "serial")
-    private int category_id;
+    private int subcategory_id;
     private String name;
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "subcategory")
     private List<Article> articles = new ArrayList<>();
 
-    public Category(int category_id, String name, List<Article> articles) {
-        this.category_id = category_id;
+    public Subcategory(int subcategory_id, String name, List<Article> articles) {
+        this.subcategory_id = subcategory_id;
         this.name = name;
         this.articles = articles;
     }
 
-    public Category() {
+    public Subcategory() {
     }
 
     public void addArticle(Article a) {
         this.articles.add(a);
     }
 
-    public void removeArticle(Article a) {
-        this.articles.remove(a);
+    public int getSubcategory_id() {
+        return subcategory_id;
     }
 
-    public int getCategory_id() {
-        return category_id;
-    }
-
-    public void setCategory_id(int category_id) {
-        this.category_id = category_id;
+    public void setSubcategory_id(int subcategory_id) {
+        this.subcategory_id = subcategory_id;
     }
 
     public String getName() {
@@ -57,8 +53,8 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" +
-                "category_id=" + category_id +
+        return "Subcategory{" +
+                "subcategory_id=" + subcategory_id +
                 ", name='" + name + '\'' +
                 '}';
     }

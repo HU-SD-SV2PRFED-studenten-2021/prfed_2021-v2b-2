@@ -1,16 +1,16 @@
 package com.v2b2.Billy.application.dto;
 
-import java.util.List;
-
 public class ArticleCreateDTO {
     private String title;
     private String content;
-    private List<CategoryDTO> categoryDTOs;
+    private CategoryDTO categoryDTO;
+    private SubcategoryDTO subcategoryDTO;
 
-    public ArticleCreateDTO(String title, String content, List<CategoryDTO> categoryDTOs) {
+    public ArticleCreateDTO(String title, String content, CategoryDTO categoryDTO, SubcategoryDTO subcategoryDTO) {
         this.title = title;
         this.content = content;
-        this.categoryDTOs = categoryDTOs;
+        this.categoryDTO = categoryDTO;
+        this.subcategoryDTO = subcategoryDTO;
     }
 
     public ArticleCreateDTO() {
@@ -24,7 +24,11 @@ public class ArticleCreateDTO {
         return content;
     }
 
-    public List<CategoryDTO> getCategoryDTOs() {
-        return categoryDTOs;
+    public CategoryDTO getCategoryDTO() {
+        return categoryDTO;
+    }
+
+    public SubcategoryDTO getSubcategoryDTO() {
+        return subcategoryDTO;
     }
 }
