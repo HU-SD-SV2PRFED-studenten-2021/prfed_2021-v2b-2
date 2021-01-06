@@ -4,7 +4,7 @@ class mainContainer extends HTMLElement {
         super();
         this._shadowRoot = this.attachShadow({mode: "open"})
         this.originalText = ''
-        this.cats = []
+        this.cat = undefined
     }
 
     connectedCallback() {
@@ -417,8 +417,8 @@ class mainContainer extends HTMLElement {
                     throw response.status
                 } else {
                     response.json().then(response => {
-                        this.cats = response.categories
-                        this._shadowRoot.getElementById('footerdate').innerText += ' ' + response.lastEdited
+                        this.cat = response.category
+                        this._shadowRoot.getElementById('footerdate').innerText = `Deze pagina is voor het laatst bewerkt op ${response.lastEdited}`
                         const mc = this._shadowRoot.getElementById('maincontent')
                         const editAreaText = response.content.replaceAll('\n', '\r\n')
                         this.originalText = response.content.replaceAll('\n', '<br>')
@@ -453,6 +453,7 @@ class mainContainer extends HTMLElement {
                     response.json().then(response => {
                         let categoriesFromResponse = response;
                         let categories = this._shadowRoot.querySelector('#categories-list');
+                        categories.innerHTML = ''
 
                         let categoryItems = categories.getElementsByTagName("li");
                         for (let i = 0; i < categoriesFromResponse.length; i++) {
@@ -460,13 +461,10 @@ class mainContainer extends HTMLElement {
                             let createLI = document.createElement('li');
                             let createA = document.createElement('a');
                             let aNode = document.createTextNode(catName);
-
-                            this.cats.forEach(cat => {
-                                if (cat.name === catName) {
-                                    createA.style.border = "solid 1px black"
-                                    createA.style.padding = "0 2px 0 2px"
-                                }
-                            })
+                            if (this.cat.name === catName) {
+                                createA.style.border = "solid 1px black"
+                                createA.style.padding = "0 2px 0 2px"
+                            }
                             createA.setAttribute("href", `/${catName.toLowerCase()}.html`);
 
                             createA.appendChild(aNode);

@@ -16,21 +16,22 @@ public class Article {
     @Type(type = "text")
     private String content;
     private LocalDateTime lastEdited;
-    @ManyToMany(mappedBy = "articles")
-    private List<Category> categories = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+    @ManyToOne
+    @JoinColumn(name = "subcategory_id")
+    private Subcategory subcategory;
 
-    public Article(String title, String content, LocalDateTime lastEdited, List<Category> categories) {
+    public Article(String title, String content, LocalDateTime lastEdited, Category category, Subcategory subcategory) {
         this.title = title;
         this.content = content;
         this.lastEdited = lastEdited;
-        this.categories = categories;
+        this.category = category;
+        this.subcategory = subcategory;
     }
 
     public Article() {
-    }
-
-    public void addCategory(Category c) {
-        this.categories.add(c);
     }
 
     public String getTitle() {
@@ -57,21 +58,30 @@ public class Article {
         this.lastEdited = lastEdited;
     }
 
-    public List<Category> getCategories() {
-        return categories;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Subcategory getSubcategory() {
+        return subcategory;
+    }
+
+    public void setSubcategory(Subcategory subcategory) {
+        this.subcategory = subcategory;
     }
 
     @Override
     public String toString() {
-        return "Article " +
-                "title: '" + title + '\'' +
-                ", content: '" + content + '\'' +
-                ", lastEdited: '" + lastEdited + '\'' +
-                ", categories: " + categories +
+        return "Article{" +
+                "title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", lastEdited=" + lastEdited +
+                ", category=" + category +
+                ", subcategory=" + subcategory +
                 '}';
     }
 }

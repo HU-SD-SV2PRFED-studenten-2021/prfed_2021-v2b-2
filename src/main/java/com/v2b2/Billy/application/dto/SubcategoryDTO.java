@@ -5,14 +5,14 @@ import com.v2b2.Billy.application.data.Category;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryDTO {
+public class SubcategoryDTO {
     public String name;
 
-    public CategoryDTO(String name) {
+    public SubcategoryDTO(String name) {
         this.name = name;
     }
 
-    public CategoryDTO() {}
+    public SubcategoryDTO() {}
 
     public String getName() {
         return name;
