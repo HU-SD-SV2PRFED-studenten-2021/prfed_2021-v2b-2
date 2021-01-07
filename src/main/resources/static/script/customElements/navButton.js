@@ -58,6 +58,9 @@ class navButton extends HTMLElement {
                 color: black;
                 text-decoration: underline;
             }
+            a.modebutton {
+                color: #0000EE;
+            }
             @keyframes appear {
                 0% {opacity: 0; top: 100%; left: 100%; border-radius: 100%}
                 5% {opacity: 1;}
@@ -75,10 +78,15 @@ class navButton extends HTMLElement {
                 <h1>Menu</h1>
                 <billy-search></billy-search>
                 <ul>
-                <li><a href="/index.html">Home</a></li>
-                <li><a href="/navigatie.html">Navigatie</a></li>
-                <li><a href="/recent.html">Recente wijzigingen</a></li>
-                <li><a href="/">Hoofdpagina</a></li>
+                    <li><a href="#" id="hoofdpagina" class="modebutton">Hoofdpagina</a></li>
+                    <li><a href="#" id="overleg" class="modebutton">Overleg</a></li>
+                    <li><a href="#" id="lezen" class="modebutton">Lezen</a></li>
+                    <li><a href="#" id="brontext" class="modebutton">Brontext</a></li>
+                    <li><a href="#" id="geschiedenis" class="modebutton">Geschiedenis</a></li>
+                    <hr>
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/navigatie.html">Navigatie</a></li>
+                    <li><a href="/recent.html">Recente wijzigingen</a></li>
                 </ul>
                 <button id="toggler2">
                 ☰
@@ -102,6 +110,16 @@ class navButton extends HTMLElement {
                 navdiv.classList.remove('invisible')
                 navdiv.classList.add('visible')
             }
+        })
+        this._shadowRoot.querySelectorAll(".modebutton").forEach(aItem => {
+            aItem.addEventListener('click', function (e) {
+                e.preventDefault()
+                document.querySelector("billy-main").setAttribute("mode", aItem.id)
+                aItem.parentNode.parentNode.parentNode.className = "invisible"
+                let topNav = document.querySelector('billy-topnav')._shadowRoot
+                topNav.querySelectorAll("a").forEach(otherA => {otherA.className = ""})
+                topNav.querySelector(`#${aItem.id}`).className = 'active'
+            })
         })
     }
 }

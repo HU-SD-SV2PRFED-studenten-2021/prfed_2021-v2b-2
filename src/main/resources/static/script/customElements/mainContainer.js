@@ -242,20 +242,16 @@ class mainContainer extends HTMLElement {
         this.fontSize();
     }
 
-    evListener() {
-        const dom = this
-        const topNav = document.querySelector('billy-topnav')._shadowRoot.getElementById('topnav')
-        topNav.addEventListener('itemClicked', function (e) {
-            dom.change(e.detail)
-        })
+    static get observedAttributes() {
+        return ["mode"]
     }
 
-    change(e) {
+    attributeChangedCallback(name, oldValue, newValue) {
         const mc = this._shadowRoot.getElementById('maincontent')
-        switch (e) {
-            case "brontext":
-                mc.innerText = this.originalText
-                return
+        switch (newValue) {
+            case "hoofdpagina":
+                mc.innerHTML = this.originalText;
+                break
             case "overleg":
                 mc.innerHTML = `<!-- HTML -->
                                 <style>
@@ -319,9 +315,18 @@ class mainContainer extends HTMLElement {
                     }, 10)
                 })
                 return
+            case "lezen":
+                mc.innerHTML = this.originalText;
+                break
+            case "brontext":
+                mc.innerText = this.originalText;
+                break
+            case "geschiedenis":
+                mc.innerHTML = this.originalText;
+                break
             default:
-                mc.innerHTML = this.originalText
-                return
+                mc.innerHTML = this.originalText;
+                break
         }
     }
 
@@ -428,12 +433,25 @@ class mainContainer extends HTMLElement {
                         document.title = filenameHigh + ' | Billy'
                         this._shadowRoot.getElementById('maintitle').innerText = filenameHigh
                         this.getCategories()
-                        this.evListener()
                         mc.querySelector('p').className += "paragraph-content";
                     })
                 }
             }).catch(err => {
-            this._shadowRoot.getElementById('maincontent').innerHTML = `<p>Er is veel geprobeerd, maar dat is niet gelukt</p>`
+                let errMessage = "";
+                switch (err) {
+                    case 404:
+                        errMessage = "We hebben overal gezocht, maar we hebben dat niet kunnen vinden"
+                        break
+                    case 403:
+                        errMessage = "Je kunt het proberen maar dat is helaas iets wat je niet mag doen"
+                        break
+                    case 500:
+                        errMessage = "Uh oh dat is fout gegaan in ons systeem"
+                        break
+                    default:
+                        errMessage = "Er is veel geprobeerd, maar dat is niet gelukt"
+                }
+            this._shadowRoot.getElementById('maincontent').innerHTML = `<p>${errMessage}</p>`
             this._shadowRoot.getElementById('billyfooter').removeChild(this._shadowRoot.getElementById('footerdate'))
             this._shadowRoot.getElementById('billyfooter').removeChild(this._shadowRoot.getElementById('footercats'))
             document.title = filenameHigh + ' | Billy'
@@ -454,8 +472,6 @@ class mainContainer extends HTMLElement {
                         let categoriesFromResponse = response;
                         let categories = this._shadowRoot.querySelector('#categories-list');
                         categories.innerHTML = ''
-
-                        let categoryItems = categories.getElementsByTagName("li");
                         for (let i = 0; i < categoriesFromResponse.length; i++) {
                             let catName = categoriesFromResponse[i].name
                             let createLI = document.createElement('li');
@@ -479,14 +495,21 @@ class mainContainer extends HTMLElement {
 
     fontSize() {
         let font = document.querySelector("billy-main");
+        let size = localStorage.getItem("font-size");
+        if (size !== undefined) {
+            font.style = `font-size: ${size}`
+        }
         this._shadowRoot.querySelector("#fontSizeSmall").addEventListener("click", function () {
             font.style = "font-size: x-small";
+            localStorage.setItem("font-size", "x-small")
         });
         this._shadowRoot.querySelector("#fontSizeMedium").addEventListener("click", function () {
             font.style = "font-size: medium";
+            localStorage.setItem("font-size", "medium")
         });
         this._shadowRoot.querySelector("#fontSizeLarge").addEventListener("click", function () {
             font.style = "font-size: x-large";
+            localStorage.setItem("font-size", "x-large")
         });
     }
 
