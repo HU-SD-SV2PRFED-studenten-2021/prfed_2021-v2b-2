@@ -21,7 +21,7 @@ window.onload = function () {
         })
             .then(function (resp) {
                 window.sessionStorage.setItem("myJWT", resp.headers.get('Authorization'))
-                window.location = '/index.html'
+                window.location = window.sessionStorage.getItem("previous") || '/index.html'
             })
             .catch(function (error) {
                 alert(error)

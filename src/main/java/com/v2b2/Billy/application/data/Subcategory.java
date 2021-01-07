@@ -58,4 +58,8 @@ public class Subcategory {
                 ", name='" + name + '\'' +
                 '}';
     }
+
+    public void removeArticle(Article article) {
+        this.articles.remove(article);
+    }
 }

@@ -1,11 +1,13 @@
 window.onload = function () {
+    const loginBtn = document.getElementById('loginBtn')
+    loginBtn.onclick
     const jwt = window.sessionStorage.getItem('myJWT')
     if (jwt !== null) {
-        const loginBtn = document.getElementById('loginBtn')
         const resultJWT = parseJwt(jwt.substr(jwt.indexOf(' ') + 1))
         loginBtn.innerText = `Welcome back, ${resultJWT.sub}!`
         loginBtn.onclick = function () {
             if (confirm("Wil je uitloggen?")) {
+                window.sessionStorage.setItem("previous", window.location)
                 window.location = '/logout.html'
             }
         }

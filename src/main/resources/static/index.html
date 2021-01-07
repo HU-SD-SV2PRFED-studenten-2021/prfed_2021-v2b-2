@@ -18,7 +18,7 @@
     <script type="module" src="script/customElements/topNav.js"></script>
 <div class="header-container">
     <div class="top-container">
-        <button id="loginBtn" class="login-button" type="button" onclick="window.location='/login.html'">Aanmelden</button>
+        <button id="loginBtn" class="login-button" type="button" onclick="{window.sessionStorage.setItem('previous', window.location); window.location='/login.html'}">Aanmelden</button>
     </div>
     <billy-topnav></billy-topnav>
 </div>

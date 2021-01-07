@@ -172,6 +172,9 @@ class mainContainer extends HTMLElement {
                 #saveButton {
                     width: 100%;
                 }
+                .catSelected {
+                    
+                }
                 @media (max-width: 850px) {
                     div.main-container {
                         left: 0;
@@ -217,7 +220,9 @@ class mainContainer extends HTMLElement {
                     </main>
                     <footer class="footer-info" id="billyfooter">
                         <p id="footercats">Categorieën: </p>
-                        <ul class="categories-list" id="categories-list"></ul>                       
+                        <ul class="categories-list" id="categories-list"></ul>
+                        <p>Subcategorieën: </p>
+                        <ul class="categories-list" id="subcategories-list"></ul>                       
                         <p id="footerdate">Deze pagina is voor het laatst bewerkt op</p>
                         <a href="/privacy.html">Privacybeleid</a> <a href="/over.html">Over Billy</a> <a href="/voorbehoud.html">Voorbehoud</a>
                     </footer>
@@ -345,7 +350,7 @@ class mainContainer extends HTMLElement {
                 }
             }
         });
-        if (this.cat.name === "Standaardpagina") {
+        if (this.cat.name === "Standaardpagina" || this.subCat.name === "Standaardpagina") {
             this._shadowRoot.querySelector(".main-container").querySelector("main").removeChild(editButton);
             this._shadowRoot.querySelector(".main-container").removeChild(modal);
         } else {
@@ -366,9 +371,8 @@ class mainContainer extends HTMLElement {
                 const data = {
                     title: `${filename}`,
                     content: `${editText.value}`,
-                    categoryDTOs: [
-                        {name: "Hardware interfacing"}
-                    ]
+                    categoryDTO: {name: `${selectCat.value}`},
+                    subcategoryDTO: {name: `${selectSubCat.value}`}
                 };
 
                 fetch(`/rest/${filename.toLowerCase()}`, {
@@ -388,6 +392,7 @@ class mainContainer extends HTMLElement {
                 });
             }
             const category = this.cat.name
+            const subcategory = this.subCat.name
             editButton.onclick = function () {
                 fetch("/rest/categories", {
                     method: 'GET',
@@ -409,6 +414,31 @@ class mainContainer extends HTMLElement {
                                 categoryElement.textContent = cat.name
                                 if(cat.name !== category){
                                     selectCat.appendChild(categoryElement);
+                                }
+                            })
+                        })
+                    }
+                })
+                fetch("/rest/subcategories", {
+                    method: 'GET',
+                }).then(response => {
+                    if (response.status !== 200) {
+                        console.log(response)
+                        throw response.status
+                    } else {
+                        response.json().then(catList => {
+                            selectSubCat.innerHTML = ""
+                            const categoryElement = document.createElement("option")
+                            categoryElement.value = subcategory
+                            categoryElement.textContent = subcategory
+                            selectSubCat.appendChild(categoryElement);
+
+                            catList.forEach(cat => {
+                                const categoryElement = document.createElement("option")
+                                categoryElement.value = cat.name
+                                categoryElement.textContent = cat.name
+                                if(cat.name !== subcategory){
+                                    selectSubCat.appendChild(categoryElement);
                                 }
                             })
                         })
@@ -460,7 +490,8 @@ class mainContainer extends HTMLElement {
                         mc.innerHTML = this.originalText
                         document.title = filenameHigh + ' | Billy'
                         this._shadowRoot.getElementById('maintitle').innerText = filenameHigh
-                        this.getCategories()
+                        this.getSubcategories("categories", "#categories-list", this.cat)
+                        this.getSubcategories("subcategories", "#subcategories-list", this.subCat)
                         mc.querySelector('p').className += "paragraph-content";
                     })
                 }
@@ -487,8 +518,8 @@ class mainContainer extends HTMLElement {
         })
     }
 
-    getCategories() {
-        let URL = '/rest/categories'
+    getSubcategories(link, selector, object) {
+        let URL = `/rest/${link}`
         //Maybe sort categories by student's study and interests which will be highlighted first.
 
         fetch(URL)
@@ -498,14 +529,14 @@ class mainContainer extends HTMLElement {
                 } else {
                     response.json().then(response => {
                         let categoriesFromResponse = response;
-                        let categories = this._shadowRoot.querySelector('#categories-list');
+                        let categories = this._shadowRoot.querySelector(`${selector}`);
                         categories.innerHTML = ''
                         for (let i = 0; i < categoriesFromResponse.length; i++) {
                             let catName = categoriesFromResponse[i].name
                             let createLI = document.createElement('li');
                             let createA = document.createElement('a');
                             let aNode = document.createTextNode(catName);
-                            if (this.cat.name === catName) {
+                            if (object.name === catName) {
                                 createA.style.border = "solid 1px black"
                                 createA.style.padding = "0 2px 0 2px"
                             }
