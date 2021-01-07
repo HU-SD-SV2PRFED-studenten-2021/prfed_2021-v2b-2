@@ -66,7 +66,6 @@ public class MainService {
                 this.subcategoryRepository.saveAndFlush(category1);
                 actualSubCats.add(category1);
             });
-
             Article a = new Article();
             a.setTitle("index");
             a.setContent("<p>Welkom op Billy!</p>");
@@ -119,7 +118,7 @@ public class MainService {
                         "<billy-categories></p>", catName));
                 article.setCategory(category);
                 article.setLastEdited(LocalDateTime.now());
-                article.setSubcategory(actualSubCats.get(3));
+                article.setSubcategory(actualSubCats.get(5));
                 category.addArticle(article);
                 this.articleRepository.save(article);
                 this.categoryRepository.save(category);
