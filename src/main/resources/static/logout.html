@@ -7,7 +7,7 @@
 <body>
 <script>
     window.sessionStorage.removeItem('myJWT')
-    window.location = '/'
+    window.location = window.sessionStorage.getItem("previous") || "/index.html"
 </script>
 </body>
 </html>

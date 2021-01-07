@@ -57,6 +57,7 @@ public class MainService {
             subCats.add("Ontwerpen");
             subCats.add("Realiseren");
             subCats.add("Manage and Control");
+            subCats.add("Standaardpagina");
             ArrayList<Subcategory> actualSubCats = new ArrayList<>();
             subCats.forEach(category -> {
                 Subcategory category1 = new Subcategory();
@@ -71,7 +72,7 @@ public class MainService {
             a.setContent("<p>Welkom op Billy!</p>");
             a.setLastEdited(LocalDateTime.now());
             a.setCategory(actualCategories.get(5));
-            a.setSubcategory(actualSubCats.get(0));
+            a.setSubcategory(actualSubCats.get(5));
             this.articleRepository.save(a);
 
             Article b = new Article();
@@ -79,7 +80,7 @@ public class MainService {
             b.setContent("<p>Privacy is belangrijk en we hechten er veel waarde aan.<br>Daarom zullen we nooit je gegevens delen of verkopen aan een derde partij.</p>");
             b.setLastEdited(LocalDateTime.now());
             b.setCategory(actualCategories.get(5));
-            b.setSubcategory(actualSubCats.get(0));
+            b.setSubcategory(actualSubCats.get(5));
             this.articleRepository.save(b);
 
             Article d = new Article();
@@ -87,7 +88,7 @@ public class MainService {
             d.setContent("<p>Billy is een digitale boekenkast voor leerlingen aan HBO-i opleidingen.<br>Deze boekenkast is gemaakt door V2B-2.</p>");
             d.setLastEdited(LocalDateTime.now());
             d.setCategory(actualCategories.get(5));
-            d.setSubcategory(actualSubCats.get(0));
+            d.setSubcategory(actualSubCats.get(5));
             this.articleRepository.save(d);
 
             Article e = new Article();
@@ -95,7 +96,7 @@ public class MainService {
             e.setContent("<p>De informatie op Billy is geschreven voor en door studenten. <br>Er kunnen geen rechten aan ontleent worden en informatie kan ten aller tijden verwijdert of veranderd worden.</p>");
             e.setLastEdited(LocalDateTime.now());
             e.setCategory(actualCategories.get(5));
-            e.setSubcategory(actualSubCats.get(0));
+            e.setSubcategory(actualSubCats.get(5));
             this.articleRepository.save(e);
 
             Article f = new Article();
@@ -103,7 +104,7 @@ public class MainService {
             f.setContent("<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fermentum, metus a cursus porttitor, augue ex dictum nisi, vitae tincidunt orci mauris eu risus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Duis tincidunt finibus elit. In in faucibus dui. Donec gravida sollicitudin eros, ac porttitor dolor rutrum a. Sed elementum tortor magna, in semper dolor pharetra consequat. Proin lacus orci, eleifend ac nisl sed, consectetur condimentum erat. Donec laoreet urna orci, at vulputate arcu auctor eu. Phasellus id molestie neque. Morbi suscipit semper ante, at hendrerit tortor posuere eu. Pellentesque pharetra tellus vel sapien lacinia, malesuada pharetra tellus faucibus. Fusce mattis arcu non dui consectetur, id porta urna pretium. Nam facilisis lobortis est, vel euismod elit commodo nec.</p>");
             f.setLastEdited(LocalDateTime.now());
             f.setCategory(actualCategories.get(5));
-            f.setSubcategory(actualSubCats.get(0));
+            f.setSubcategory(actualSubCats.get(5));
             this.articleRepository.save(f);
 
             this.categoryRepository.findAll().forEach(category -> {
@@ -122,6 +123,23 @@ public class MainService {
                 category.addArticle(article);
                 this.articleRepository.save(article);
                 this.categoryRepository.save(category);
+            });
+            this.subcategoryRepository.findAll().forEach(subcategory -> {
+                if (subcategory.getName().equals("Standaardpagina")) {
+                    return;
+                }
+                String catName = subcategory.getName().toLowerCase();
+                Article article = new Article();
+                article.setTitle(catName);
+                article.setContent(String.format("<p>Welkom op de %s subcategorie pagina!<br>" +
+                        "De volgende artikelen horen bij deze subcategorie:<br>" +
+                        "<billy-categories></p>", catName));
+                article.setSubcategory(subcategory);
+                article.setLastEdited(LocalDateTime.now());
+                article.setCategory(actualCategories.get(5));
+                subcategory.addArticle(article);
+                this.articleRepository.save(article);
+                this.subcategoryRepository.save(subcategory);
             });
         }
     }
@@ -150,17 +168,26 @@ public class MainService {
     }
 
     public List<SubcategoryDTO> getAllSubcategories(){
-        return SubcategoryDTO.getCatDTOFromList(this.subcategoryRepository.findAll());
+        List<SubcategoryDTO> subcategoryDTOS = new ArrayList<>();
+        subcategoryRepository.findAll().forEach(subcategory -> {
+            if (!subcategory.getName().equals("Standaardpagina")) {
+                subcategoryDTOS.add(new SubcategoryDTO(subcategory.getName()));
+            }
+        });
+        return subcategoryDTOS;
     }
 
     public ArrayList<ArticleDTO> getFromSubcat(String id) {
-        Subcategory sc = this.subcategoryRepository.findAllByName(id);
-        if (sc != null) {
-            ArrayList<ArticleDTO> articleDTOs = new ArrayList<>();
-            sc.getArticles().forEach(article -> articleDTOs.add(new ArticleDTO(article)));
-            articleDTOs.sort(Comparator.comparing(ArticleDTO::getLastEdited));
-            return articleDTOs;
-        } else return null;
+        if (!(id.equals("Standaardpagina"))) {
+            Subcategory sc = this.subcategoryRepository.findAllByName(id);
+            if (sc != null) {
+                ArrayList<ArticleDTO> articleDTOs = new ArrayList<>();
+                sc.getArticles().forEach(article -> articleDTOs.add(new ArticleDTO(article)));
+                articleDTOs.sort(Comparator.comparing(ArticleDTO::getLastEdited));
+                return articleDTOs;
+            }
+        }
+        return null;
     }
 
     public ArticleDTO createArticle(ArticleCreateDTO acd) {
@@ -202,10 +229,10 @@ public class MainService {
             }
             Subcategory prevSub = article.getSubcategory();
             if (!(prevSub.getName().equals(articleDTO.getSubcategoryDTO().getName()))) {
-                Category newCat = this.categoryRepository.findAllByName(articleDTO.getCategoryDTO().getName());
+                Subcategory newCat = this.subcategoryRepository.findAllByName(articleDTO.getSubcategoryDTO().getName());
                 if (newCat != null) {
-                    article.setCategory(newCat);
-                    prevCat.removeArticle(article);
+                    article.setSubcategory(newCat);
+                    prevSub.removeArticle(article);
                     this.categoryRepository.save(prevCat);
                 }
             }
