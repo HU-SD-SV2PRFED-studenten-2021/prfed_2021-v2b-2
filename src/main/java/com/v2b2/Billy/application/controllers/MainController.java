@@ -3,6 +3,7 @@ package com.v2b2.Billy.application.controllers;
 import com.v2b2.Billy.application.dto.ArticleCreateDTO;
 import com.v2b2.Billy.application.dto.ArticleDTO;
 import com.v2b2.Billy.application.dto.CategoryDTO;
+import com.v2b2.Billy.application.dto.SubcategoryDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,4 +66,25 @@ public class MainController {
             return new ResponseEntity<>(articleDTO, HttpStatus.OK);
         } else return new ResponseEntity<>("Already exists", HttpStatus.CONFLICT);
     }
+
+    @GetMapping("/subcategories")
+    public ResponseEntity<?> getSubcategories(){
+        List<SubcategoryDTO> subcategoryDTOS = this.mainService.getAllSubcategories();
+        if(subcategoryDTOS != null) {
+            return new ResponseEntity<>(subcategoryDTOS, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/subcategory/{id}")
+    public ResponseEntity<?> getArticlesBySubcategory(@PathVariable String id) {
+        List<ArticleDTO> articleDTOs = this.mainService.getFromSubcat(id);
+        if (articleDTOs != null) {
+            return new ResponseEntity<>(articleDTOs, HttpStatus.OK);
+        } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+    }
+
+
 }
