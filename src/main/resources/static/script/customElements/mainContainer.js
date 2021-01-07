@@ -5,6 +5,7 @@ class mainContainer extends HTMLElement {
         this._shadowRoot = this.attachShadow({mode: "open"})
         this.originalText = ''
         this.cat = undefined
+        this.subCat = undefined
     }
 
     connectedCallback() {
@@ -224,14 +225,10 @@ class mainContainer extends HTMLElement {
                             <div class="modal-content">
                                 <span class="close">&times;</span>
                                 <h1 id="editTitle" class = "editTitle"></h1>
-                                <select id="categoryEditPlus" class="categoryEdit">
-                                <option value="" disabled selected>voeg toe:</option>
+                                <select id="editCat" class="categoryEdit">
                                 </select>
-                                <button class = "editButtons">+</button>
-                                <select id="categoryEditMinus" class="categoryEdit">
-                                <option value="" disabled selected>verwijder:</option>
+                                <select id="editSubCat" class="categoryEdit">
                                 </select>
-                                <button class = "editButtons">-</button>
                                 <textarea id="editArea" class="editArea"></textarea>
                                 <button id="saveEdit" style="width: 100%">Save</button>
                             </div>
@@ -338,7 +335,7 @@ class mainContainer extends HTMLElement {
             headers: {
                 'Authorization': window.sessionStorage.getItem('myJWT')
             }
-        }).then(function (response){
+        }).then(function (response) {
             if (response.status !== 200) {
                 let mc = document.querySelector("billy-main")._shadowRoot.querySelector('.main-container');
                 try {
@@ -348,10 +345,12 @@ class mainContainer extends HTMLElement {
                 }
             }
         });
-        if (filename === "Index") {
+        if (this.cat.name === "Standaardpagina") {
             this._shadowRoot.querySelector(".main-container").querySelector("main").removeChild(editButton);
             this._shadowRoot.querySelector(".main-container").removeChild(modal);
         } else {
+            const selectCat = this._shadowRoot.querySelector("#editCat");
+            const selectSubCat = this._shadowRoot.querySelector("#editSubCat");
             const closeModal = this._shadowRoot.querySelector(".close");
             const editTitle = this._shadowRoot.querySelector("#editTitle")
             const editText = this._shadowRoot.querySelector("#editArea");
@@ -388,8 +387,33 @@ class mainContainer extends HTMLElement {
                     }
                 });
             }
-
+            const category = this.cat.name
             editButton.onclick = function () {
+                fetch("/rest/categories", {
+                    method: 'GET',
+                }).then(response => {
+                    if (response.status !== 200) {
+                        console.log(response)
+                        throw response.status
+                    } else {
+                        response.json().then(catList => {
+                            selectCat.innerHTML = ""
+                            const categoryElement = document.createElement("option")
+                            categoryElement.value = category
+                            categoryElement.textContent = category
+                            selectCat.appendChild(categoryElement);
+
+                            catList.forEach(cat => {
+                                const categoryElement = document.createElement("option")
+                                categoryElement.value = cat.name
+                                categoryElement.textContent = cat.name
+                                if(cat.name !== category){
+                                    selectCat.appendChild(categoryElement);
+                                }
+                            })
+                        })
+                    }
+                })
                 editTitle.innerText = filename;
                 editText.textContent = text
                 editText.setAttribute("rows", ((text.match("\r\n") || []).length + 1).toString())
@@ -426,6 +450,7 @@ class mainContainer extends HTMLElement {
                 } else {
                     response.json().then(response => {
                         this.cat = response.category
+                        this.subCat = response.subcategory
                         this._shadowRoot.getElementById('footerdate').innerText = `Deze pagina is voor het laatst bewerkt op ${response.lastEdited}`
                         const mc = this._shadowRoot.getElementById('maincontent')
                         const editAreaText = response.content.replaceAll('\n', '\r\n')
@@ -440,20 +465,20 @@ class mainContainer extends HTMLElement {
                     })
                 }
             }).catch(err => {
-                let errMessage = "";
-                switch (err) {
-                    case 404:
-                        errMessage = "We hebben overal gezocht, maar we hebben dat niet kunnen vinden"
-                        break
-                    case 403:
-                        errMessage = "Je kunt het proberen maar dat is helaas iets wat je niet mag doen"
-                        break
-                    case 500:
-                        errMessage = "Uh oh dat is fout gegaan in ons systeem"
-                        break
-                    default:
-                        errMessage = "Er is veel geprobeerd, maar dat is niet gelukt"
-                }
+            let errMessage = "";
+            switch (err) {
+                case 404:
+                    errMessage = "We hebben overal gezocht, maar we hebben dat niet kunnen vinden"
+                    break
+                case 403:
+                    errMessage = "Je kunt het proberen maar dat is helaas iets wat je niet mag doen"
+                    break
+                case 500:
+                    errMessage = "Uh oh dat is fout gegaan in ons systeem"
+                    break
+                default:
+                    errMessage = "Er is veel geprobeerd, maar dat is niet gelukt"
+            }
             this._shadowRoot.getElementById('maincontent').innerHTML = `<p>${errMessage}</p>`
             this._shadowRoot.getElementById('billyfooter').removeChild(this._shadowRoot.getElementById('footerdate'))
             this._shadowRoot.getElementById('billyfooter').removeChild(this._shadowRoot.getElementById('footercats'))
