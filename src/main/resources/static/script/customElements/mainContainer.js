@@ -341,8 +341,11 @@ class mainContainer extends HTMLElement {
         }).then(function (response){
             if (response.status !== 200) {
                 let mc = document.querySelector("billy-main")._shadowRoot.querySelector('.main-container');
-                mc.querySelector("main").removeChild(editButton);
-                mc.removeChild(modal);
+                try {
+                    mc.querySelector("main").removeChild(editButton);
+                    mc.removeChild(modal);
+                } catch (err) {
+                }
             }
         });
         if (filename === "Index") {
