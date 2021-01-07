@@ -4,6 +4,7 @@ import com.v2b2.Billy.application.data.*;
 import com.v2b2.Billy.application.dto.ArticleDTO;
 import com.v2b2.Billy.application.dto.ArticleCreateDTO;
 import com.v2b2.Billy.application.dto.CategoryDTO;
+import com.v2b2.Billy.application.dto.SubcategoryDTO;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -40,6 +41,7 @@ public class MainService {
             categories.add("Organisatieprocessen");
             categories.add("Infrastructuur");
             categories.add("Hardware interfacing");
+            categories.add("Standaardpagina");
             ArrayList<Category> actualCategories = new ArrayList<>();
             categories.forEach(category -> {
                 Category category1 = new Category();
@@ -68,7 +70,7 @@ public class MainService {
             a.setTitle("index");
             a.setContent("<p>Welkom op Billy!</p>");
             a.setLastEdited(LocalDateTime.now());
-            a.setCategory(actualCategories.get(0));
+            a.setCategory(actualCategories.get(5));
             a.setSubcategory(actualSubCats.get(0));
             this.articleRepository.save(a);
 
@@ -76,7 +78,7 @@ public class MainService {
             b.setTitle("privacy");
             b.setContent("<p>Privacy is belangrijk en we hechten er veel waarde aan.<br>Daarom zullen we nooit je gegevens delen of verkopen aan een derde partij.</p>");
             b.setLastEdited(LocalDateTime.now());
-            b.setCategory(actualCategories.get(0));
+            b.setCategory(actualCategories.get(5));
             b.setSubcategory(actualSubCats.get(0));
             this.articleRepository.save(b);
 
@@ -84,7 +86,7 @@ public class MainService {
             d.setTitle("over");
             d.setContent("<p>Billy is een digitale boekenkast voor leerlingen aan HBO-i opleidingen.<br>Deze boekenkast is gemaakt door V2B-2.</p>");
             d.setLastEdited(LocalDateTime.now());
-            d.setCategory(actualCategories.get(0));
+            d.setCategory(actualCategories.get(5));
             d.setSubcategory(actualSubCats.get(0));
             this.articleRepository.save(d);
 
@@ -92,7 +94,7 @@ public class MainService {
             e.setTitle("voorbehoud");
             e.setContent("<p>De informatie op Billy is geschreven voor en door studenten. <br>Er kunnen geen rechten aan ontleent worden en informatie kan ten aller tijden verwijdert of veranderd worden.</p>");
             e.setLastEdited(LocalDateTime.now());
-            e.setCategory(actualCategories.get(0));
+            e.setCategory(actualCategories.get(5));
             e.setSubcategory(actualSubCats.get(0));
             this.articleRepository.save(e);
 
@@ -100,11 +102,14 @@ public class MainService {
             f.setTitle("lorem ipsum");
             f.setContent("<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fermentum, metus a cursus porttitor, augue ex dictum nisi, vitae tincidunt orci mauris eu risus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Duis tincidunt finibus elit. In in faucibus dui. Donec gravida sollicitudin eros, ac porttitor dolor rutrum a. Sed elementum tortor magna, in semper dolor pharetra consequat. Proin lacus orci, eleifend ac nisl sed, consectetur condimentum erat. Donec laoreet urna orci, at vulputate arcu auctor eu. Phasellus id molestie neque. Morbi suscipit semper ante, at hendrerit tortor posuere eu. Pellentesque pharetra tellus vel sapien lacinia, malesuada pharetra tellus faucibus. Fusce mattis arcu non dui consectetur, id porta urna pretium. Nam facilisis lobortis est, vel euismod elit commodo nec.</p>");
             f.setLastEdited(LocalDateTime.now());
-            f.setCategory(actualCategories.get(0));
+            f.setCategory(actualCategories.get(5));
             f.setSubcategory(actualSubCats.get(0));
             this.articleRepository.save(f);
 
             this.categoryRepository.findAll().forEach(category -> {
+                if (category.getName().equals("Standaardpagina")) {
+                    return;
+                }
                 String catName = category.getName().toLowerCase();
                 Article article = new Article();
                 article.setTitle(catName);
@@ -122,17 +127,40 @@ public class MainService {
     }
 
     public ArrayList<ArticleDTO> getFromCat(String id) {
-        Category c = this.categoryRepository.findAllByName(id);
-        if (c != null) {
-            ArrayList<ArticleDTO> articleDTOs = new ArrayList<>();
-            c.getArticles().forEach(article -> articleDTOs.add(new ArticleDTO(article)));
-            articleDTOs.sort(Comparator.comparing(ArticleDTO::getLastEdited));
-            return articleDTOs;
-        } else return null;
+        if (!(id.equals("Standaardpagina"))) {
+            Category c = this.categoryRepository.findAllByName(id);
+            if (c != null) {
+                ArrayList<ArticleDTO> articleDTOs = new ArrayList<>();
+                c.getArticles().forEach(article -> articleDTOs.add(new ArticleDTO(article)));
+                articleDTOs.sort(Comparator.comparing(ArticleDTO::getLastEdited));
+                return articleDTOs;
+            }
+        }
+        return null;
     }
 
     public List<CategoryDTO> getAllCategories(){
-        return CategoryDTO.getCatDTOFromList(categoryRepository.findAll());
+        List<CategoryDTO> categories = new ArrayList<>();
+        categoryRepository.findAll().forEach(category -> {
+            if (!category.getName().equals("Standaardpagina")) {
+                categories.add(new CategoryDTO(category.getName()));
+            }
+        });
+        return categories;
+    }
+
+    public List<SubcategoryDTO> getAllSubcategories(){
+        return SubcategoryDTO.getCatDTOFromList(this.subcategoryRepository.findAll());
+    }
+
+    public ArrayList<ArticleDTO> getFromSubcat(String id) {
+        Subcategory sc = this.subcategoryRepository.findAllByName(id);
+        if (sc != null) {
+            ArrayList<ArticleDTO> articleDTOs = new ArrayList<>();
+            sc.getArticles().forEach(article -> articleDTOs.add(new ArticleDTO(article)));
+            articleDTOs.sort(Comparator.comparing(ArticleDTO::getLastEdited));
+            return articleDTOs;
+        } else return null;
     }
 
     public ArticleDTO createArticle(ArticleCreateDTO acd) {

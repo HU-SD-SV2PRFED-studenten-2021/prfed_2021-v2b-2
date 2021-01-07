@@ -1,6 +1,7 @@
 package com.v2b2.Billy.application.dto;
 
 import com.v2b2.Billy.application.data.Category;
+import com.v2b2.Billy.application.data.Subcategory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +23,10 @@ public class SubcategoryDTO {
         this.name = name;
     }
 
-    public static List<CategoryDTO> getCatDTOFromList(List<Category> categories) {
-        ArrayList<CategoryDTO> categoryDTOS = new ArrayList<>();
-        for (Category c : categories) {
-            categoryDTOS.add(new CategoryDTO(c.getName()));
+    public static List<SubcategoryDTO> getCatDTOFromList(List<Subcategory> categories) {
+        ArrayList<SubcategoryDTO> categoryDTOS = new ArrayList<>();
+        for (Subcategory c : categories) {
+            categoryDTOS.add(new SubcategoryDTO(c.getName()));
         }
         return categoryDTOS;
     }
