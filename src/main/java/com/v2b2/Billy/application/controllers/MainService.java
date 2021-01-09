@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class MainService {
             subCats.add("Adviseren");
             subCats.add("Ontwerpen");
             subCats.add("Realiseren");
-            subCats.add("Manage and Control");
+            subCats.add("Manage and control");
             subCats.add("Standaardpagina");
             ArrayList<Subcategory> actualSubCats = new ArrayList<>();
             subCats.forEach(category -> {
@@ -106,6 +107,14 @@ public class MainService {
             f.setSubcategory(actualSubCats.get(5));
             this.articleRepository.save(f);
 
+            Article g = new Article();
+            g.setTitle("navigatie");
+            g.setContent("<p>Dit is de navigatie matrix. <br><billy-matrix><p>");
+            g.setLastEdited(LocalDateTime.now());
+            g.setCategory(actualCategories.get(5));
+            g.setSubcategory(actualSubCats.get(5));
+            this.articleRepository.save(g);
+
             this.categoryRepository.findAll().forEach(category -> {
                 if (category.getName().equals("Standaardpagina")) {
                     return;
@@ -140,6 +149,27 @@ public class MainService {
                 this.articleRepository.save(article);
                 this.subcategoryRepository.save(subcategory);
             });
+            this.categoryRepository.findAll().forEach(category -> {
+                if (category.getName().equals("Standaardpagina")) {
+                    return;
+                }
+                this.subcategoryRepository.findAll().forEach(subcategory -> {
+                    if (subcategory.getName().equals("Standaardpagina")) {
+                        return;
+                    }
+                    String articleName = String.format("%s %s", category.getName(), subcategory.getName());
+                    String articleContent = String.format("<p>Welkom op de %s pagina! <br>" +
+                            "De volgende artikelen hebben deze categorieën:<br>" +
+                            "<billy-categories></p>", articleName);
+                    Article article = new Article(articleName.toLowerCase(), articleContent, LocalDateTime.now(), category, subcategory);
+                    this.articleRepository.save(article);
+                    String secondArticleName = String.format("%s %s dummy", category.getName(), subcategory.getName());
+                    String secondArticleContent = String.format("<p>Welkom op de %s pagina! <br>", articleName);
+                    Article secondArticle = new Article(secondArticleName.toLowerCase(), secondArticleContent, LocalDateTime.now(), category, subcategory);
+                    this.articleRepository.save(secondArticle);
+                });
+            });
+
         }
     }
 
@@ -240,5 +270,32 @@ public class MainService {
             this.subcategoryRepository.save(article.getSubcategory());
             return new ArticleDTO(article);
         } else return null;
+    }
+
+    public List<ArticleDTO> getFromCatAndSubcat(String id) {
+        int limit = id.contains("interfacing") ? 3 : 2;
+        String[] splittedId = id.split(" ", limit);
+        if (splittedId.length < 2) {
+            return null;
+        } else {
+            String catName = "";
+            String subCatName = "";
+            if (limit > 2) {
+                catName = String.format("%s %s", splittedId[0], splittedId[1]);
+                subCatName = splittedId[2].substring(0, 1).toUpperCase() + splittedId[2].substring(1);
+            } else {
+                catName = splittedId[0];
+                subCatName = splittedId[1].substring(0, 1).toUpperCase() + splittedId[1].substring(1);
+            }
+            Category category = this.categoryRepository.findAllByName(catName);
+            Subcategory subcategory = this.subcategoryRepository.findAllByName(subCatName);
+            if (category != null && subcategory != null) {
+                List<ArticleDTO> articleDTOS = new ArrayList<>();
+                this.articleRepository.findAllByCategoryAndSubcategory(category, subcategory).forEach(article -> {
+                    articleDTOS.add(new ArticleDTO(article));
+                });
+                return articleDTOS;
+            } else return null;
+        }
     }
 }

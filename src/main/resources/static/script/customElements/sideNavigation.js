@@ -54,7 +54,7 @@ class sideNavigation extends HTMLElement {
                     <nav>
                         <ul class="navigation">
                             <li><a href="/index.html">Home</a></li>
-                            <li><a href="">Navigatie</a></li>
+                            <li><a href="/navigatie.html">Navigatie</a></li>
                             <li><a href="">Hoofdpagina</a></li>
                             <li><a href="">Recente wijzigingen</a></li>
                             <li><a href="">Hulpmiddelen</a></li>

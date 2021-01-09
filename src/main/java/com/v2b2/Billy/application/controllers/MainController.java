@@ -86,5 +86,11 @@ public class MainController {
         } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
     }
 
-
+    @GetMapping("/other/{id}")
+    public ResponseEntity<?> getArticlesByCategoryAndSubcategory(@PathVariable String id) {
+        List<ArticleDTO> articleDTOS = this.mainService.getFromCatAndSubcat(id);
+        if (articleDTOS != null) {
+            return new ResponseEntity<>(articleDTOS, HttpStatus.OK);
+        } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+    }
 }

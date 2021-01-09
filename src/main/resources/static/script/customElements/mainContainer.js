@@ -332,7 +332,7 @@ class mainContainer extends HTMLElement {
         }
     }
 
-    makeEditModal(filename, text) {
+    makeEditModal(filename, text, title) {
         let modal = this._shadowRoot.getElementById("myModal");
         let editButton = this._shadowRoot.querySelector("#editButton");
         fetch("/rest/test", {
@@ -350,7 +350,7 @@ class mainContainer extends HTMLElement {
                 }
             }
         });
-        if (this.cat.name === "Standaardpagina" || this.subCat.name === "Standaardpagina") {
+        if (this.cat.name === "Standaardpagina" || this.subCat.name === "Standaardpagina" || `${this.cat.name} ${this.subCat.name.toLowerCase()}` === title) {
             this._shadowRoot.querySelector(".main-container").querySelector("main").removeChild(editButton);
             this._shadowRoot.querySelector(".main-container").removeChild(modal);
         } else {
@@ -485,13 +485,13 @@ class mainContainer extends HTMLElement {
                         const mc = this._shadowRoot.getElementById('maincontent')
                         const editAreaText = response.content.replaceAll('\n', '\r\n')
                         this.originalText = response.content.replaceAll('\n', '<br>')
-                        this.makeEditModal(filenameHigh, editAreaText)
+                        this.makeEditModal(filenameHigh, editAreaText, filenameHigh)
                         mc.innerHTML = ``
                         mc.innerHTML = this.originalText
                         document.title = filenameHigh + ' | Billy'
                         this._shadowRoot.getElementById('maintitle').innerText = filenameHigh
-                        this.getSubcategories("categories", "#categories-list", this.cat)
-                        this.getSubcategories("subcategories", "#subcategories-list", this.subCat)
+                        this.getCategories("categories", "#categories-list", this.cat)
+                        this.getCategories("subcategories", "#subcategories-list", this.subCat)
                         mc.querySelector('p').className += "paragraph-content";
                     })
                 }
@@ -518,7 +518,7 @@ class mainContainer extends HTMLElement {
         })
     }
 
-    getSubcategories(link, selector, object) {
+    getCategories(link, selector, object) {
         let URL = `/rest/${link}`
         //Maybe sort categories by student's study and interests which will be highlighted first.
 
