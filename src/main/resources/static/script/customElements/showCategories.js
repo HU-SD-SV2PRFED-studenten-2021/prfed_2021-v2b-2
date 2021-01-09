@@ -12,38 +12,96 @@ class showCategories extends HTMLElement {
                 text-decoration: none;
                 color: #0000EE;
             }
-            .categories-articles{
-                list-style-type: square;
+            table, th, td {
+                border: 1px solid black;
             }
-        </style> 
-            <ul class="categories-articles">
+            th {
+                text-align: left;
+            }
+        </style>
+            <table class="categories-table"></table>
         </ul>`
-        this.getCatArticles()
+        this.generateTable()
     }
 
-    getCatArticles() {
+    getCategoryOrSubcategory(title) {
+        switch (title) {
+            case "Software":
+            case "Gebruikersinteractie":
+            case "Organisatieprocessen":
+            case "Infrastructuur":
+            case "Hardware interfacing":
+                return "category"
+            case "Analyseren":
+            case "Adviseren":
+            case "Ontwerpen":
+            case "Realiseren":
+            case "Manage and control":
+                return "subcategory"
+            default:
+                return "other"
+        }
+    }
+
+    getTHeadName(tab) {
+        switch (tab) {
+            case "title":
+                return "Titel"
+            case "lastEdited":
+                return "Laatst bewerkt"
+            case "category":
+                return "Categorie"
+            case "subcategory":
+                return "Subcategorie"
+        }
+    }
+
+    generateTable() {
         let link = window.location.href.split('/').pop();
         let titleLow = link.split('.')[0]
         let title = decodeURI(titleLow.charAt(0).toUpperCase() + titleLow.slice(1))
-        fetch(`/rest/category/${title}`, {
+        let catOrSubcategory = this.getCategoryOrSubcategory(title)
+        fetch(`/rest/${catOrSubcategory}/${title}`, {
             method: 'GET'
         }).then(response => {
             if (response.ok) {
                 response.json().then(json => {
-                    let list = this._shadowRoot.querySelector('ul')
-                    json.forEach(article => {
-                        let articleTitle = article.title
-                        articleTitle = articleTitle.charAt(0).toUpperCase() + articleTitle.slice(1)
-                        if (articleTitle === 'Index' || articleTitle === title) {
-                            return
+                    let table = this._shadowRoot.querySelector('table')
+                    let thead = table.createTHead()
+                    for (let key of Object.keys(json[0])) {
+                        if (key !== "content") {
+                            let th = document.createElement("th")
+                            let text = document.createTextNode(this.getTHeadName(key))
+                            th.appendChild(text)
+                            thead.appendChild(th)
                         }
-                        let newLi = document.createElement('li')
-                        let newA = document.createElement('a')
-                        newA.textContent = `${articleTitle} | Laatst bewerkt: ${article.lastEdited}`
-                        newA.href = `/${articleTitle.toLowerCase()}.html`
-                        newLi.appendChild(newA)
-                        list.appendChild(newLi)
-                    })
+                    }
+                    for (let element of json) {
+                        let catName = element.category.name.toLowerCase()
+                        let subCatName = element.subcategory.name.toLowerCase()
+                        if (element.title !== title.toLowerCase() &&
+                        element.title !== `${catName} ${subCatName}`) {
+                            let row = table.insertRow()
+                            for (let key in element) {
+                                if (key !== "content") {
+                                    let name = element[key].name || element[key]
+                                    name = name.charAt(0).toUpperCase() + name.slice(1)
+                                    let cell = row.insertCell()
+                                    if (key === "title") {
+                                        let aElement = document.createElement("a")
+                                        aElement.href = `/${name.toLowerCase()}.html`
+                                        aElement.textContent = name
+                                        cell.appendChild(aElement)
+                                        row.appendChild(cell)
+                                    } else {
+                                        let text = document.createTextNode(name)
+                                        cell.appendChild(text)
+                                        row.appendChild(cell)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 })
             }
         })
