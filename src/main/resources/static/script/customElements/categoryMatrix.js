@@ -11,10 +11,11 @@ class categoryMatrix extends HTMLElement {
                 a {
                     color: #0000EE;
                 }
-                table, th, td {
-                    border: 1px solid black;
+                th, td {
+                    border: 1px solid var(--main-text-color);
+                    padding: 3px;
                 }
-                @media screen and (max-width: 722px) {
+                @media screen and (max-width: 1050px) {
                   table thead {
                     display: none;
                   }
