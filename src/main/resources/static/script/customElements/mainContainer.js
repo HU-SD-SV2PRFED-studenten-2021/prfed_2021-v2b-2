@@ -48,6 +48,9 @@ class mainContainer extends HTMLElement {
                     overflow: hidden;
                     min-height: 750px;
                     min-width: 75%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
                 }
                 .main-container main {
                     padding-bottom: 5px;
@@ -83,14 +86,14 @@ class mainContainer extends HTMLElement {
                 }
                 #darkButton {
                     float: right;
-                    border-radius: 5px;
-                    border-width: 1px;
-                    padding: 2px;
                 }
                 button {
                     color: var(--main-text-color);
                     background-color: var(--main-color);
                     border-color: var(--main-text-color);
+                    border-radius: 5px;
+                    border-width: 1px;
+                    padding: 2px;
                 }
                 .modal {
                     display: none;
@@ -186,6 +189,9 @@ class mainContainer extends HTMLElement {
                 .active {
                     text-decoration: underline;
                 }
+                #footerdate {
+                    border-bottom: 1px solid var(--main-text-color);
+                }
                 @media (max-width: 850px) {
                     div.main-container {
                         left: 0;
@@ -227,15 +233,15 @@ class mainContainer extends HTMLElement {
                     </div>
                     <h1 class="title" id="maintitle">Loading</h1>
                     <div class="content" id="maincontent">
-                        <p><img src="https://i.giphy.com/3oEjI6SIIHBdRxXI40.gif" alt="loading gif"></p>     
+                        <p>Loading</p>     
                     </div>
                     </main>
                     <footer class="footer-info" id="billyfooter">
+                        <p id="footerdate">Deze pagina is voor het laatst bewerkt op</p>
                         <p id="footercats">Categorieën: </p>
                         <ul class="categories-list" id="categories-list"></ul>
                         <p>Subcategorieën: </p>
-                        <ul class="categories-list" id="subcategories-list"></ul>                       
-                        <p id="footerdate">Deze pagina is voor het laatst bewerkt op</p>
+                        <ul class="categories-list" id="subcategories-list"></ul>
                         <a href="/privacy.html">Privacybeleid</a> <a href="/over.html">Over Billy</a> <a href="/voorbehoud.html">Voorbehoud</a>
                     </footer>
                         <div id="myModal" class="modal">
@@ -277,6 +283,8 @@ class mainContainer extends HTMLElement {
                                         margin-top: 5px;
                                         background-color: var(--main-color);
                                         color: var(--main-text-color);
+                                        border-color: var(--main-text-color);
+                                        border-width: 1px;
                                     }
                                     #messages {
                                         list-style-type: none;
@@ -291,13 +299,14 @@ class mainContainer extends HTMLElement {
                                         width: 90%;
                                     }
                                     .fade li {
-                                        transition: background-color 0.4s ease-out, color 0.4s ease-out;
+                                        transition: background-color 0.4s ease-out, color 0.4s ease-out, 
+                                        opacity 1s ease-out;
                                         opacity: 0;
-                                        height: 0;
                                     }
                                     .fade li.show {
                                         opacity: 1;
-                                        height: 1.5em;
+                                        height: auto;
+                                        min-height: 1.5em;
                                     }
                                 </style>
                                 <form>
@@ -569,23 +578,40 @@ class mainContainer extends HTMLElement {
 
     fontSize() {
         let font = document.querySelector("billy-main");
-        let size = localStorage.getItem("font-size");
-        if (size !== undefined) {
-            font.style = `font-size: ${size}`
+        let size = localStorage.getItem("font-size") || "medium";
+        let small = this._shadowRoot.querySelector("#fontSizeSmall")
+        let medium = this._shadowRoot.querySelector("#fontSizeMedium")
+        let large = this._shadowRoot.querySelector("#fontSizeLarge")
+        font.style = `font-size: ${size}`
+        if (size === "x-large") {
+            large.parentNode.childNodes.forEach(child => {
+                child.className = ''
+            })
+            large.className = "active"
+        } else if (size === "x-small") {
+            small.parentNode.childNodes.forEach(child => {
+                child.className = ''
+            })
+            small.className = "active"
+        } else {
+            medium.parentNode.childNodes.forEach(child => {
+                child.className = ''
+            })
+            medium.className = "active"
         }
-        this._shadowRoot.querySelector("#fontSizeSmall").addEventListener("click", function () {
+        small.addEventListener("click", function () {
             font.style = "font-size: x-small";
             localStorage.setItem("font-size", "x-small")
             this.parentNode.childNodes.forEach(child => {child.className = ''})
             this.className = 'active'
         });
-        this._shadowRoot.querySelector("#fontSizeMedium").addEventListener("click", function () {
+        medium.addEventListener("click", function () {
             font.style = "font-size: medium";
             localStorage.setItem("font-size", "medium")
             this.parentNode.childNodes.forEach(child => {child.className = ''})
             this.className = 'active'
         });
-        this._shadowRoot.querySelector("#fontSizeLarge").addEventListener("click", function () {
+        large.addEventListener("click", function () {
             font.style = "font-size: x-large";
             localStorage.setItem("font-size", "x-large")
             this.parentNode.childNodes.forEach(child => {child.className = ''})

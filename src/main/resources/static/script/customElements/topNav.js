@@ -96,6 +96,13 @@ class topNav extends HTMLElement {
                 this.parentNode.parentNode.querySelectorAll("a").forEach(otherA => otherA.className = '')
                 aItem.className = 'active'
                 document.querySelector("billy-main").setAttribute("mode", `${aItem.id}`)
+                document.querySelector('billy-navbutton')._shadowRoot.querySelector(`#modeList`)
+                    .childNodes.forEach(child => {
+                        if (child.nodeType !== 3) {
+                            child.childNodes.forEach(innerChild => innerChild.classList.remove("active"))
+                        }
+                })
+                document.querySelector('billy-navbutton')._shadowRoot.querySelector(`#${aItem.id}`).classList.add("active")
             })
         })
     }
