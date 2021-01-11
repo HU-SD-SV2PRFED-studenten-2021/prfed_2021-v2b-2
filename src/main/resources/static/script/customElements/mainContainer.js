@@ -17,7 +17,7 @@ class mainContainer extends HTMLElement {
                     margin: 0;
                     box-sizing: border-box;
                     color: var(--main-text-color);
-                    transition: all 0.4s ease-out;
+                    transition: background-color 0.4s ease-out, color 0.4s ease-out;
                 }
                 a{
                     text-decoration: none;
@@ -84,7 +84,8 @@ class mainContainer extends HTMLElement {
                 #darkButton {
                     float: right;
                     border-radius: 5px;
-                    padding: 1px;
+                    border-width: 1px;
+                    padding: 2px;
                 }
                 button {
                     color: var(--main-text-color);
@@ -182,8 +183,8 @@ class mainContainer extends HTMLElement {
                 #saveButton {
                     width: 100%;
                 }
-                .catSelected {
-                    
+                .active {
+                    text-decoration: underline;
                 }
                 @media (max-width: 850px) {
                     div.main-container {
@@ -221,7 +222,7 @@ class mainContainer extends HTMLElement {
                     <button id="editButton">Edit</button>
                     <div class="font-size-container" style="float: right">
                         <a style="font-size: small" href="#fontSizeSmall" id="fontSizeSmall">Aa</a>
-                        <a style="font-size: medium" href="#fontSizeMedium" id="fontSizeMedium">Aa</a>
+                        <a style="font-size: medium" href="#fontSizeMedium" id="fontSizeMedium" class="active">Aa</a>
                         <a style="font-size: large" href="#fontSizeLarge" id="fontSizeLarge">Aa</a>
                     </div>
                     <h1 class="title" id="maintitle">Loading</h1>
@@ -251,9 +252,10 @@ class mainContainer extends HTMLElement {
                         </div>
                 </div>
         `
+        this.darkMode(window.localStorage.getItem("readMode"))
         this.loadFile()
         this.fontSize()
-        this.darkMode()
+        this.darkEventlistener()
     }
 
     static get observedAttributes() {
@@ -289,7 +291,7 @@ class mainContainer extends HTMLElement {
                                         width: 90%;
                                     }
                                     .fade li {
-                                        transition: all 0.4s ease-out;
+                                        transition: background-color 0.4s ease-out, color 0.4s ease-out;
                                         opacity: 0;
                                         height: 0;
                                     }
@@ -574,33 +576,54 @@ class mainContainer extends HTMLElement {
         this._shadowRoot.querySelector("#fontSizeSmall").addEventListener("click", function () {
             font.style = "font-size: x-small";
             localStorage.setItem("font-size", "x-small")
+            this.parentNode.childNodes.forEach(child => {child.className = ''})
+            this.className = 'active'
         });
         this._shadowRoot.querySelector("#fontSizeMedium").addEventListener("click", function () {
             font.style = "font-size: medium";
             localStorage.setItem("font-size", "medium")
+            this.parentNode.childNodes.forEach(child => {child.className = ''})
+            this.className = 'active'
         });
         this._shadowRoot.querySelector("#fontSizeLarge").addEventListener("click", function () {
             font.style = "font-size: x-large";
             localStorage.setItem("font-size", "x-large")
+            this.parentNode.childNodes.forEach(child => {child.className = ''})
+            this.className = 'active'
         });
     }
 
-    darkMode() {
+    darkEventlistener() {
         let darkButton = this._shadowRoot.querySelector("#darkButton")
+        let doc = this
         darkButton.addEventListener("click", function (e) {
             e.preventDefault()
-            switch (darkButton.textContent) {
-                case "Dark mode":
-                    darkButton.textContent = "Light mode"
-                    document.querySelector("body").style.setProperty("--main-color", "rgb(33, 33, 33)")
-                    document.querySelector("body").style.setProperty("--main-text-color", "white")
-                    return
-                case "Light mode":
-                    darkButton.textContent = "Dark mode"
-                    document.querySelector("body").style.setProperty("--main-color", "white")
-                    document.querySelector("body").style.setProperty("--main-text-color", "rgb(33, 33, 33)")
-            }
+            doc.darkMode(darkButton.textContent)
         })
+    }
+
+    darkMode(content) {
+        let darkButton = this._shadowRoot.querySelector("#darkButton")
+        switch (content) {
+            case "Dark mode":
+                darkButton.textContent = "Light mode"
+                document.querySelector("body").style.setProperty("--main-color", "rgb(33, 33, 33)")
+                document.querySelector("body").style.setProperty("--main-text-color", "white")
+                window.localStorage.setItem("readMode", "Dark mode")
+                return
+            case "Light mode":
+                darkButton.textContent = "Dark mode"
+                document.querySelector("body").style.setProperty("--main-color", "white")
+                document.querySelector("body").style.setProperty("--main-text-color", "rgb(33, 33, 33)")
+                window.localStorage.setItem("readMode", "Light mode")
+                return
+            default:
+                darkButton.textContent = "Dark mode"
+                document.querySelector("body").style.setProperty("--main-color", "white")
+                document.querySelector("body").style.setProperty("--main-text-color", "rgb(33, 33, 33)")
+                window.localStorage.setItem("readMode", "Light mode")
+                return
+        }
     }
 }
 

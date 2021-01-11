@@ -12,7 +12,7 @@ class sideNavigation extends HTMLElement {
                         padding: 0;
                         margin: 0;
                         box-sizing: border-box;
-                        transition: all 0.4s ease-out;
+                        transition: background-color 0.4s ease-out, color 0.4s ease-out;
                     }
                     a {
                         text-decoration: none;

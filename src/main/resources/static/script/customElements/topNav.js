@@ -8,7 +8,7 @@ class topNav extends HTMLElement {
         this._shadowRoot.innerHTML = `<!-- HTML -->
             <style>
                 * {
-                    transition: all 0.4s ease-out;
+                    transition: background-color 0.4s ease-out, color 0.4s ease-out;
                 }
                 a {
                     color: #0000EE;
@@ -17,7 +17,6 @@ class topNav extends HTMLElement {
                     background-color: var(--main-color);
                 }
                 .top-navigation-list li {
-                    background-color: white;
                     border-right: solid var(--main-text-color) 1px;
                     border-left: solid var(--main-text-color) 1px;
                 }
@@ -52,7 +51,7 @@ class topNav extends HTMLElement {
                 @media (max-width: 850px) {
                     a {
                         background-image: none;
-                        background-color: #f6f6f6;
+                        background-color: var(--main-color);
                     }
                     .top-navigation-list {
                         border-bottom: 0;
@@ -61,10 +60,10 @@ class topNav extends HTMLElement {
                     .top-navigation-list li {
                         border: none;
                         text-indent: -0.5em;
-                        background-color: #f6f6f6;
+                        background-color: ;
                     }
                     .top-navigation-list li a.active {
-                        background-color: #f6f6f6;
+                        background-color: var(--main-color);
                         color: red;
                     }
                 }

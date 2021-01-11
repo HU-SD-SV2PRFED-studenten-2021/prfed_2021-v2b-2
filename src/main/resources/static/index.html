@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
+    <script>
+        let colorMode = window.localStorage.getItem("readMode") || "Light mode"
+        if (colorMode === "Dark mode") {
+            document.querySelector("body").style.setProperty("--main-color", "rgb(33, 33, 33)")
+            document.querySelector("body").style.setProperty("--main-text-color", "white")
+        }
+    </script>
     <script src="script/namecheck.js"></script>
     <script type="module" src="script/customElements/logoElement.js"></script>
     <script type="module" src="script/customElements/mainContainer.js"></script>
