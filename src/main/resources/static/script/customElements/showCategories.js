@@ -11,13 +11,28 @@ class showCategories extends HTMLElement {
             a{
                 text-decoration: none;
                 color: #0000EE;
+                
             }
             table, th, td {
-                border: 1px solid black;
+                border: 1px solid var(--main-text-color);
             }
             th {
                 text-align: left;
             }
+            @media screen and (max-width: 722px) {
+                  table thead {
+                    display: none;
+                  }
+                  table td {
+                    display: flex;
+                  }
+                  
+                  table td::before {
+                    content: attr(categorie);
+                    width: 50px;
+                    min-width: 120px;
+                  }
+                }
         </style>
             <table class="categories-table"></table>
         </ul>`
@@ -102,9 +117,21 @@ class showCategories extends HTMLElement {
                             }
                         }
                     }
+                    this.setMobileTable(this._shadowRoot.querySelector("table"))
                 })
             }
         })
+    }
+
+    setMobileTable(selector) {
+        const tableEl = selector
+        const thEls = tableEl.querySelectorAll('thead th');
+        const tdLabels = Array.from(thEls).map(el => el.innerText);
+        tableEl.querySelectorAll('tbody tr').forEach( tr => {
+            Array.from(tr.children).forEach(
+                (td, ndx) =>  td.setAttribute('categorie', tdLabels[ndx])
+            );
+        });
     }
 }
 

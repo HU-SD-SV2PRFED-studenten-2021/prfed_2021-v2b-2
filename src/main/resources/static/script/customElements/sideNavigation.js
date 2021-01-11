@@ -12,6 +12,7 @@ class sideNavigation extends HTMLElement {
                         padding: 0;
                         margin: 0;
                         box-sizing: border-box;
+                        transition: all 0.4s ease-out;
                     }
                     a {
                         text-decoration: none;
@@ -26,17 +27,17 @@ class sideNavigation extends HTMLElement {
                     }
                     .navigation {
                         display: flex;
-                        border-top: 1px solid black;
-                        border-bottom: 1px solid black;
-                        border-right: 1px solid black;
+                        border-top: 1px solid var(--main-text-color);
+                        border-bottom: 1px solid var(--main-text-color);
+                        border-right: 1px solid var(--main-text-color);
                         flex-direction: column;
                         justify-content: space-around;
                         margin-left: 5%;
                         height: 100vh;
-                        background-color: white;
+                        background-color: var(--main-color);
                     }
                     .navigation li {
-                        border-bottom: 1px solid black;
+                        border-bottom: 1px solid var(--main-text-color);
                     }
                     @media (max-width: 1150px) {
                         ul li {

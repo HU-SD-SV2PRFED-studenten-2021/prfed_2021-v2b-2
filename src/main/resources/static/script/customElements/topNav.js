@@ -7,30 +7,32 @@ class topNav extends HTMLElement {
     connectedCallback() {
         this._shadowRoot.innerHTML = `<!-- HTML -->
             <style>
+                * {
+                    transition: all 0.4s ease-out;
+                }
                 a {
                     color: #0000EE;
                     text-decoration: none;
                     padding: 0 5px 3px 5px;
-                    background-clip: padding-box;
-                    background-image: linear-gradient(#f6f6f6, white);
+                    background-color: var(--main-color);
                 }
                 .top-navigation-list li {
                     background-color: white;
-                    border-right: solid black 1px;
-                    border-left: solid black 1px;
+                    border-right: solid var(--main-text-color) 1px;
+                    border-left: solid var(--main-text-color) 1px;
                 }
                 ul {
                     list-style-type: none;
                 }
                 .top-navigation-list li a.active {
                     padding-bottom: 10px;
-                    background-color: white;
+                    background-color: var(--main-color);
                     background-clip: padding-box;
                 }
                 .top-navigation-list li:last-of-type {
                     border-right: none;
                     border-left: none;
-                    background-color: #f6f6f6;
+                    background-color: var(--main-color);
                 }
                 .bottom-container {
                     margin-top: 50px;
@@ -40,7 +42,7 @@ class topNav extends HTMLElement {
                 .top-navigation-list {
                     display: flex;
                     justify-content: space-around;
-                    border-bottom: 1px solid black;
+                    border-bottom: 1px solid var(--main-text-color);
                 }
                 @media (max-width: 1040px) {
                     ul li {

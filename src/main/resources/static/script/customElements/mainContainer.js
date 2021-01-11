@@ -16,6 +16,8 @@ class mainContainer extends HTMLElement {
                     padding: 0;
                     margin: 0;
                     box-sizing: border-box;
+                    color: var(--main-text-color);
+                    transition: all 0.4s ease-out;
                 }
                 a{
                     text-decoration: none;
@@ -25,14 +27,13 @@ class mainContainer extends HTMLElement {
                 }
                 .categories-list{
                     display: flex;
-                    color: black;
-                    border-right: 1px solid black;
-                    border-left: 1px solid black;
+                    border-right: 1px solid var(--main-text-color);
+                    border-left: 1px solid var(--main-text-color);
                     justify-content: space-evenly;
                     margin: 20px 0;
                 }
                 .categories-list a{
-                    color: black;
+                    color: var(--main-text-color);
                 }
                 .main-container {
                     place-self: center;
@@ -43,20 +44,20 @@ class mainContainer extends HTMLElement {
                     margin-right: 1%;
                     margin-left: -2%;
                     margin-top: -5px;
-                    background: #ffffff;
+                    background: var(--main-color);
                     overflow: hidden;
                     min-height: 750px;
                     min-width: 75%;
                 }
                 .main-container main {
                     padding-bottom: 5px;
-                    border-bottom: 1px solid black;
+                    border-bottom: 1px solid var(--main-text-color);
                     margin-left: 50px;
                     margin-top: 50px;
                 }
                 .title {
                     font-size: 1.8em;
-                    border-bottom: 1px solid black;
+                    border-bottom: 1px solid var(--main-text-color);
                 }
                 div.content h1 {
                     font-size: 1.5em;
@@ -75,11 +76,20 @@ class mainContainer extends HTMLElement {
                 a {
                     color: #0000EE;
                 }
-                
                 #editButton{
                     float: right;
                     margin: 2px 5px 0 5px;
                     padding: 0 2px 0 2px;
+                }
+                #darkButton {
+                    float: right;
+                    border-radius: 5px;
+                    padding: 1px;
+                }
+                button {
+                    color: var(--main-text-color);
+                    background-color: var(--main-color);
+                    border-color: var(--main-text-color);
                 }
                 .modal {
                     display: none;
@@ -183,7 +193,7 @@ class mainContainer extends HTMLElement {
                     .main-container main {
                         margin-left: 20px;
                         margin-top: 10px;
-                        border-top: solid black 1px;
+                        border-top: solid var(--main-text-color) 1px;
                     }
                     .footer-info {
                         margin-left: 20px;
@@ -207,6 +217,7 @@ class mainContainer extends HTMLElement {
                 </style>
                 <div class="main-container">
                     <main>
+                    <button id="darkButton">Dark mode</button>
                     <button id="editButton">Edit</button>
                     <div class="font-size-container" style="float: right">
                         <a style="font-size: small" href="#fontSizeSmall" id="fontSizeSmall">Aa</a>
@@ -241,7 +252,8 @@ class mainContainer extends HTMLElement {
                 </div>
         `
         this.loadFile()
-        this.fontSize();
+        this.fontSize()
+        this.darkMode()
     }
 
     static get observedAttributes() {
@@ -261,6 +273,8 @@ class mainContainer extends HTMLElement {
                                         padding: 3px;
                                         width: 90%;
                                         margin-top: 5px;
+                                        background-color: var(--main-color);
+                                        color: var(--main-text-color);
                                     }
                                     #messages {
                                         list-style-type: none;
@@ -269,7 +283,7 @@ class mainContainer extends HTMLElement {
                                         margin-top: 5px;
                                     }
                                     li.message {
-                                        border: solid black 1px;
+                                        border: solid var(--main-text-color) 1px;
                                         padding: 1px 1px 1px 5px;
                                         margin-top: 2px;
                                         width: 90%;
@@ -520,7 +534,6 @@ class mainContainer extends HTMLElement {
 
     getCategories(link, selector, object) {
         let URL = `/rest/${link}`
-        //Maybe sort categories by student's study and interests which will be highlighted first.
 
         fetch(URL)
             .then(response => {
@@ -537,7 +550,7 @@ class mainContainer extends HTMLElement {
                             let createA = document.createElement('a');
                             let aNode = document.createTextNode(catName);
                             if (object.name === catName) {
-                                createA.style.border = "solid 1px black"
+                                createA.style.border = "solid 1px var(--main-text-color)"
                                 createA.style.padding = "0 2px 0 2px"
                             }
                             createA.setAttribute("href", `/${catName.toLowerCase()}.html`);
@@ -572,6 +585,23 @@ class mainContainer extends HTMLElement {
         });
     }
 
+    darkMode() {
+        let darkButton = this._shadowRoot.querySelector("#darkButton")
+        darkButton.addEventListener("click", function (e) {
+            e.preventDefault()
+            switch (darkButton.textContent) {
+                case "Dark mode":
+                    darkButton.textContent = "Light mode"
+                    document.querySelector("body").style.setProperty("--main-color", "rgb(33, 33, 33)")
+                    document.querySelector("body").style.setProperty("--main-text-color", "white")
+                    return
+                case "Light mode":
+                    darkButton.textContent = "Dark mode"
+                    document.querySelector("body").style.setProperty("--main-color", "white")
+                    document.querySelector("body").style.setProperty("--main-text-color", "rgb(33, 33, 33)")
+            }
+        })
+    }
 }
 
 window.customElements.define('billy-main', mainContainer)
