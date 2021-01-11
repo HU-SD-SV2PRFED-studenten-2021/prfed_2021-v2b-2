@@ -8,7 +8,10 @@ body {
     display: grid;
     grid-area: auto;
     font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
-    background: #f6f6f6;
+    --main-color: white;
+    --main-text-color: black;
+    background: var(--main-color);
+    transition: all 0.4s ease-out;
 }
 
 .header-container {

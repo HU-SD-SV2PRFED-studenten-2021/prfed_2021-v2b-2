@@ -23,7 +23,7 @@ class categoryMatrix extends HTMLElement {
                   }
                   
                   table td::before {
-                    content: attr(label);
+                    content: attr(categorie);
                     width: 75%;
                     min-width: 120px;
                   }
@@ -45,7 +45,7 @@ class categoryMatrix extends HTMLElement {
                         <td><a href="/gebruikersinteractie analyseren.html">X</a></td>
                         <td><a href="/organisatieprocessen analyseren.html">X</a></td>
                         <td><a href="/infrastructuur analyseren.html">X</a></td>
-                        <td><a href="/analyseren.html">X</a></td>   
+                        <td><a href="/hardware interfacing analyseren.html">X</a></td>   
                     </tr>
                     <tr>
                         <td><a href="/adviseren.html">Adviseren</a></td>
@@ -85,13 +85,12 @@ class categoryMatrix extends HTMLElement {
         this.setMobileTable(this._shadowRoot.querySelector("table"))
     }
     setMobileTable(selector) {
-        if (window.innerWidth > 722) return false;
         const tableEl = selector
         const thEls = tableEl.querySelectorAll('thead th');
         const tdLabels = Array.from(thEls).map(el => el.innerText);
         tableEl.querySelectorAll('tbody tr').forEach( tr => {
             Array.from(tr.children).forEach(
-                (td, ndx) =>  td.setAttribute('label', tdLabels[ndx])
+                (td, ndx) =>  td.setAttribute('categorie', tdLabels[ndx])
             );
         });
     }
