@@ -378,12 +378,10 @@ class mainContainer extends HTMLElement {
         }
     }
 
-    makePostModal(filename, text) {
-        let modal = this._shadowRoot.getElementById("myPostModal");
-        let postButton = this._shadowRoot.querySelector("#postButton");
-        this.focusableEls = modal.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]');
-        this.focusableEls = Array.prototype.slice.call(this.focusableEls)
+    makeModal(isEdit, filename, text, modalElement, toggleButton, selectCat, selectSubCat, closeModal, title, textElement, saveButton) {
+        const modalOverlay = this._shadowRoot.querySelector(".modalOverlay")
         let thisItem = this
+        this.focusableEls = undefined
         fetch("/rest/test", {
             method: 'POST',
             headers: {
@@ -393,97 +391,159 @@ class mainContainer extends HTMLElement {
             if (response.status !== 200) {
                 let mc = document.querySelector("billy-main")._shadowRoot.querySelector('.main-container');
                 try {
-                    mc.querySelector("main").removeChild(postButton);
-                    mc.removeChild(modal);
+                    mc.querySelector("main").removeChild(toggleButton);
+                    mc.removeChild(modalElement);
                 } catch (err) {
                 }
             }
         });
-        const selectCat = this._shadowRoot.querySelector("#postCat");
-        const selectSubCat = this._shadowRoot.querySelector("#postSubCat");
-        const closeModal = this._shadowRoot.querySelector(".closePost");
-        const postTitle = this._shadowRoot.querySelector("#postTitle")
-        const postText = this._shadowRoot.querySelector("#postArea");
-        const saveButton = this._shadowRoot.querySelector("#savePost");
-        const modalOverlay = this._shadowRoot.querySelector(".modalOverlay");
+        if ((this.cat.name === "Standaardpagina" || this.subCat.name === "Standaardpagina" || `${this.cat.name} ${this.subCat.name.toLowerCase()}` === filename) && isEdit) {
+            this._shadowRoot.querySelector(".main-container").querySelector("main").removeChild(toggleButton);
+            this._shadowRoot.querySelector(".main-container").removeChild(modalElement);
+        } else {
+            const category = this.cat.name
+            const subcategory = this.subCat.name
 
-        postText.onkeyup = function () {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight + 5) + 'px'
-        }
+            textElement.onkeyup = function () {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight + 5) + 'px'
+            }
 
-        saveButton.onclick = function (event) {
-            event.preventDefault();
-            const data = {
-                title: `${postTitle.value}`,
-                content: `${postText.value}`,
-                categoryDTO: {name: `${selectCat.value}`},
-                subcategoryDTO: {name: `${selectSubCat.value}`}
-            };
-
-            fetch("/rest/article", {
-                method: 'POST',
-                headers: {
-                    'Authorization': `${window.sessionStorage.getItem("myJWT")}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            }).then(response => {
-                if (response.status !== 200) {
-                    console.log(response)
-                    throw response.status
-                } else {
-                    location.reload()
+            saveButton.onclick = function (event) {
+                event.preventDefault();
+                if(isEdit){
+                    saveEdit()
                 }
-            });
-        }
-        const category = this.cat.name
-        const subcategory = this.subCat.name
-        postButton.onclick = function () {
-            const categories = getCategories()
-            const subCategories = getSubCategories()
-            loadCategories(categories, selectCat, category)
-            loadCategories(subCategories, selectSubCat, subcategory)
+                else {
+                    savePost()
+                }
+            }
 
-            postTitle.innerText = filename;
-            postText.textContent = text
-            postText.setAttribute("rows", ((text.match("\r\n") || []).length + 1).toString())
-            modal.style.display = "block";
-            modalOverlay.style.display = "block";
-            postText.style.height = (postText.scrollHeight + 5) + 'px'
-            thisItem.focusableEls[1].focus()
-        }
-        closeModal.onclick = closing
+            toggleButton.onclick = function () {
+                thisItem.focusableEls = modalElement.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]');
+                thisItem.focusableEls = Array.prototype.slice.call(thisItem.focusableEls)
+                fetch("/rest/categories", {
+                    method: 'GET',
+                }).then(response => {
+                    if (response.status !== 200) {
+                        console.log(response)
+                        throw response.status
+                    } else {
+                        response.json().then(catList => {
+                            selectCat.innerHTML = ""
+                            const categoryElement = document.createElement("option")
+                            categoryElement.value = category
+                            categoryElement.textContent = category
+                            selectCat.appendChild(categoryElement);
 
-        async function loadCategories(categorieListPromise, selectElement, selectedCategory) {
-            selectElement.innerHTML = ""
-            const categoryElement = document.createElement("option")
-            categoryElement.value = selectedCategory
-            categoryElement.textContent = selectedCategory
-            selectElement.appendChild(categoryElement);
-            await categorieList.then(e => {
-                e.forEach(cat => {
-                    const categoryElement = document.createElement("option")
-                    categoryElement.value = cat.name
-                    categoryElement.textContent = cat.name
-                    if (cat.name !== selectedCategory) {
-                        selectElement.appendChild(categoryElement);
+                            catList.forEach(cat => {
+                                const categoryElement = document.createElement("option")
+                                categoryElement.value = cat.name
+                                categoryElement.textContent = cat.name
+                                if (cat.name !== category) {
+                                    selectCat.appendChild(categoryElement);
+                                }
+                            })
+                        })
                     }
                 })
-            })
-        }
+                fetch("/rest/subcategories", {
+                    method: 'GET',
+                }).then(response => {
+                    if (response.status !== 200) {
+                        console.log(response)
+                        throw response.status
+                    } else {
+                        response.json().then(catList => {
+                            selectSubCat.innerHTML = ""
+                            const categoryElement = document.createElement("option")
+                            categoryElement.value = subcategory
+                            categoryElement.textContent = subcategory
+                            selectSubCat.appendChild(categoryElement);
 
-        closeModal.onclick = closing
+                            catList.forEach(cat => {
+                                const categoryElement = document.createElement("option")
+                                categoryElement.value = cat.name
+                                categoryElement.textContent = cat.name
+                                if (cat.name !== subcategory) {
+                                    selectSubCat.appendChild(categoryElement);
+                                }
+                            })
+                        })
+                    }
+                })
+                if(isEdit){
+                    title.innerText = filename;
+                    textElement.textContent = text
+                    textElement.setAttribute("rows", ((text.match("\r\n") || []).length + 1).toString())
+                }
+                modalElement.style.display = "block";
+                textElement.style.height = (textElement.scrollHeight + 5) + 'px'
+                modalOverlay.style.display = "block";
+                thisItem.focusableEls[1].focus()
+            }
+            closeModal.onclick = closing
+
+            function savePost(){
+                const data = {
+                    title: `${title.value}`,
+                    content: `${textElement.value}`,
+                    categoryDTO: {name: `${selectCat.value}`},
+                    subcategoryDTO: {name: `${selectSubCat.value}`}
+                };
+
+                fetch("/rest/article", {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `${window.sessionStorage.getItem("myJWT")}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                }).then(response => {
+                    if (response.status !== 200) {
+                        console.log(response)
+                        throw response.status
+                    } else {
+                        location.reload()
+                    }
+                });
+            }
+
+            function saveEdit() {
+                const data = {
+                    title: `${filename}`,
+                    content: `${textElement.value}`,
+                    categoryDTO: {name: `${selectCat.value}`},
+                    subcategoryDTO: {name: `${selectSubCat.value}`}
+                };
+
+                fetch(`/rest/${filename.toLowerCase()}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `${window.sessionStorage.getItem("myJWT")}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                }).then(response => {
+                    if (response.status !== 200) {
+                        console.log(response)
+                        throw response.status
+                    } else {
+                        location.reload()
+                    }
+                });
+            }
+        }
 
         function closing() {
-            modal.style.display = "none";
+            modalElement.style.display = "none";
             modalOverlay.style.display = "none";
-            postButton.focus()
+            toggleButton.focus()
         }
 
-        modal.onkeydown = function (e) {
+        modalElement.onkeydown = function (e) {
             let KEY_TAB = "Tab";
-            let ESCAPE_KEY = "Escape";
+            let KEY_ESC = "Escape";
             let firstFocusableEl = thisItem.focusableEls[0]
             let lastFocusableEl = thisItem.focusableEls[thisItem.focusableEls.length - 1]
 
@@ -515,156 +575,6 @@ class mainContainer extends HTMLElement {
                     }
 
                     break;
-                case ESCAPE_KEY:
-                    closing()
-                    break;
-                default:
-                    break;
-            }
-        };
-    }
-
-    makeEditModal(filename, text) {
-        let modal = this._shadowRoot.getElementById("myEditModal");
-        let editButton = this._shadowRoot.querySelector("#editButton");
-        this.focusableEditEls = modal.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]');
-        this.focusableEditEls = Array.prototype.slice.call(this.focusableEditEls)
-        let thisItem = this
-        fetch("/rest/test", {
-            method: 'POST',
-            headers: {
-                'Authorization': window.sessionStorage.getItem('myJWT')
-            }
-        }).then(function (response) {
-            if (response.status !== 200) {
-                let mc = document.querySelector("billy-main")._shadowRoot.querySelector('.main-container');
-                try {
-                    mc.querySelector("main").removeChild(editButton);
-                    mc.removeChild(modal);
-                } catch (err) {
-                }
-            }
-        });
-        if (this.cat.name === "Standaardpagina" || this.subCat.name === "Standaardpagina" || `${this.cat.name} ${this.subCat.name.toLowerCase()}` === filename) {
-            this._shadowRoot.querySelector(".main-container").querySelector("main").removeChild(editButton);
-            this._shadowRoot.querySelector(".main-container").removeChild(modal);
-        } else {
-            const selectCat = this._shadowRoot.querySelector("#editCat");
-            const selectSubCat = this._shadowRoot.querySelector("#editSubCat");
-            const closeModal = this._shadowRoot.querySelector(".closeEdit");
-            const editTitle = this._shadowRoot.querySelector("#editTitle")
-            const editText = this._shadowRoot.querySelector("#editArea");
-            const saveButton = this._shadowRoot.querySelector("#saveEdit");
-            const modalOverlay = this._shadowRoot.querySelector(".modalOverlay")
-            const category = this.cat.name
-            const subcategory = this.subCat.name
-
-            editText.onkeyup = function () {
-                this.style.height = 'auto';
-                this.style.height = (this.scrollHeight + 5) + 'px'
-            }
-
-            saveButton.onclick = function (event) {
-                event.preventDefault();
-                const data = {
-                    title: `${filename}`,
-                    content: `${editText.value}`,
-                    categoryDTO: {name: `${selectCat.value}`},
-                    subcategoryDTO: {name: `${selectSubCat.value}`}
-                };
-
-                fetch(`/rest/${filename.toLowerCase()}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': `${window.sessionStorage.getItem("myJWT")}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                }).then(response => {
-                    if (response.status !== 200) {
-                        console.log(response)
-                        throw response.status
-                    } else {
-                        location.reload()
-                    }
-                });
-            }
-
-            editButton.onclick = function () {
-                const categories = getCategories()
-                const subCategories = getSubCategories()
-                loadCategories(categories, selectCat, category)
-                loadCategories(subCategories, selectSubCat, subcategory)
-
-                editTitle.innerText = filename;
-                editText.textContent = text
-                editText.setAttribute("rows", ((text.match("\r\n") || []).length + 1).toString())
-                modal.style.display = "block";
-                modalOverlay.style.display = "block";
-                editText.style.height = (editText.scrollHeight + 5) + 'px'
-                thisItem.focusableEditEls[1].focus()
-            }
-            closeModal.onclick = closing
-
-            async function loadCategories(categorieListPromise, selectElement, selectedCategory) {
-                selectElement.innerHTML = ""
-                const categoryElement = document.createElement("option")
-                categoryElement.value = selectedCategory
-                categoryElement.textContent = selectedCategory
-                selectElement.appendChild(categoryElement);
-                await categorieList.then(e => {
-                    e.forEach(cat => {
-                        const categoryElement = document.createElement("option")
-                        categoryElement.value = cat.name
-                        categoryElement.textContent = cat.name
-                        if (cat.name !== selectedCategory) {
-                            selectElement.appendChild(categoryElement);
-                        }
-                    })
-                })
-            }
-        }
-
-        function closing() {
-            modal.style.display = "none";
-            modalOverlay.style.display = "none";
-            editButton.focus()
-        }
-
-        modal.onkeydown = function (e) {
-            let KEY_TAB = "Tab";
-            let KEY_ESC = "Escape";
-            let firstFocusableEl = thisItem.focusableEditEls[0]
-            let lastFocusableEl = thisItem.focusableEditEls[thisItem.focusableEditEls.length - 1]
-
-            function handleBackwardTab() {
-                if (thisItem._shadowRoot.activeElement === firstFocusableEl) {
-                    e.preventDefault();
-                    lastFocusableEl.focus();
-                }
-            }
-
-            function handleForwardTab() {
-                if (thisItem._shadowRoot.activeElement === lastFocusableEl) {
-                    e.preventDefault();
-                    firstFocusableEl.focus();
-                }
-            }
-
-            switch (e.key) {
-                case KEY_TAB:
-                    if (thisItem.focusableEditEls.length === 1) {
-                        e.preventDefault();
-                        break;
-                    }
-
-                    if (e.shiftKey) {
-                        handleBackwardTab();
-                    } else {
-                        handleForwardTab();
-                    }
-
-                    break;
                 case KEY_ESC:
                     closing()
                     break;
@@ -677,6 +587,25 @@ class mainContainer extends HTMLElement {
     loadFile() {
         let url = window.location.href;
         let filename = url.split('/').pop();
+
+        const selectEditCat = this._shadowRoot.querySelector("#editCat");
+        const selectEditSubCat = this._shadowRoot.querySelector("#editSubCat");
+        const closeEditModal = this._shadowRoot.querySelector(".closeEdit");
+        const editTitle = this._shadowRoot.querySelector("#editTitle")
+        const editTextEl = this._shadowRoot.querySelector("#editArea");
+        const saveEditButton = this._shadowRoot.querySelector("#saveEdit");
+        let editModal = this._shadowRoot.getElementById("myEditModal");
+        let editButton = this._shadowRoot.querySelector("#editButton");
+
+        const selectPostCat = this._shadowRoot.querySelector("#postCat");
+        const selectPostSubCat = this._shadowRoot.querySelector("#postSubCat");
+        const closePostModal = this._shadowRoot.querySelector(".closePost");
+        const postTitle = this._shadowRoot.querySelector("#postTitle")
+        const postTextEl = this._shadowRoot.querySelector("#postArea");
+        const savePostButton = this._shadowRoot.querySelector("#savePost");
+        let postModal = this._shadowRoot.getElementById("myPostModal");
+        let postButton = this._shadowRoot.querySelector("#postButton");
+
         filename = filename.split('.')[0]
         if (filename.length === 0) {
             window.location = "/index.html"
@@ -695,8 +624,8 @@ class mainContainer extends HTMLElement {
                         const mc = this._shadowRoot.getElementById('maincontent')
                         const editAreaText = response.content.replaceAll('\n', '\r\n');
                         this.originalText = response.content.replaceAll('\n', '<br>');
-                        this.makeEditModal(filenameHigh, editAreaText);
-                        this.makePostModal(filenameHigh, editAreaText);
+                        this.makeModal(true, filenameHigh, editAreaText, editModal, editButton, selectEditCat, selectEditSubCat, closeEditModal, editTitle, editTextEl, saveEditButton);
+                        this.makeModal(false, filenameHigh, "", postModal, postButton, selectPostCat, selectPostSubCat, closePostModal, postTitle, postTextEl, savePostButton);
                         mc.innerHTML = ``
                         mc.innerHTML = this.originalText
                         document.title = filenameHigh + ' | Billy'
