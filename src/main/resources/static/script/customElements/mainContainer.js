@@ -87,6 +87,10 @@ class mainContainer extends HTMLElement {
                 #darkButton {
                     float: right;
                 }
+                #postButton{
+                    float: right;
+                    margin: 0 5px 0 5px;
+                }
                 button {
                     color: var(--main-text-color);
                     background-color: var(--main-color);
@@ -143,7 +147,7 @@ class mainContainer extends HTMLElement {
                     background-color: rgba(0,0,0,0.4);
                 }
                 
-                .editArea{
+                .editArea, .postArea{
                   resize: none;
                   width : 100%;
                   height: 100%;
@@ -169,7 +173,7 @@ class mainContainer extends HTMLElement {
                 display: inline-block;
                 padding-right: 5px;
                 }
-                .categoryEdit{
+                .categoryEdit, .categoryPost{
                 display: inline-block;
                 color: var(--main-text-color);
                 background: var(--main-color);
@@ -180,6 +184,17 @@ class mainContainer extends HTMLElement {
                 }
                 #saveButton {
                     width: 100%;
+                }
+                .postTitle{
+                display: inline-block;
+                width: 20%;
+                padding-right: 5px;
+                color: var(--main-text-color);
+                background: var(--main-color);
+                }
+                .PostButtons{
+                width: 25px;
+                display: inline-block;
                 }
                 .active {
                     text-decoration: underline;
@@ -219,8 +234,9 @@ class mainContainer extends HTMLElement {
                 </style>
                 <div class="main-container">
                     <main>
-                    <button id="darkButton">Dark mode</button>
-                    <button id="editButton">Edit</button>
+                    <button id="darkButton">Nacht mode</button>
+                    <button id="editButton">Bewerk</button>
+                    <button id="postButton">Nieuw artikel</button>
                     <div class="font-size-container" style="float: right">
                         <a style="font-size: small" href="#fontSizeSmall" id="fontSizeSmall">Aa</a>
                         <a style="font-size: medium" href="#fontSizeMedium" id="fontSizeMedium" class="active">Aa</a>
@@ -239,9 +255,9 @@ class mainContainer extends HTMLElement {
                         <ul class="categories-list" id="subcategories-list"></ul>
                         <a href="/privacy.html">Privacybeleid</a> <a href="/over.html">Over Billy</a> <a href="/voorbehoud.html">Voorbehoud</a>
                     </footer>
-                        <div id="myModal" class="modal">
+                        <div id="myEditModal" class="modal">
                             <div class="modal-content">
-                                <span class="close">&times;</span>
+                                <span class="closeEdit close">&times;</span>
                                 <h1 id="editTitle" class = "editTitle"></h1>
                                 <select id="editCat" class="categoryEdit">
                                 </select>
@@ -249,6 +265,18 @@ class mainContainer extends HTMLElement {
                                 </select>
                                 <textarea id="editArea" class="editArea"></textarea>
                                 <button id="saveEdit" style="width: 100%">Save</button>
+                            </div>
+                        </div>
+                        <div id="myPostModal" class="modal">
+                            <div class="modal-content">
+                                <span class="closePost close">&times;</span>
+                                <input placeholder="Titel" id="postTitle" class = "postTitle"/>
+                                <select id="postCat" class="categoryPost">
+                                </select>
+                                <select id="postSubCat" class="categoryPost">
+                                </select>
+                                <textarea id="postArea" class="postArea"></textarea>
+                                <button id="savePost" style="width: 100%">Save</button>
                             </div>
                         </div>
                 </div>
@@ -352,8 +380,132 @@ class mainContainer extends HTMLElement {
         }
     }
 
-    makeEditModal(filename, text, title) {
-        let modal = this._shadowRoot.getElementById("myModal");
+    makePostModal(filename, text) {
+        let modal = this._shadowRoot.getElementById("myPostModal");
+        let postButton = this._shadowRoot.querySelector("#postButton");
+        fetch("/rest/test", {
+            method: 'POST',
+            headers: {
+                'Authorization': window.sessionStorage.getItem('myJWT')
+            }
+        }).then(function (response) {
+            if (response.status !== 200) {
+                let mc = document.querySelector("billy-main")._shadowRoot.querySelector('.main-container');
+                try {
+                    mc.querySelector("main").removeChild(postButton);
+                    mc.removeChild(modal);
+                } catch (err) {
+                }
+            }
+        });
+        const selectCat = this._shadowRoot.querySelector("#postCat");
+        const selectSubCat = this._shadowRoot.querySelector("#postSubCat");
+        const closeModal = this._shadowRoot.querySelector(".closePost");
+        const postTitle = this._shadowRoot.querySelector("#postTitle")
+        const postText = this._shadowRoot.querySelector("#postArea");
+        const saveButton = this._shadowRoot.querySelector("#savePost");
+
+        postText.onkeyup = function () {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight + 5) + 'px'
+        }
+
+        saveButton.onclick = function (event) {
+            event.preventDefault();
+            const data = {
+                title: `${postTitle.value}`,
+                content: `${postText.value}`,
+                categoryDTO: {name: `${selectCat.value}`},
+                subcategoryDTO: {name: `${selectSubCat.value}`}
+            };
+
+            fetch("/rest/article", {
+                method: 'POST',
+                headers: {
+                    'Authorization': `${window.sessionStorage.getItem("myJWT")}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            }).then(response => {
+                if (response.status !== 200) {
+                    console.log(response)
+                    throw response.status
+                } else {
+                    location.reload()
+                }
+            });
+        }
+        const category = this.cat.name
+        const subcategory = this.subCat.name
+        postButton.onclick = function () {
+            fetch("/rest/categories", {
+                method: 'GET',
+            }).then(response => {
+                if (response.status !== 200) {
+                    console.log(response)
+                    throw response.status
+                } else {
+                    response.json().then(catList => {
+                        selectCat.innerHTML = ""
+                        const categoryElement = document.createElement("option")
+                        categoryElement.value = category
+                        categoryElement.textContent = category
+                        selectCat.appendChild(categoryElement);
+
+                        catList.forEach(cat => {
+                            const categoryElement = document.createElement("option")
+                            categoryElement.value = cat.name
+                            categoryElement.textContent = cat.name
+                            if (cat.name !== category) {
+                                selectCat.appendChild(categoryElement);
+                            }
+                        })
+                    })
+                }
+            })
+            fetch("/rest/subcategories", {
+                method: 'GET',
+            }).then(response => {
+                if (response.status !== 200) {
+                    console.log(response)
+                    throw response.status
+                } else {
+                    response.json().then(catList => {
+                        selectSubCat.innerHTML = ""
+                        const categoryElement = document.createElement("option")
+                        categoryElement.value = subcategory
+                        categoryElement.textContent = subcategory
+                        selectSubCat.appendChild(categoryElement);
+
+                        catList.forEach(cat => {
+                            const categoryElement = document.createElement("option")
+                            categoryElement.value = cat.name
+                            categoryElement.textContent = cat.name
+                            if (cat.name !== subcategory) {
+                                selectSubCat.appendChild(categoryElement);
+                            }
+                        })
+                    })
+                }
+            })
+            modal.style.display = "block";
+            postText.style.height = (postText.scrollHeight + 5) + 'px'
+        }
+
+
+        closeModal.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    }
+
+    makeEditModal(filename, text) {
+        let modal = this._shadowRoot.getElementById("myEditModal");
         let editButton = this._shadowRoot.querySelector("#editButton");
         fetch("/rest/test", {
             method: 'POST',
@@ -370,13 +522,13 @@ class mainContainer extends HTMLElement {
                 }
             }
         });
-        if (this.cat.name === "Standaardpagina" || this.subCat.name === "Standaardpagina" || `${this.cat.name} ${this.subCat.name.toLowerCase()}` === title) {
+        if (this.cat.name === "Standaardpagina" || this.subCat.name === "Standaardpagina" || `${this.cat.name} ${this.subCat.name.toLowerCase()}` === filename) {
             this._shadowRoot.querySelector(".main-container").querySelector("main").removeChild(editButton);
             this._shadowRoot.querySelector(".main-container").removeChild(modal);
         } else {
             const selectCat = this._shadowRoot.querySelector("#editCat");
             const selectSubCat = this._shadowRoot.querySelector("#editSubCat");
-            const closeModal = this._shadowRoot.querySelector(".close");
+            const closeModal = this._shadowRoot.querySelector(".closeEdit");
             const editTitle = this._shadowRoot.querySelector("#editTitle")
             const editText = this._shadowRoot.querySelector("#editArea");
             const saveButton = this._shadowRoot.querySelector("#saveEdit");
@@ -432,7 +584,7 @@ class mainContainer extends HTMLElement {
                                 const categoryElement = document.createElement("option")
                                 categoryElement.value = cat.name
                                 categoryElement.textContent = cat.name
-                                if(cat.name !== category){
+                                if (cat.name !== category) {
                                     selectCat.appendChild(categoryElement);
                                 }
                             })
@@ -457,7 +609,7 @@ class mainContainer extends HTMLElement {
                                 const categoryElement = document.createElement("option")
                                 categoryElement.value = cat.name
                                 categoryElement.textContent = cat.name
-                                if(cat.name !== subcategory){
+                                if (cat.name !== subcategory) {
                                     selectSubCat.appendChild(categoryElement);
                                 }
                             })
@@ -503,9 +655,10 @@ class mainContainer extends HTMLElement {
                         this.subCat = response.subcategory
                         this._shadowRoot.getElementById('footerdate').innerText = `Deze pagina is voor het laatst bewerkt op ${response.lastEdited}`
                         const mc = this._shadowRoot.getElementById('maincontent')
-                        const editAreaText = response.content.replaceAll('\n', '\r\n')
-                        this.originalText = response.content.replaceAll('\n', '<br>')
-                        this.makeEditModal(filenameHigh, editAreaText, filenameHigh)
+                        const editAreaText = response.content.replaceAll('\n', '\r\n');
+                        this.originalText = response.content.replaceAll('\n', '<br>');
+                        this.makeEditModal(filenameHigh, editAreaText);
+                        this.makePostModal(filenameHigh, editAreaText);
                         mc.innerHTML = ``
                         mc.innerHTML = this.originalText
                         document.title = filenameHigh + ' | Billy'
@@ -597,19 +750,25 @@ class mainContainer extends HTMLElement {
         small.addEventListener("click", function () {
             font.style = "font-size: x-small";
             localStorage.setItem("font-size", "x-small")
-            this.parentNode.childNodes.forEach(child => {child.className = ''})
+            this.parentNode.childNodes.forEach(child => {
+                child.className = ''
+            })
             this.className = 'active'
         });
         medium.addEventListener("click", function () {
             font.style = "font-size: medium";
             localStorage.setItem("font-size", "medium")
-            this.parentNode.childNodes.forEach(child => {child.className = ''})
+            this.parentNode.childNodes.forEach(child => {
+                child.className = ''
+            })
             this.className = 'active'
         });
         large.addEventListener("click", function () {
             font.style = "font-size: x-large";
             localStorage.setItem("font-size", "x-large")
-            this.parentNode.childNodes.forEach(child => {child.className = ''})
+            this.parentNode.childNodes.forEach(child => {
+                child.className = ''
+            })
             this.className = 'active'
         });
     }
@@ -626,29 +785,29 @@ class mainContainer extends HTMLElement {
     darkMode(content) {
         let darkButton = this._shadowRoot.querySelector("#darkButton")
         switch (content) {
-            case "Dark mode":
-                darkButton.textContent = "Light mode"
+            case "Nacht mode":
+                darkButton.textContent = "Dag mode"
                 document.querySelector("body").style.setProperty("--main-color", "rgb(33, 33, 33)")
                 document.querySelector("body").style.setProperty("--main-text-color", "white")
                 document.querySelector("body").style.setProperty("--main-link-color", "#5881ff")
                 document.querySelector("body").style.setProperty("--main-popup-color", "rgb(49, 49, 49)")
-                window.localStorage.setItem("readMode", "Dark mode")
+                window.localStorage.setItem("readMode", "Nacht mode")
                 return
-            case "Light mode":
-                darkButton.textContent = "Dark mode"
+            case "Dag mode":
+                darkButton.textContent = "Nacht mode"
                 document.querySelector("body").style.setProperty("--main-color", "white")
                 document.querySelector("body").style.setProperty("--main-text-color", "rgb(33, 33, 33)")
                 document.querySelector("body").style.setProperty("--main-link-color", "#0000EE")
                 document.querySelector("body").style.setProperty("--main-popup-color", "lightgrey")
-                window.localStorage.setItem("readMode", "Light mode")
+                window.localStorage.setItem("readMode", "Dag mode")
                 return
             default:
-                darkButton.textContent = "Dark mode"
+                darkButton.textContent = "Nacht mode"
                 document.querySelector("body").style.setProperty("--main-color", "white")
                 document.querySelector("body").style.setProperty("--main-text-color", "rgb(33, 33, 33)")
                 document.querySelector("body").style.setProperty("--main-link-color", "#5881ff")
                 document.querySelector("body").style.setProperty("--main-popup-color", "rgb(49, 49, 49)")
-                window.localStorage.setItem("readMode", "Light mode")
+                window.localStorage.setItem("readMode", "Dag mode")
                 return
         }
     }
