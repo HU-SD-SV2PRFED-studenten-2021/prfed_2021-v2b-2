@@ -74,7 +74,7 @@ class topNav extends HTMLElement {
                 }
             </style>
             <div class="bottom-container">
-                <nav class="top-navigation">
+                <nav class="top-navigation" role="navigation" aria-label="Top navigation">
                     <ul class="top-navigation-list" id="topnav">
                         <li><a href="" class="active" id="hoofdpagina">Hoofdpagina</a></li>
                         <li><a href="" id="overleg">Overleg</a></li>

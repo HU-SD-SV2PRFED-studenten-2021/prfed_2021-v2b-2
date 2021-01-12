@@ -52,13 +52,13 @@ class sideNavigation extends HTMLElement {
                 </style>
                 <div class="side-container">
                     <billy-logo></billy-logo>
-                    <nav>
+                    <nav role="navigation" aria-label="sidebar">
                         <ul class="navigation">
                             <li><a href="/index.html">Home</a></li>
                             <li><a href="/navigatie.html">Navigatie</a></li>
                             <li><a href=` + `${window.location}` + `>Hoofdpagina</a></li>
-                            <li><a href="">Recente wijzigingen</a></li>
-                            <li><a href="">Hulpmiddelen</a></li>
+                            <li><a href="/recent.html">Recente wijzigingen</a></li>
+                            <li><a href="/over.html">Over</a></li>
                         </ul>
                     </nav>
                 </div>

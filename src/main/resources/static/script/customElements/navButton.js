@@ -81,7 +81,7 @@ class navButton extends HTMLElement {
             <button id="toggler">
             ☰
             </button>
-            <div id="navdiv" class="">
+            <div id="navdiv" class="" role="navigation" aria-label="Smaller screen navigation button and popup screen">
                 <h1>Menu</h1>
                 <billy-search></billy-search>
                 <ul>

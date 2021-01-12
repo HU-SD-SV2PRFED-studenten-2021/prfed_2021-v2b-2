@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,8 +25,8 @@
     <script type="module" src="script/customElements/topNav.js"></script>
     <script type="module" src="script/customElements/categoryMatrix.js"></script>
 <div class="header-container">
-    <div class="top-container">
-        <button id="loginBtn" class="login-button" type="button" onclick="{window.sessionStorage.setItem('previous', window.location); window.location='/login.html'}">Aanmelden</button>
+    <div class="top-container" role="banner">
+        <button id="loginBtn" class="login-button" type="button" onclick="{window.sessionStorage.setItem('previous', window.location); window.location='/login.html'}" role="button" aria-label="login button">Aanmelden</button>
     </div>
     <billy-topnav></billy-topnav>
 </div>

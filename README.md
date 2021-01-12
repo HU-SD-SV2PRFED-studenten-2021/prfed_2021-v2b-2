@@ -33,13 +33,15 @@ This was divided into a few issues:
 - HTML Editpage
 - CSS Editpage
 - JS Editpage
+- Add page button
 ### As a system administrator, I want that only registered users are able to edit the wiki, so there are no unwanted edits.
 This was divided into a few issues:
 - Add a check before the editing process to see if the user is allowed to edit
 ### As a user, I want to be able to turn on disability mode, so I can still get information with an eyesight disability.
 This was divided into a few issues:
 - Add three buttons for changing the font size
-- Adding functionality to said buttons
+- Adding functionality to those buttons
+- Add dark mode
 ### Other issues
 There were some other issues we worked on for this iteration. They were related to the creation and accessibility of information:
 - Setup of Heroku
