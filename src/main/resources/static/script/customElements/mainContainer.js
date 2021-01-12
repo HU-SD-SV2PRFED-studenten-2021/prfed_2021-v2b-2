@@ -440,62 +440,38 @@ class mainContainer extends HTMLElement {
         const category = this.cat.name
         const subcategory = this.subCat.name
         postButton.onclick = function () {
-            fetch("/rest/categories", {
-                method: 'GET',
-            }).then(response => {
-                if (response.status !== 200) {
-                    console.log(response)
-                    throw response.status
-                } else {
-                    response.json().then(catList => {
-                        selectCat.innerHTML = ""
-                        const categoryElement = document.createElement("option")
-                        categoryElement.value = category
-                        categoryElement.textContent = category
-                        selectCat.appendChild(categoryElement);
+            const categories = getCategories()
+            const subCategories = getSubCategories()
+            loadCategories(categories, selectCat, category)
+            loadCategories(subCategories, selectSubCat, subcategory)
 
-                        catList.forEach(cat => {
-                            const categoryElement = document.createElement("option")
-                            categoryElement.value = cat.name
-                            categoryElement.textContent = cat.name
-                            if (cat.name !== category) {
-                                selectCat.appendChild(categoryElement);
-                            }
-                        })
-                    })
-                }
-            })
-            fetch("/rest/subcategories", {
-                method: 'GET',
-            }).then(response => {
-                if (response.status !== 200) {
-                    console.log(response)
-                    throw response.status
-                } else {
-                    response.json().then(catList => {
-                        selectSubCat.innerHTML = ""
-                        const categoryElement = document.createElement("option")
-                        categoryElement.value = subcategory
-                        categoryElement.textContent = subcategory
-                        selectSubCat.appendChild(categoryElement);
-
-                        catList.forEach(cat => {
-                            const categoryElement = document.createElement("option")
-                            categoryElement.value = cat.name
-                            categoryElement.textContent = cat.name
-                            if (cat.name !== subcategory) {
-                                selectSubCat.appendChild(categoryElement);
-                            }
-                        })
-                    })
-                }
-            })
+            postTitle.innerText = filename;
+            postText.textContent = text
+            postText.setAttribute("rows", ((text.match("\r\n") || []).length + 1).toString())
             modal.style.display = "block";
-            postText.style.height = (postText.scrollHeight + 5) + 'px'
             modalOverlay.style.display = "block";
+            postText.style.height = (postText.scrollHeight + 5) + 'px'
             thisItem.focusableEls[1].focus()
         }
+        closeModal.onclick = closing
 
+        async function loadCategories(categorieListPromise, selectElement, selectedCategory) {
+            selectElement.innerHTML = ""
+            const categoryElement = document.createElement("option")
+            categoryElement.value = selectedCategory
+            categoryElement.textContent = selectedCategory
+            selectElement.appendChild(categoryElement);
+            await categorieList.then(e => {
+                e.forEach(cat => {
+                    const categoryElement = document.createElement("option")
+                    categoryElement.value = cat.name
+                    categoryElement.textContent = cat.name
+                    if (cat.name !== selectedCategory) {
+                        selectElement.appendChild(categoryElement);
+                    }
+                })
+            })
+        }
 
         closeModal.onclick = closing
 
@@ -580,6 +556,8 @@ class mainContainer extends HTMLElement {
             const editText = this._shadowRoot.querySelector("#editArea");
             const saveButton = this._shadowRoot.querySelector("#saveEdit");
             const modalOverlay = this._shadowRoot.querySelector(".modalOverlay")
+            const category = this.cat.name
+            const subcategory = this.subCat.name
 
             editText.onkeyup = function () {
                 this.style.height = 'auto';
@@ -611,59 +589,13 @@ class mainContainer extends HTMLElement {
                     }
                 });
             }
-            const category = this.cat.name
-            const subcategory = this.subCat.name
+
             editButton.onclick = function () {
-                fetch("/rest/categories", {
-                    method: 'GET',
-                }).then(response => {
-                    if (response.status !== 200) {
-                        console.log(response)
-                        throw response.status
-                    } else {
-                        response.json().then(catList => {
-                            selectCat.innerHTML = ""
-                            const categoryElement = document.createElement("option")
-                            categoryElement.value = category
-                            categoryElement.textContent = category
-                            selectCat.appendChild(categoryElement);
+                const categories = getCategories()
+                const subCategories = getSubCategories()
+                loadCategories(categories, selectCat, category)
+                loadCategories(subCategories, selectSubCat, subcategory)
 
-                            catList.forEach(cat => {
-                                const categoryElement = document.createElement("option")
-                                categoryElement.value = cat.name
-                                categoryElement.textContent = cat.name
-                                if (cat.name !== category) {
-                                    selectCat.appendChild(categoryElement);
-                                }
-                            })
-                        })
-                    }
-                })
-                fetch("/rest/subcategories", {
-                    method: 'GET',
-                }).then(response => {
-                    if (response.status !== 200) {
-                        console.log(response)
-                        throw response.status
-                    } else {
-                        response.json().then(catList => {
-                            selectSubCat.innerHTML = ""
-                            const categoryElement = document.createElement("option")
-                            categoryElement.value = subcategory
-                            categoryElement.textContent = subcategory
-                            selectSubCat.appendChild(categoryElement);
-
-                            catList.forEach(cat => {
-                                const categoryElement = document.createElement("option")
-                                categoryElement.value = cat.name
-                                categoryElement.textContent = cat.name
-                                if (cat.name !== subcategory) {
-                                    selectSubCat.appendChild(categoryElement);
-                                }
-                            })
-                        })
-                    }
-                })
                 editTitle.innerText = filename;
                 editText.textContent = text
                 editText.setAttribute("rows", ((text.match("\r\n") || []).length + 1).toString())
@@ -672,58 +604,74 @@ class mainContainer extends HTMLElement {
                 editText.style.height = (editText.scrollHeight + 5) + 'px'
                 thisItem.focusableEditEls[1].focus()
             }
-
-
             closeModal.onclick = closing
 
-            function closing() {
-                modal.style.display = "none";
-                modalOverlay.style.display = "none";
-                editButton.focus()
+            async function loadCategories(categorieListPromise, selectElement, selectedCategory) {
+                selectElement.innerHTML = ""
+                const categoryElement = document.createElement("option")
+                categoryElement.value = selectedCategory
+                categoryElement.textContent = selectedCategory
+                selectElement.appendChild(categoryElement);
+                await categorieList.then(e => {
+                    e.forEach(cat => {
+                        const categoryElement = document.createElement("option")
+                        categoryElement.value = cat.name
+                        categoryElement.textContent = cat.name
+                        if (cat.name !== selectedCategory) {
+                            selectElement.appendChild(categoryElement);
+                        }
+                    })
+                })
+            }
+        }
+
+        function closing() {
+            modal.style.display = "none";
+            modalOverlay.style.display = "none";
+            editButton.focus()
+        }
+
+        modal.onkeydown = function (e) {
+            let KEY_TAB = "Tab";
+            let KEY_ESC = "Escape";
+            let firstFocusableEl = thisItem.focusableEditEls[0]
+            let lastFocusableEl = thisItem.focusableEditEls[thisItem.focusableEditEls.length - 1]
+
+            function handleBackwardTab() {
+                if (thisItem._shadowRoot.activeElement === firstFocusableEl) {
+                    e.preventDefault();
+                    lastFocusableEl.focus();
+                }
             }
 
-            modal.onkeydown = function (e) {
-                let KEY_TAB = "Tab";
-                let KEY_ESC = "Escape";
-                let firstFocusableEl = thisItem.focusableEditEls[0]
-                let lastFocusableEl = thisItem.focusableEditEls[thisItem.focusableEditEls.length - 1]
+            function handleForwardTab() {
+                if (thisItem._shadowRoot.activeElement === lastFocusableEl) {
+                    e.preventDefault();
+                    firstFocusableEl.focus();
+                }
+            }
 
-                function handleBackwardTab() {
-                    if (thisItem._shadowRoot.activeElement === firstFocusableEl) {
+            switch (e.key) {
+                case KEY_TAB:
+                    if (thisItem.focusableEditEls.length === 1) {
                         e.preventDefault();
-                        lastFocusableEl.focus();
+                        break;
                     }
-                }
 
-                function handleForwardTab() {
-                    if (thisItem._shadowRoot.activeElement === lastFocusableEl) {
-                        e.preventDefault();
-                        firstFocusableEl.focus();
+                    if (e.shiftKey) {
+                        handleBackwardTab();
+                    } else {
+                        handleForwardTab();
                     }
-                }
 
-                switch (e.key) {
-                    case KEY_TAB:
-                        if (thisItem.focusableEditEls.length === 1) {
-                            e.preventDefault();
-                            break;
-                        }
-
-                        if (e.shiftKey) {
-                            handleBackwardTab();
-                        } else {
-                            handleForwardTab();
-                        }
-
-                        break;
-                    case KEY_ESC:
-                        closing()
-                        break;
-                    default:
-                        break;
-                }
-            };
-        }
+                    break;
+                case KEY_ESC:
+                    closing()
+                    break;
+                default:
+                    break;
+            }
+        };
     }
 
     loadFile() {
