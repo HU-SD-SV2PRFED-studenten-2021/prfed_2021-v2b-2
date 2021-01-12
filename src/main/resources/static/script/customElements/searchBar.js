@@ -30,7 +30,9 @@ class searchBar extends HTMLElement {
                 }
             }
             </style>
-            <label><input type="text" id="searchField" placeholder="Wiki doorzoeken"/><a id="searchBtn" href="">🔎</a></label>
+            <label><input type="text" id="searchField" placeholder="Wiki doorzoeken"/>
+                <a id="searchBtn" href="" aria-label="Search button">🔎</a>
+            </label>
         `
         this.searchBtn()
     }

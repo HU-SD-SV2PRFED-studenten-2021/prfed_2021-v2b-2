@@ -102,7 +102,7 @@ class mainContainer extends HTMLElement {
                 .modal {
                     display: none;
                     position: fixed;
-                    z-index: 1;
+                    z-index: 2;
                     padding-top: 100px;
                     left: 0;
                     top: 0;
@@ -133,20 +133,7 @@ class mainContainer extends HTMLElement {
                     color: #000;
                     text-decoration: none;
                     cursor: pointer;
-                }.modal {
-                    display: none;
-                    position: fixed;
-                    z-index: 1;
-                    padding-top: 30vh;
-                    left: 0;
-                    top: 0;
-                    width: 100%;
-                    height: 100%;
-                    overflow: auto;
-                    background-color: rgb(0,0,0);
-                    background-color: rgba(0,0,0,0.4);
                 }
-                
                 .editArea, .postArea{
                   resize: none;
                   width : 100%;
@@ -156,7 +143,7 @@ class mainContainer extends HTMLElement {
                 }
             
                 .close {
-                    color: #aaaaaa;
+                    color: #aaa;
                     float: right;
                     font-size: 28px;
                     font-weight: bold;
@@ -167,6 +154,16 @@ class mainContainer extends HTMLElement {
                     color: #000;
                     text-decoration: none;
                     cursor: pointer;
+                }
+                
+                .modalOverlay {
+                    z-index: 1;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: none;
                 }
                 
                 .editTitle{
@@ -238,11 +235,11 @@ class mainContainer extends HTMLElement {
                     <button id="editButton">Bewerk</button>
                     <button id="postButton">Nieuw artikel</button>
                     <div class="font-size-container" style="float: right">
-                        <a style="font-size: small" href="#fontSizeSmall" id="fontSizeSmall">Aa</a>
-                        <a style="font-size: medium" href="#fontSizeMedium" id="fontSizeMedium" class="active">Aa</a>
-                        <a style="font-size: large" href="#fontSizeLarge" id="fontSizeLarge">Aa</a>
+                        <a style="font-size: small" href="#fontSizeSmall" id="fontSizeSmall" aria-label="set font size to small">Aa</a>
+                        <a style="font-size: medium" href="#fontSizeMedium" id="fontSizeMedium" class="active" aria-label="set font size to medium">Aa</a>
+                        <a style="font-size: large" href="#fontSizeLarge" id="fontSizeLarge" aria-label="set font size to large">Aa</a>
                     </div>
-                    <h1 class="title" id="maintitle">Loading</h1>
+                    <h1 class="title" id="maintitle" role="heading">Loading</h1>
                     <div class="content" id="maincontent">
                         <p>Loading</p>     
                     </div>
@@ -255,9 +252,10 @@ class mainContainer extends HTMLElement {
                         <ul class="categories-list" id="subcategories-list"></ul>
                         <a href="/privacy.html">Privacybeleid</a> <a href="/over.html">Over Billy</a> <a href="/voorbehoud.html">Voorbehoud</a>
                     </footer>
-                        <div id="myEditModal" class="modal" aria-label="edit modal">
+                        <div class="modalOverlay" tabindex="-1"></div>
+                        <div id="myEditModal" class="modal" aria-label="edit modal" aria-modal="true" role="dialog"">
                             <div class="modal-content">
-                                <span class="closeEdit close">&times;</span>
+                                <span class="closeEdit close" tabindex="0" aria-label="close dialog">&times;</span>
                                 <h1 id="editTitle" class = "editTitle"></h1>
                                 <select id="editCat" class="categoryEdit">
                                 </select>
@@ -267,9 +265,9 @@ class mainContainer extends HTMLElement {
                                 <button id="saveEdit" style="width: 100%">Save</button>
                             </div>
                         </div>
-                        <div id="myPostModal" class="modal" aria-label="new article modal">
+                        <div id="myPostModal" class="modal" aria-label="new article modal" aria-modal="true" role="dialog">
                             <div class="modal-content">
-                                <span class="closePost close">&times;</span>
+                                <span class="closePost close" tabindex="0" aria-label="close dialog">&times;</span>
                                 <input placeholder="Titel" id="postTitle" class = "postTitle"/>
                                 <select id="postCat" class="categoryPost">
                                 </select>
@@ -383,6 +381,9 @@ class mainContainer extends HTMLElement {
     makePostModal(filename, text) {
         let modal = this._shadowRoot.getElementById("myPostModal");
         let postButton = this._shadowRoot.querySelector("#postButton");
+        this.focusableEls = modal.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]');
+        this.focusableEls = Array.prototype.slice.call(this.focusableEls)
+        let thisItem = this
         fetch("/rest/test", {
             method: 'POST',
             headers: {
@@ -404,6 +405,7 @@ class mainContainer extends HTMLElement {
         const postTitle = this._shadowRoot.querySelector("#postTitle")
         const postText = this._shadowRoot.querySelector("#postArea");
         const saveButton = this._shadowRoot.querySelector("#savePost");
+        const modalOverlay = this._shadowRoot.querySelector(".modalOverlay");
 
         postText.onkeyup = function () {
             this.style.height = 'auto';
@@ -490,23 +492,68 @@ class mainContainer extends HTMLElement {
             })
             modal.style.display = "block";
             postText.style.height = (postText.scrollHeight + 5) + 'px'
+            modalOverlay.style.display = "block";
+            thisItem.focusableEls[1].focus()
         }
 
 
-        closeModal.onclick = function () {
+        closeModal.onclick = closing
+
+        function closing() {
             modal.style.display = "none";
+            modalOverlay.style.display = "none";
+            postButton.focus()
         }
 
-        window.onclick = function (event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
+        modal.onkeydown = function (e) {
+            let KEY_TAB = "Tab";
+            let ESCAPE_KEY = "Escape";
+            let firstFocusableEl = thisItem.focusableEls[0]
+            let lastFocusableEl = thisItem.focusableEls[thisItem.focusableEls.length - 1]
+
+            function handleBackwardTab() {
+                if (thisItem._shadowRoot.activeElement === firstFocusableEl) {
+                    e.preventDefault();
+                    lastFocusableEl.focus();
+                }
             }
-        }
+
+            function handleForwardTab() {
+                if (thisItem._shadowRoot.activeElement === lastFocusableEl) {
+                    e.preventDefault();
+                    firstFocusableEl.focus();
+                }
+            }
+
+            switch (e.key) {
+                case KEY_TAB:
+                    if (thisItem.focusableEls.length === 1) {
+                        e.preventDefault();
+                        break;
+                    }
+
+                    if (e.shiftKey) {
+                        handleBackwardTab();
+                    } else {
+                        handleForwardTab();
+                    }
+
+                    break;
+                case ESCAPE_KEY:
+                    closing()
+                    break;
+                default:
+                    break;
+            }
+        };
     }
 
     makeEditModal(filename, text) {
         let modal = this._shadowRoot.getElementById("myEditModal");
         let editButton = this._shadowRoot.querySelector("#editButton");
+        this.focusableEditEls = modal.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]');
+        this.focusableEditEls = Array.prototype.slice.call(this.focusableEditEls)
+        let thisItem = this
         fetch("/rest/test", {
             method: 'POST',
             headers: {
@@ -532,6 +579,7 @@ class mainContainer extends HTMLElement {
             const editTitle = this._shadowRoot.querySelector("#editTitle")
             const editText = this._shadowRoot.querySelector("#editArea");
             const saveButton = this._shadowRoot.querySelector("#saveEdit");
+            const modalOverlay = this._shadowRoot.querySelector(".modalOverlay")
 
             editText.onkeyup = function () {
                 this.style.height = 'auto';
@@ -620,19 +668,61 @@ class mainContainer extends HTMLElement {
                 editText.textContent = text
                 editText.setAttribute("rows", ((text.match("\r\n") || []).length + 1).toString())
                 modal.style.display = "block";
+                modalOverlay.style.display = "block";
                 editText.style.height = (editText.scrollHeight + 5) + 'px'
+                thisItem.focusableEditEls[1].focus()
             }
 
 
-            closeModal.onclick = function () {
+            closeModal.onclick = closing
+
+            function closing() {
                 modal.style.display = "none";
+                modalOverlay.style.display = "none";
+                editButton.focus()
             }
 
-            window.onclick = function (event) {
-                if (event.target === modal) {
-                    modal.style.display = "none";
+            modal.onkeydown = function (e) {
+                let KEY_TAB = "Tab";
+                let KEY_ESC = "Escape";
+                let firstFocusableEl = thisItem.focusableEditEls[0]
+                let lastFocusableEl = thisItem.focusableEditEls[thisItem.focusableEditEls.length - 1]
+
+                function handleBackwardTab() {
+                    if (thisItem._shadowRoot.activeElement === firstFocusableEl) {
+                        e.preventDefault();
+                        lastFocusableEl.focus();
+                    }
                 }
-            }
+
+                function handleForwardTab() {
+                    if (thisItem._shadowRoot.activeElement === lastFocusableEl) {
+                        e.preventDefault();
+                        firstFocusableEl.focus();
+                    }
+                }
+
+                switch (e.key) {
+                    case KEY_TAB:
+                        if (thisItem.focusableEditEls.length === 1) {
+                            e.preventDefault();
+                            break;
+                        }
+
+                        if (e.shiftKey) {
+                            handleBackwardTab();
+                        } else {
+                            handleForwardTab();
+                        }
+
+                        break;
+                    case KEY_ESC:
+                        closing()
+                        break;
+                    default:
+                        break;
+                }
+            };
         }
     }
 
