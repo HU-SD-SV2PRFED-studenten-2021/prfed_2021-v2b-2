@@ -10,7 +10,7 @@ class showCategories extends HTMLElement {
         <style>
             a{
                 text-decoration: none;
-                color: #0000EE;
+                color: var(--main-link-color);
                 
             }
             table, th, td {

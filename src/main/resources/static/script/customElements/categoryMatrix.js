@@ -9,7 +9,7 @@ class categoryMatrix extends HTMLElement {
             `<!-- HTML -->
             <style>
                 a {
-                    color: #0000EE;
+                    color: var(--main-link-color);
                 }
                 th, td {
                     border: 1px solid var(--main-text-color);

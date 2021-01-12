@@ -11,7 +11,7 @@ class topNav extends HTMLElement {
                     transition: background-color 0.4s ease-out, color 0.4s ease-out;
                 }
                 a {
-                    color: #0000EE;
+                    color: var(--main-link-color);
                     text-decoration: none;
                     padding: 0 5px 3px 5px;
                     background-color: var(--main-color);

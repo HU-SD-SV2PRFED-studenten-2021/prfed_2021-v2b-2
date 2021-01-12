@@ -21,6 +21,7 @@ class mainContainer extends HTMLElement {
                 }
                 a{
                     text-decoration: none;
+                    color: var(--main-link-color);
                 }
                 ul{
                     list-style-type: none;
@@ -77,12 +78,11 @@ class mainContainer extends HTMLElement {
                     margin: 0 10px 10px 0;
                 }
                 a {
-                    color: #0000EE;
+                    color: var(--main-link-color);
                 }
                 #editButton{
                     float: right;
-                    margin: 2px 5px 0 5px;
-                    padding: 0 2px 0 2px;
+                    margin: 0 5px 0 5px;
                 }
                 #darkButton {
                     float: right;
@@ -110,10 +110,10 @@ class mainContainer extends HTMLElement {
                 }
             
                 .modal-content {
-                    background-color: #fefefe;
+                    background-color: var(--main-color);
                     margin: auto;
                     padding: 20px;
-                    border: 1px solid #888;
+                    border: 1px solid var(--main-popup-color);
                     width: 80%;
                 }
             
@@ -141,14 +141,6 @@ class mainContainer extends HTMLElement {
                     overflow: auto;
                     background-color: rgb(0,0,0);
                     background-color: rgba(0,0,0,0.4);
-                }   
-            
-                .modal-content {
-                    background-color: #fefefe;
-                    margin: auto;
-                    padding: 20px;
-                    border: 1px solid #888;
-                    width: 80%;
                 }
                 
                 .editArea{
@@ -156,6 +148,7 @@ class mainContainer extends HTMLElement {
                   width : 100%;
                   height: 100%;
                   padding-left: 2px;
+                  background-color: var(--main-color);
                 }
             
                 .close {
@@ -178,6 +171,8 @@ class mainContainer extends HTMLElement {
                 }
                 .categoryEdit{
                 display: inline-block;
+                color: var(--main-text-color);
+                background: var(--main-color);
                 }
                 .editButtons{
                 width: 25px;
@@ -635,18 +630,24 @@ class mainContainer extends HTMLElement {
                 darkButton.textContent = "Light mode"
                 document.querySelector("body").style.setProperty("--main-color", "rgb(33, 33, 33)")
                 document.querySelector("body").style.setProperty("--main-text-color", "white")
+                document.querySelector("body").style.setProperty("--main-link-color", "#5881ff")
+                document.querySelector("body").style.setProperty("--main-popup-color", "rgb(49, 49, 49)")
                 window.localStorage.setItem("readMode", "Dark mode")
                 return
             case "Light mode":
                 darkButton.textContent = "Dark mode"
                 document.querySelector("body").style.setProperty("--main-color", "white")
                 document.querySelector("body").style.setProperty("--main-text-color", "rgb(33, 33, 33)")
+                document.querySelector("body").style.setProperty("--main-link-color", "#0000EE")
+                document.querySelector("body").style.setProperty("--main-popup-color", "lightgrey")
                 window.localStorage.setItem("readMode", "Light mode")
                 return
             default:
                 darkButton.textContent = "Dark mode"
                 document.querySelector("body").style.setProperty("--main-color", "white")
                 document.querySelector("body").style.setProperty("--main-text-color", "rgb(33, 33, 33)")
+                document.querySelector("body").style.setProperty("--main-link-color", "#5881ff")
+                document.querySelector("body").style.setProperty("--main-popup-color", "rgb(49, 49, 49)")
                 window.localStorage.setItem("readMode", "Light mode")
                 return
         }
