@@ -33,7 +33,7 @@ class logoElement extends HTMLElement {
                       }
                     }
                 </style>
-                <a href="/index.html"><img src="resources/hboilogo-nobg.png" alt="HBO-i logo"></a>
+                <a href="/index.html"><img src="resources/hboilogo-nobg.png" alt="HBO-i logo" role="presentation"></a>
         `
     }
 }

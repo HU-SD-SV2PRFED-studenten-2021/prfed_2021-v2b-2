@@ -233,7 +233,7 @@ class mainContainer extends HTMLElement {
                 }
                 </style>
                 <div class="main-container">
-                    <main>
+                    <main role="main">
                     <button id="darkButton">Nacht mode</button>
                     <button id="editButton">Bewerk</button>
                     <button id="postButton">Nieuw artikel</button>
@@ -247,7 +247,7 @@ class mainContainer extends HTMLElement {
                         <p>Loading</p>     
                     </div>
                     </main>
-                    <footer class="footer-info" id="billyfooter">
+                    <footer class="footer-info" id="billyfooter" role="contentinfo">
                         <p id="footerdate">Deze pagina is voor het laatst bewerkt op</p>
                         <p id="footercats">Categorieën: </p>
                         <ul class="categories-list" id="categories-list"></ul>
@@ -255,7 +255,7 @@ class mainContainer extends HTMLElement {
                         <ul class="categories-list" id="subcategories-list"></ul>
                         <a href="/privacy.html">Privacybeleid</a> <a href="/over.html">Over Billy</a> <a href="/voorbehoud.html">Voorbehoud</a>
                     </footer>
-                        <div id="myEditModal" class="modal">
+                        <div id="myEditModal" class="modal" aria-label="edit modal">
                             <div class="modal-content">
                                 <span class="closeEdit close">&times;</span>
                                 <h1 id="editTitle" class = "editTitle"></h1>
@@ -267,7 +267,7 @@ class mainContainer extends HTMLElement {
                                 <button id="saveEdit" style="width: 100%">Save</button>
                             </div>
                         </div>
-                        <div id="myPostModal" class="modal">
+                        <div id="myPostModal" class="modal" aria-label="new article modal">
                             <div class="modal-content">
                                 <span class="closePost close">&times;</span>
                                 <input placeholder="Titel" id="postTitle" class = "postTitle"/>

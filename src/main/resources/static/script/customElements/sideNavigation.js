@@ -52,7 +52,7 @@ class sideNavigation extends HTMLElement {
                 </style>
                 <div class="side-container">
                     <billy-logo></billy-logo>
-                    <nav>
+                    <nav role="navigation" aria-label="sidebar">
                         <ul class="navigation">
                             <li><a href="/index.html">Home</a></li>
                             <li><a href="/navigatie.html">Navigatie</a></li>
