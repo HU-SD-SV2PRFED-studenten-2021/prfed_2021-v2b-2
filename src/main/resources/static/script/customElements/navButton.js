@@ -13,6 +13,9 @@ class navButton extends HTMLElement {
                 display: none;
                 }            
             }
+            h1 {
+                color: var(--main-text-color);
+            }
             button {
                 width: 55px;
                 height: 55px;
@@ -34,7 +37,7 @@ class navButton extends HTMLElement {
                 height: 100%;
                 position: fixed;
                 top: 100%;
-                background-color: lightgrey;
+                background-color: var(--main-popup-color);
                 text-align: center;
             }
             #navdiv.invisible {
@@ -55,11 +58,11 @@ class navButton extends HTMLElement {
                 padding-top: 5px;
             }
             a {
-                color: black;
+                color: var(--main-text-color);
                 text-decoration: underline;
             }
             a.modebutton {
-                color: #0000EE;
+                color: var(--main-link-color);
                 text-decoration: none;
             }
             a.active {

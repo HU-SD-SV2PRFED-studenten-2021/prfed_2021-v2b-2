@@ -16,7 +16,7 @@ class sideNavigation extends HTMLElement {
                     }
                     a {
                         text-decoration: none;
-                        color: #0000EE;
+                        color: var(--main-link-color);
                     }
                     ul {
                         list-style-type: none;
@@ -56,7 +56,7 @@ class sideNavigation extends HTMLElement {
                         <ul class="navigation">
                             <li><a href="/index.html">Home</a></li>
                             <li><a href="/navigatie.html">Navigatie</a></li>
-                            <li><a href="">Hoofdpagina</a></li>
+                            <li><a href=` + `${window.location}` + `>Hoofdpagina</a></li>
                             <li><a href="">Recente wijzigingen</a></li>
                             <li><a href="">Hulpmiddelen</a></li>
                         </ul>
