@@ -30,6 +30,7 @@ class categoryMatrix extends HTMLElement {
                   }
                 }
             </style>
+            <div style="overflow-x: scroll">
             <table>
                 <thead>
                     <th></th>
@@ -82,6 +83,7 @@ class categoryMatrix extends HTMLElement {
                     </tr>
                 </tbody>
             </table>
+            </div>
         `
         this.setMobileTable(this._shadowRoot.querySelector("table"))
     }

@@ -38,12 +38,10 @@ class mainContainer extends HTMLElement {
                 }
                 .main-container {
                     place-self: center;
-                    width: 80%;
+                    width: 78%;
                     position: absolute;
-                    top: 119px;
-                    left: 22%;
+                    left: 20%;
                     margin-right: 1%;
-                    margin-left: -2%;
                     margin-top: -5px;
                     background: var(--main-color);
                     overflow: hidden;
@@ -57,7 +55,7 @@ class mainContainer extends HTMLElement {
                     padding-bottom: 5px;
                     border-bottom: 1px solid var(--main-text-color);
                     margin-left: 50px;
-                    margin-top: 50px;
+                    margin-top: 30px;
                 }
                 .title {
                     font-size: 1.8em;
@@ -281,7 +279,6 @@ class mainContainer extends HTMLElement {
         `
         this.darkMode(window.localStorage.getItem("readMode"))
         this.loadFile()
-        this.fontSize()
         this.darkEventlistener()
     }
 
@@ -756,6 +753,7 @@ class mainContainer extends HTMLElement {
                         this.getCategories("categories", "#categories-list", this.cat)
                         this.getCategories("subcategories", "#subcategories-list", this.subCat)
                         mc.querySelector('p').className += "paragraph-content";
+                        this.fontSize()
                     })
                 }
             }).catch(err => {
@@ -815,18 +813,22 @@ class mainContainer extends HTMLElement {
     }
 
     fontSize() {
-        let font = document.querySelector("billy-main");
+        let main = document.querySelector("billy-main");
+        let body = document.querySelector("body");
+        let search = document.querySelector("billy-topnav")._shadowRoot.querySelector("billy-search")._shadowRoot.querySelector("input")
         let size = localStorage.getItem("font-size") || "medium";
         let small = this._shadowRoot.querySelector("#fontSizeSmall")
         let medium = this._shadowRoot.querySelector("#fontSizeMedium")
         let large = this._shadowRoot.querySelector("#fontSizeLarge")
-        font.style = `font-size: ${size}`
+        main.style.fontSize = size;
+        body.style.fontSize = size;
+        search.style.fontSize = size;
         if (size === "x-large") {
             large.parentNode.childNodes.forEach(child => {
                 child.className = ''
             })
             large.className = "active"
-        } else if (size === "x-small") {
+        } else if (size === "small") {
             small.parentNode.childNodes.forEach(child => {
                 child.className = ''
             })
@@ -838,15 +840,19 @@ class mainContainer extends HTMLElement {
             medium.className = "active"
         }
         small.addEventListener("click", function () {
-            font.style = "font-size: x-small";
-            localStorage.setItem("font-size", "x-small")
+            main.style.fontSize = "small";
+            body.style.fontSize = "small";
+            search.style.fontSize = "small";
+            localStorage.setItem("font-size", "small")
             this.parentNode.childNodes.forEach(child => {
                 child.className = ''
             })
             this.className = 'active'
         });
         medium.addEventListener("click", function () {
-            font.style = "font-size: medium";
+            main.style.fontSize = "medium";
+            body.style.fontSize = "medium";
+            search.style.fontSize = "medium";
             localStorage.setItem("font-size", "medium")
             this.parentNode.childNodes.forEach(child => {
                 child.className = ''
@@ -854,7 +860,9 @@ class mainContainer extends HTMLElement {
             this.className = 'active'
         });
         large.addEventListener("click", function () {
-            font.style = "font-size: x-large";
+            main.style.fontSize = "x-large";
+            body.style.fontSize = "x-large";
+            search.style.fontSize = "x-large";
             localStorage.setItem("font-size", "x-large")
             this.parentNode.childNodes.forEach(child => {
                 child.className = ''
@@ -881,6 +889,7 @@ class mainContainer extends HTMLElement {
                 document.querySelector("body").style.setProperty("--main-text-color", "white")
                 document.querySelector("body").style.setProperty("--main-link-color", "#5881ff")
                 document.querySelector("body").style.setProperty("--main-popup-color", "rgb(49, 49, 49)")
+                document.querySelector("body").style.setProperty("--main-active-color", "yellow")
                 window.localStorage.setItem("readMode", "Nacht mode")
                 return
             case "Dag mode":
@@ -889,6 +898,7 @@ class mainContainer extends HTMLElement {
                 document.querySelector("body").style.setProperty("--main-text-color", "rgb(33, 33, 33)")
                 document.querySelector("body").style.setProperty("--main-link-color", "#0000EE")
                 document.querySelector("body").style.setProperty("--main-popup-color", "lightgrey")
+                document.querySelector("body").style.setProperty("--main-active-color", "red")
                 window.localStorage.setItem("readMode", "Dag mode")
                 return
             default:
@@ -897,6 +907,7 @@ class mainContainer extends HTMLElement {
                 document.querySelector("body").style.setProperty("--main-text-color", "rgb(33, 33, 33)")
                 document.querySelector("body").style.setProperty("--main-link-color", "#5881ff")
                 document.querySelector("body").style.setProperty("--main-popup-color", "rgb(49, 49, 49)")
+                document.querySelector("body").style.setProperty("--main-active-color", "yellow")
                 window.localStorage.setItem("readMode", "Dag mode")
                 return
         }

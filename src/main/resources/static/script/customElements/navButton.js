@@ -67,6 +67,7 @@ class navButton extends HTMLElement {
             }
             a.active {
                 text-decoration: underline;
+                color: var(--main-active-color);
             }
             @keyframes appear {
                 0% {opacity: 0; top: 100%; left: 100%; border-radius: 100%}
