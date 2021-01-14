@@ -30,7 +30,7 @@ class showCategories extends HTMLElement {
                   table td::before {
                     content: attr(categorie);
                     width: 50px;
-                    min-width: 120px;
+                    min-width: 155px;
                   }
                 }
         </style>

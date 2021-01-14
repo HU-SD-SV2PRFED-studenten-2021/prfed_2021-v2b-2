@@ -13,6 +13,8 @@ public class Subcategory {
     private String name;
     @OneToMany(mappedBy = "subcategory")
     private List<Article> articles = new ArrayList<>();
+    @OneToMany(mappedBy = "subcategory")
+    private List<History> histories = new ArrayList<>();
 
     public Subcategory(int subcategory_id, String name, List<Article> articles) {
         this.subcategory_id = subcategory_id;
@@ -61,5 +63,13 @@ public class Subcategory {
 
     public void removeArticle(Article article) {
         this.articles.remove(article);
+    }
+
+    public List<History> getHistories() {
+        return histories;
+    }
+
+    public void setHistories(List<History> histories) {
+        this.histories = histories;
     }
 }

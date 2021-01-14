@@ -15,6 +15,7 @@ body {
     --main-active-color: red;
     background: var(--main-color);
     transition: background-color 0.4s ease-out, color 0.4s ease-out;
+    --width: width;
 }
 
 .header-container {

@@ -1,16 +1,12 @@
 package com.v2b2.Billy.application.controllers;
 
 import com.v2b2.Billy.application.data.*;
-import com.v2b2.Billy.application.dto.ArticleDTO;
-import com.v2b2.Billy.application.dto.ArticleCreateDTO;
-import com.v2b2.Billy.application.dto.CategoryDTO;
-import com.v2b2.Billy.application.dto.SubcategoryDTO;
+import com.v2b2.Billy.application.dto.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -20,11 +16,13 @@ public class MainService {
     private final ArticleRepository articleRepository;
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
+    private final HistoryRepository historyRepository;
 
-    public MainService(ArticleRepository articleRepository, CategoryRepository categoryRepository, SubcategoryRepository subcategoryRepository) {
+    public MainService(ArticleRepository articleRepository, CategoryRepository categoryRepository, SubcategoryRepository subcategoryRepository, HistoryRepository historyRepository) {
         this.articleRepository = articleRepository;
         this.categoryRepository = categoryRepository;
         this.subcategoryRepository = subcategoryRepository;
+        this.historyRepository = historyRepository;
     }
 
     public ArticleDTO getArticle(String id) {
@@ -253,6 +251,10 @@ public class MainService {
     public ArticleDTO updateArticle(String id, ArticleCreateDTO articleDTO) {
         Article article = this.articleRepository.findArticleByTitle(id);
         if (article != null) {
+            int historyId = this.historyRepository.getId().orElse(0) + 1;
+            History history = new History(historyId, article.getLastEdited(), article, article.getContent(),
+                    article.getCategory(), article.getSubcategory());
+            this.historyRepository.save(history);
             article.setContent(articleDTO.getContent());
             article.setLastEdited(LocalDateTime.now());
             Category prevCat = article.getCategory();
@@ -305,5 +307,16 @@ public class MainService {
                 return articleDTOS;
             } else return null;
         }
+    }
+
+    public List<HistoryDTO> getHistoryFromTitle(String title) {
+        Article article = this.articleRepository.findArticleByTitle(title);
+        if (article != null) {
+            List<History> histories = this.historyRepository.findAllByArticle(article);
+            if (histories != null) {
+                return HistoryDTO.getFromList(histories);
+            }
+        }
+        return null;
     }
 }

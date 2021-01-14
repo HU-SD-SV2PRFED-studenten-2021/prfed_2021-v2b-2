@@ -15,7 +15,7 @@ class categoryMatrix extends HTMLElement {
                     border: 1px solid var(--main-text-color);
                     padding: 3px;
                 }
-                @media screen and (max-width: 1050px) {
+                @media screen and (max-width: 1400px) {
                   table thead {
                     display: none;
                   }
@@ -30,7 +30,7 @@ class categoryMatrix extends HTMLElement {
                   }
                 }
             </style>
-            <div style="overflow-x: scroll">
+            <div style="overflow-x: auto">
             <table>
                 <thead>
                     <th></th>

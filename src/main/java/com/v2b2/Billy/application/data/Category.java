@@ -13,6 +13,8 @@ public class Category {
     private String name;
     @OneToMany(mappedBy = "category")
     private List<Article> articles = new ArrayList<>();
+    @OneToMany(mappedBy = "category")
+    private List<History> histories = new ArrayList<>();
 
     public Category(int category_id, String name, List<Article> articles) {
         this.category_id = category_id;
@@ -61,5 +63,13 @@ public class Category {
                 "category_id=" + category_id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public List<History> getHistories() {
+        return histories;
+    }
+
+    public void setHistories(List<History> histories) {
+        this.histories = histories;
     }
 }

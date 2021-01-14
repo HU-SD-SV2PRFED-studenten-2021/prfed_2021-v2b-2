@@ -22,6 +22,8 @@ public class Article {
     @ManyToOne
     @JoinColumn(name = "subcategory_id")
     private Subcategory subcategory;
+    @OneToMany(mappedBy = "article")
+    private List<History> histories = new ArrayList<>();
 
     public Article(String title, String content, LocalDateTime lastEdited, Category category, Subcategory subcategory) {
         this.title = title;
@@ -29,6 +31,15 @@ public class Article {
         this.lastEdited = lastEdited;
         this.category = category;
         this.subcategory = subcategory;
+    }
+
+    public Article(String title, String content, LocalDateTime lastEdited, Category category, Subcategory subcategory, List<History> histories) {
+        this.title = title;
+        this.content = content;
+        this.lastEdited = lastEdited;
+        this.category = category;
+        this.subcategory = subcategory;
+        this.histories = histories;
     }
 
     public Article() {
@@ -83,5 +94,13 @@ public class Article {
                 ", category=" + category +
                 ", subcategory=" + subcategory +
                 '}';
+    }
+
+    public List<History> getHistories() {
+        return histories;
+    }
+
+    public void setHistories(List<History> histories) {
+        this.histories = histories;
     }
 }
