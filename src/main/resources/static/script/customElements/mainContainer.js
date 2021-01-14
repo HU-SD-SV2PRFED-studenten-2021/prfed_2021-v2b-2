@@ -101,7 +101,6 @@ class mainContainer extends HTMLElement {
                     display: none;
                     position: fixed;
                     z-index: 2;
-                    padding-top: 100px;
                     left: 0;
                     top: 0;
                     width: 100%;
@@ -133,6 +132,7 @@ class mainContainer extends HTMLElement {
                     cursor: pointer;
                 }
                 .editArea, .postArea{
+                  overflow: hidden;
                   resize: none;
                   width : 100%;
                   height: 100%;
@@ -376,6 +376,7 @@ class mainContainer extends HTMLElement {
     }
 
     makeModal(isEdit, filename, text, modalElement, toggleButton, selectCat, selectSubCat, closeModal, title, textElement, saveButton) {
+        const modalMinSize = 600;
         const modalOverlay = this._shadowRoot.querySelector(".modalOverlay")
         let thisItem = this
         this.focusableEls = undefined
@@ -401,17 +402,19 @@ class mainContainer extends HTMLElement {
             const category = this.cat.name
             const subcategory = this.subCat.name
 
-            textElement.onkeyup = function () {
+            textElement.onkeydown = function () {
                 this.style.height = 'auto';
-                this.style.height = (this.scrollHeight + 5) + 'px'
+                modalElement.style.paddingTop = ((textElement.scrollHeight + 5) >= modalMinSize ?
+                    document.documentElement.clientHeight / 2 - (textElement.scrollHeight + 5) / 2 :
+                    document.documentElement.clientHeight / 2 - modalMinSize / 2).toString() + "px"
+                textElement.style.height = (textElement.scrollHeight + 5) >= modalMinSize ? (textElement.scrollHeight + 5) + 'px' : modalMinSize + 'px'
             }
 
             saveButton.onclick = function (event) {
                 event.preventDefault();
-                if(isEdit){
+                if (isEdit) {
                     saveEdit()
-                }
-                else {
+                } else {
                     savePost()
                 }
             }
@@ -427,11 +430,13 @@ class mainContainer extends HTMLElement {
                         throw response.status
                     } else {
                         response.json().then(catList => {
-                            selectCat.innerHTML = ""
-                            const categoryElement = document.createElement("option")
-                            categoryElement.value = category
-                            categoryElement.textContent = category
-                            selectCat.appendChild(categoryElement);
+                            if (isEdit) {
+                                selectCat.innerHTML = ""
+                                const categoryElement = document.createElement("option")
+                                categoryElement.value = category
+                                categoryElement.textContent = category
+                                selectCat.appendChild(categoryElement);
+                            }
 
                             catList.forEach(cat => {
                                 const categoryElement = document.createElement("option")
@@ -452,11 +457,13 @@ class mainContainer extends HTMLElement {
                         throw response.status
                     } else {
                         response.json().then(catList => {
-                            selectSubCat.innerHTML = ""
-                            const categoryElement = document.createElement("option")
-                            categoryElement.value = subcategory
-                            categoryElement.textContent = subcategory
-                            selectSubCat.appendChild(categoryElement);
+                            if (isEdit) {
+                                selectSubCat.innerHTML = ""
+                                const categoryElement = document.createElement("option")
+                                categoryElement.value = subcategory
+                                categoryElement.textContent = subcategory
+                                selectSubCat.appendChild(categoryElement);
+                            }
 
                             catList.forEach(cat => {
                                 const categoryElement = document.createElement("option")
@@ -469,19 +476,23 @@ class mainContainer extends HTMLElement {
                         })
                     }
                 })
-                if(isEdit){
+                if (isEdit) {
                     title.innerText = filename;
                     textElement.textContent = text
                     textElement.setAttribute("rows", ((text.match("\r\n") || []).length + 1).toString())
                 }
                 modalElement.style.display = "block";
-                textElement.style.height = (textElement.scrollHeight + 5) + 'px'
+                modalElement.style.paddingTop = ((textElement.scrollHeight + 5) >= modalMinSize ?
+                    document.documentElement.clientHeight / 2 - (textElement.scrollHeight + 5) / 2 :
+                    document.documentElement.clientHeight / 2 - modalMinSize / 2).toString() + "px"
+
+                textElement.style.height = (textElement.scrollHeight + 5) >= modalMinSize ? (textElement.scrollHeight + 5) + 'px' : modalMinSize + 'px'
                 modalOverlay.style.display = "block";
                 thisItem.focusableEls[1].focus()
             }
             closeModal.onclick = closing
 
-            function savePost(){
+            function savePost() {
                 const data = {
                     title: `${title.value}`,
                     content: `${textElement.value}`,
@@ -533,6 +544,10 @@ class mainContainer extends HTMLElement {
         }
 
         function closing() {
+            textElement.style.height = "auto";
+            textElement.textContent = isEdit? text: "";
+            textElement.value = isEdit? text: "";
+            console.log(textElement.scrollHeight)
             modalElement.style.display = "none";
             modalOverlay.style.display = "none";
             toggleButton.focus()
