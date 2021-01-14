@@ -495,7 +495,7 @@ class mainContainer extends HTMLElement {
             function savePost() {
                 const data = {
                     title: `${title.value}`,
-                    content: `${textElement.value}`,
+                    content: `<p>${textElement.value}</p>`,
                     categoryDTO: {name: `${selectCat.value}`},
                     subcategoryDTO: {name: `${selectSubCat.value}`}
                 };
@@ -520,7 +520,7 @@ class mainContainer extends HTMLElement {
             function saveEdit() {
                 const data = {
                     title: `${filename}`,
-                    content: `${textElement.value}`,
+                    content: `<p>${textElement.value}</p>`,
                     categoryDTO: {name: `${selectCat.value}`},
                     subcategoryDTO: {name: `${selectSubCat.value}`}
                 };
@@ -634,7 +634,8 @@ class mainContainer extends HTMLElement {
                         this.subCat = response.subcategory
                         this._shadowRoot.getElementById('footerdate').innerText = `Deze pagina is voor het laatst bewerkt op ${response.lastEdited}`
                         const mc = this._shadowRoot.getElementById('maincontent')
-                        const editAreaText = response.content.replaceAll('\n', '\r\n');
+                        let editAreaText = response.content.replaceAll('\n', '\r\n');
+                        editAreaText = editAreaText.slice(3, editAreaText.length - 4)
                         this.originalText = response.content.replaceAll('\n', '<br>');
                         this.makeModal(true, filenameHigh, editAreaText, editModal, editButton, selectEditCat, selectEditSubCat, closeEditModal, editTitle, editTextEl, saveEditButton);
                         this.makeModal(false, filenameHigh, "", postModal, postButton, selectPostCat, selectPostSubCat, closePostModal, postTitle, postTextEl, savePostButton);
