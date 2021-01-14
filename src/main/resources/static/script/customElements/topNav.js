@@ -27,6 +27,7 @@ class topNav extends HTMLElement {
                     padding-bottom: 10px;
                     background-color: var(--main-color);
                     background-clip: padding-box;
+                    color: var(--main-active-color);
                 }
                 .top-navigation-list li:last-of-type {
                     border-right: none;
@@ -55,16 +56,17 @@ class topNav extends HTMLElement {
                     }
                     .top-navigation-list {
                         border-bottom: 0;
-                        margin-left: -12px;
                     }
                     .top-navigation-list li {
                         border: none;
                         text-indent: -0.5em;
-                        background-color: ;
+                    }
+                    .top-navigation-list li:first-line {
+                        text-indent: 0em;
                     }
                     .top-navigation-list li a.active {
                         background-color: var(--main-color);
-                        color: red;
+                        color: var(--main-active-color);
                     }
                 }
                 @media (max-width: 620px) {

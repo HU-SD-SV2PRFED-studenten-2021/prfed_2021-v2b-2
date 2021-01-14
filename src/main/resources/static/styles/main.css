@@ -12,6 +12,7 @@ body {
     --main-text-color: black;
     --main-link-color: #0000EE;
     --main-popup-color: lightgrey;
+    --main-active-color: red;
     background: var(--main-color);
     transition: background-color 0.4s ease-out, color 0.4s ease-out;
 }
