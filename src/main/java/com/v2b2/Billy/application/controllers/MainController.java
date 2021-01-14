@@ -1,11 +1,9 @@
 package com.v2b2.Billy.application.controllers;
 
-import com.v2b2.Billy.application.dto.ArticleCreateDTO;
-import com.v2b2.Billy.application.dto.ArticleDTO;
-import com.v2b2.Billy.application.dto.CategoryDTO;
-import com.v2b2.Billy.application.dto.SubcategoryDTO;
+import com.v2b2.Billy.application.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +19,12 @@ public class MainController {
 
     @PostMapping("/test")
     public boolean getTest() {
+        return true;
+    }
+
+    @PostMapping("/testadmin")
+    @Secured("ROLE_ADMIN")
+    public boolean getAdminTest() {
         return true;
     }
 
@@ -91,6 +95,14 @@ public class MainController {
         List<ArticleDTO> articleDTOS = this.mainService.getFromCatAndSubcat(id);
         if (articleDTOS != null) {
             return new ResponseEntity<>(articleDTOS, HttpStatus.OK);
+        } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/history/{title}")
+    public ResponseEntity<?> getHistoryByArticleTitle(@PathVariable String title) {
+        List<HistoryDTO> historyDTOS = this.mainService.getHistoryFromTitle(title);
+        if (historyDTOS != null) {
+            return new ResponseEntity<>(historyDTOS, HttpStatus.OK);
         } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
     }
 }
