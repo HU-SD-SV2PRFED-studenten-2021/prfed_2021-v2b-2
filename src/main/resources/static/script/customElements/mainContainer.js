@@ -237,7 +237,7 @@ class mainContainer extends HTMLElement {
                         <a style="font-size: medium" href="#fontSizeMedium" id="fontSizeMedium" class="active" aria-label="set font size to medium">Aa</a>
                         <a style="font-size: large" href="#fontSizeLarge" id="fontSizeLarge" aria-label="set font size to large">Aa</a>
                     </div>
-                    <h1 class="title" id="maintitle" role="heading">Loading</h1>
+                    <h1 class="title" id="maintitle" role="heading" tabindex="0">Loading</h1>
                     <div class="content" id="maincontent">
                         <p>Loading</p>     
                     </div>
@@ -251,7 +251,7 @@ class mainContainer extends HTMLElement {
                         <a href="/privacy.html">Privacybeleid</a> <a href="/over.html">Over Billy</a> <a href="/voorbehoud.html">Voorbehoud</a>
                     </footer>
                         <div class="modalOverlay" tabindex="-1"></div>
-                        <div id="myEditModal" class="modal" aria-label="edit modal" aria-modal="true" role="dialog"">
+                        <div id="myEditModal" class="modal" aria-label="edit modal" aria-modal="true" role="dialog">
                             <div class="modal-content">
                                 <span class="closeEdit close" tabindex="0" aria-label="close dialog">&times;</span>
                                 <h1 id="editTitle" class = "editTitle"></h1>
@@ -259,7 +259,7 @@ class mainContainer extends HTMLElement {
                                 </select>
                                 <select id="editSubCat" class="categoryEdit">
                                 </select>
-                                <textarea id="editArea" class="editArea"></textarea>
+                                <textarea id="editArea" class="editArea" placeholder="Artikel inhoud"></textarea>
                                 <button id="saveEdit" style="width: 100%">Save</button>
                             </div>
                         </div>
@@ -271,7 +271,7 @@ class mainContainer extends HTMLElement {
                                 </select>
                                 <select id="postSubCat" class="categoryPost">
                                 </select>
-                                <textarea id="postArea" class="postArea"></textarea>
+                                <textarea id="postArea" class="postArea" placeholder="Artikel inhoud"></textarea>
                                 <button id="savePost" style="width: 100%">Save</button>
                             </div>
                         </div>
@@ -410,7 +410,8 @@ class mainContainer extends HTMLElement {
                 textElement.style.height = (textElement.scrollHeight + 5) >= modalMinSize ? (textElement.scrollHeight + 5) + 'px' : modalMinSize + 'px'
             }
 
-            saveButton.onclick = function (event) {
+            saveButton.onclick =
+                function (event) {
                 event.preventDefault();
                 if (isEdit) {
                     saveEdit()
@@ -643,9 +644,12 @@ class mainContainer extends HTMLElement {
                         mc.innerHTML = this.originalText
                         document.title = filenameHigh + ' | Billy'
                         this._shadowRoot.getElementById('maintitle').innerText = filenameHigh
+                        this._shadowRoot.getElementById('maintitle').focus()
                         this.getCategories("categories", "#categories-list", this.cat)
                         this.getCategories("subcategories", "#subcategories-list", this.subCat)
                         mc.querySelector('p').className += "paragraph-content";
+                        mc.querySelector('p').setAttribute("aria-label", "page content")
+                        mc.querySelector('p').setAttribute("tabindex", "0")
                         this.fontSize()
                     })
                 }
