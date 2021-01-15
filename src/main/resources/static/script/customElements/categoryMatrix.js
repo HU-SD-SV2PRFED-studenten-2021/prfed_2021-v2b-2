@@ -15,7 +15,7 @@ class categoryMatrix extends HTMLElement {
                     border: 1px solid var(--main-text-color);
                     padding: 3px;
                 }
-                @media screen and (max-width: 1400px) {
+                @media screen and (max-width: 930px) {
                   table thead {
                     display: none;
                   }
@@ -32,72 +32,53 @@ class categoryMatrix extends HTMLElement {
             </style>
             <div style="overflow-x: auto">
             <table>
-                <thead>
-                    <th></th>
-                    <th><a href="/software.html">Software</a></th>
-                    <th><a href="/gebruikersinteractie.html">Gebruikersinteractie</a></th>
-                    <th><a href="/organisatieprocessen.html">Organisatieprocessen</a></th>
-                    <th><a href="/infrastructuur.html">Infrastructuur</a></th>
-                    <th><a href="/hardware interfacing.html">Hardware interfacing</a></th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><a href="/analyseren.html">Analyseren</a></td>
-                        <td><a href="/software analyseren.html">X</a></td>
-                        <td><a href="/gebruikersinteractie analyseren.html">X</a></td>
-                        <td><a href="/organisatieprocessen analyseren.html">X</a></td>
-                        <td><a href="/infrastructuur analyseren.html">X</a></td>
-                        <td><a href="/hardware interfacing analyseren.html">X</a></td>   
-                    </tr>
-                    <tr>
-                        <td><a href="/adviseren.html">Adviseren</a></td>
-                        <td><a href="/software adviseren.html">X</a></td>
-                        <td><a href="/gebruikersinteractie adviseren.html">X</a></td>
-                        <td><a href="/organisatieprocessen adviseren.html">X</a></td>
-                        <td><a href="/infrastructuur adviseren.html">X</a></td>
-                        <td><a href="/hardware interfacing adviseren.html">X</a></td>   
-                    </tr>
-                    <tr>
-                        <td><a href="/ontwerpen.html">Ontwerpen</a></td>
-                        <td><a href="/software ontwerpen.html">X</a></td>
-                        <td><a href="/gebruikersinteractie ontwerpen.html">X</a></td>
-                        <td><a href="/organisatieprocessen ontwerpen.html">X</a></td>
-                        <td><a href="/infrastructuur ontwerpen.html">X</a></td>
-                        <td><a href="/hardware interfacing ontwerpen.html">X</a></td>   
-                    </tr>
-                    <tr>
-                        <td><a href="/realiseren.html">Realiseren</a></td>
-                        <td><a href="/software realiseren.html">X</a></td>
-                        <td><a href="/gebruikersinteractie realiseren.html">X</a></td>
-                        <td><a href="/organisatieprocessen realiseren.html">X</a></td>
-                        <td><a href="/infrastructuur realiseren.html">X</a></td>
-                        <td><a href="/hardware interfacing realiseren.html">X</a></td>   
-                    </tr>
-                    <tr>
-                        <td><a href="/manage and control.html">Manage and control</a></td>
-                        <td><a href="/software manage and control.html">X</a></td>
-                        <td><a href="/gebruikersinteractie manage and control.html">X</a></td>
-                        <td><a href="/organisatieprocessen manage and control.html">X</a></td>
-                        <td><a href="/infrastructuur manage and control.html">X</a></td>
-                        <td><a href="/hardware interfacing manage and control.html">X</a></td>   
-                    </tr>
-                </tbody>
             </table>
             </div>
         `
-        this.setMobileTable(this._shadowRoot.querySelector("table"))
+        fetch("rest/categories", {
+            method: "GET"
+        }).then(response => {
+            if (!(response.ok)) {
+                console.log(response)
+                throw response.status
+            } else response.json().then(categories => {
+                fetch("rest/subcategories", {
+                    method: "GET"
+                }).then(resp => {
+                    if (resp.ok) {
+                        resp.json().then(subcategories => this.generateTable(categories, subcategories))
+                    } else throw resp.status
+                }).catch(err => console.log(err))
+            })
+        })
     }
-    setMobileTable(selector) {
-        const tableEl = selector
-        const thEls = tableEl.querySelectorAll('thead th');
-        const tdLabels = Array.from(thEls).map(el => el.innerText);
-        tableEl.querySelectorAll('tbody tr').forEach( tr => {
-            Array.from(tr.children).forEach(
-                (td, ndx) =>  td.setAttribute('categorie', tdLabels[ndx])
-            );
-        });
+    generateTable(categories, subcategories) {
+        let table = this._shadowRoot.querySelector("table")
+        table.innerHTML = ``
+        let tHead = table.createTHead()
+        let row = tHead.insertRow()
+        row.insertCell()
+        categories.forEach(category => {
+            let cell = row.insertCell()
+            let catName = category.name.toLowerCase()
+            let catNameHigh = category.name
+            cell.innerHTML = `<a href="/${catName}.html" aria-label='${catName} category page'">${catNameHigh}</a>`
+        })
+        let tBody = table.createTBody()
+        subcategories.forEach(subcategory => {
+            let subCatName = subcategory.name.toLowerCase()
+            let subCatNameHigh = subcategory.name
+            let row = tBody.insertRow()
+            row.insertCell().innerHTML = `<a href="/${subCatName}.html" aria-label='${subCatName} subcategory page'">${subCatNameHigh}</a>`
+            categories.forEach(cat => {
+                let catName = cat.name.toLowerCase()
+                let catNameHigh = cat.name
+                let subCatRow = row.insertCell()
+                subCatRow.innerHTML = `<a href="/${catName} ${subCatName}.html" aria-label='${catName} category and ${subCatName} subcategory page'>X</a>`
+                subCatRow.setAttribute("categorie", catNameHigh)
+            })
+        })
     }
 }
-
 
 window.customElements.define('billy-matrix', categoryMatrix)

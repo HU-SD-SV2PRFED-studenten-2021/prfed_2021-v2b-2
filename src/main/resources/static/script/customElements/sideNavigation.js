@@ -39,11 +39,6 @@ class sideNavigation extends HTMLElement {
                     .navigation li {
                         border-bottom: 1px solid var(--main-text-color);
                     }
-                    @media (max-width: 1150px) {
-                        ul li {
-                            font-size: 0.75em;
-                        }
-                    }
                     @media (max-width: 850px) {
                         nav {
                             display: none;
