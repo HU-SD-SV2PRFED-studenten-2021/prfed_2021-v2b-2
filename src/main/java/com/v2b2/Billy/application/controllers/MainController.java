@@ -105,4 +105,13 @@ public class MainController {
             return new ResponseEntity<>(historyDTOS, HttpStatus.OK);
         } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
     }
+
+    @PutMapping("/rollback/{id}")
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<?> rollbackArticle(@PathVariable int id) {
+        ArticleDTO articleDTO = this.mainService.rollback(id);
+        if (articleDTO != null) {
+            return new ResponseEntity<>(articleDTO, HttpStatus.OK);
+        } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+    }
 }

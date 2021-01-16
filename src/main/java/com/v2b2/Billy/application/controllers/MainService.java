@@ -314,9 +314,27 @@ public class MainService {
         if (article != null) {
             List<History> histories = this.historyRepository.findAllByArticle(article);
             if (histories != null) {
+                histories.sort((item1, item2) -> item2.getEditDateTime().compareTo(item1.getEditDateTime()));
                 return HistoryDTO.getFromList(histories);
             }
         }
         return null;
+    }
+
+    public ArticleDTO rollback(int id) {
+        History history = this.historyRepository.findById(id);
+        if (history != null) {
+            Article article = history.getArticle();
+            int newId = this.historyRepository.getId().orElse(0) + 1;
+            History newHistory = new History(newId, article.getLastEdited(), article, article.getContent(),
+                    article.getCategory(), article.getSubcategory());
+            this.historyRepository.save(newHistory);
+            article.setContent(history.getContent());
+            article.setCategory(history.getCategory());
+            article.setSubcategory(history.getSubcategory());
+            article.setLastEdited(history.getEditDateTime());
+            this.articleRepository.save(article);
+            return new ArticleDTO(article);
+        } else return null;
     }
 }

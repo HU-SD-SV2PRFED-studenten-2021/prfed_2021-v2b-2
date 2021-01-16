@@ -6,6 +6,7 @@ class mainContainer extends HTMLElement {
         this.originalText = ''
         this.cat = undefined
         this.subCat = undefined
+        this.title = undefined
     }
 
     connectedCallback() {
@@ -203,8 +204,8 @@ class mainContainer extends HTMLElement {
                         width: 100%;
                     }
                     .main-container main {
-                        margin-left: 20px;
-                        margin-top: 10px;
+                        margin-left: 5px;
+                        margin-top: 0;
                         border-top: solid var(--main-text-color) 1px;
                     }
                     .footer-info {
@@ -237,7 +238,7 @@ class mainContainer extends HTMLElement {
                         <a style="font-size: medium" href="#fontSizeMedium" id="fontSizeMedium" class="active" aria-label="set font size to medium">Aa</a>
                         <a style="font-size: large" href="#fontSizeLarge" id="fontSizeLarge" aria-label="set font size to large">Aa</a>
                     </div>
-                    <h1 class="title" id="maintitle" role="heading" tabindex="0">Loading</h1>
+                    <h1 class="title" id="maintitle" role="heading">Loading</h1>
                     <div class="content" id="maincontent">
                         <p>Loading</p>     
                     </div>
@@ -367,7 +368,8 @@ class mainContainer extends HTMLElement {
                 mc.innerText = this.originalText;
                 break
             case "geschiedenis":
-                mc.innerHTML = this.originalText;
+                mc.innerHTML = `<billy-history></billy-history>`
+                mc.querySelector("billy-history").setAttribute("title", this.title)
                 break
             default:
                 mc.innerHTML = this.originalText;
@@ -642,14 +644,13 @@ class mainContainer extends HTMLElement {
                         this.makeModal(false, filenameHigh, "", postModal, postButton, selectPostCat, selectPostSubCat, closePostModal, postTitle, postTextEl, savePostButton);
                         mc.innerHTML = ``
                         mc.innerHTML = this.originalText
+                        this.title = filenameHigh.toLowerCase()
                         document.title = filenameHigh + ' | Billy'
                         this._shadowRoot.getElementById('maintitle').innerText = filenameHigh
-                        this._shadowRoot.getElementById('maintitle').focus()
                         this.getCategories("categories", "#categories-list", this.cat)
                         this.getCategories("subcategories", "#subcategories-list", this.subCat)
                         mc.querySelector('p').className += "paragraph-content";
                         mc.querySelector('p').setAttribute("aria-label", "page content")
-                        mc.querySelector('p').setAttribute("tabindex", "0")
                         this.fontSize()
                     })
                 }

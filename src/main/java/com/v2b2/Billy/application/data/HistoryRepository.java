@@ -14,4 +14,6 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
     Optional<Integer> getId();
 
     List<History> findAllByArticle(Article article);
+
+    History findById(int id);
 }
