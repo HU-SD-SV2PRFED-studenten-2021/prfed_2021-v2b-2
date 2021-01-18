@@ -117,7 +117,7 @@ public class MainController {
         } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/recent")
+    @GetMapping("/getrecent")
     public ResponseEntity<?> getRecentHistory() {
         List<HistoryDTO> historyDTOS = this.mainService.getRecentHistory();
         if (historyDTOS != null) {

@@ -39,7 +39,7 @@ class showHistory extends HTMLElement {
                 </tr>
             </thead>
         </table>
-`
+        `
         let url = window.location.href;
         this.filename = url.split('/').pop();
         this.filename = this.filename.split('.')[0]

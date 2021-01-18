@@ -79,16 +79,11 @@ class mainContainer extends HTMLElement {
                 a {
                     color: var(--main-link-color);
                 }
-                #editButton{
-                    float: right;
-                    margin: 0 5px 0 5px;
-                }
-                #darkButton {
-                    float: right;
-                }
+                #editButton,
+                #darkButton,
                 #postButton{
                     float: right;
-                    margin: 0 5px 0 5px;
+                    margin-left: 5px;
                 }
                 button {
                     color: var(--main-text-color);
@@ -497,7 +492,7 @@ class mainContainer extends HTMLElement {
 
             function savePost() {
                 const data = {
-                    title: `${title.value}`,
+                    title: `${title.value.toLowerCase()}`,
                     content: `<p>${textElement.value}</p>`,
                     categoryDTO: {name: `${selectCat.value}`},
                     subcategoryDTO: {name: `${selectSubCat.value}`}
@@ -626,7 +621,7 @@ class mainContainer extends HTMLElement {
             window.location = "/index.html"
         }
         let filenameHigh = decodeURI(filename.charAt(0).toUpperCase() + filename.slice(1))
-        this.fetchurl = `/rest/${filename}`
+        this.fetchurl = `/rest/${filename.toLowerCase()}`
         fetch(this.fetchurl)
             .then(response => {
                 if (response.status !== 200) {
@@ -789,6 +784,8 @@ class mainContainer extends HTMLElement {
                 document.querySelector("body").style.setProperty("--main-popup-color", "rgb(49, 49, 49)")
                 document.querySelector("body").style.setProperty("--main-active-color", "yellow")
                 document.querySelector("body").style.setProperty("--main-dark-accent-color", "darkgoldenrod")
+                document.querySelector("body").style.setProperty("--main-table-accent-color", "rgb(57, 57, 57)")
+
                 window.localStorage.setItem("readMode", "Nacht mode")
                 return
             case "Dag mode":
@@ -800,6 +797,7 @@ class mainContainer extends HTMLElement {
                 document.querySelector("body").style.setProperty("--main-popup-color", "lightgrey")
                 document.querySelector("body").style.setProperty("--main-active-color", "red")
                 document.querySelector("body").style.setProperty("--main-dark-accent-color", "darkred")
+                document.querySelector("body").style.setProperty("--main-table-accent-color", "#ddd")
                 window.localStorage.setItem("readMode", "Dag mode")
                 return
         }

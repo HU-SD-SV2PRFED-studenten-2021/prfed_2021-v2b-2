@@ -116,11 +116,19 @@ public class MainService {
 
             Article g = new Article();
             g.setTitle("navigatie");
-            g.setContent("<p>Dit is de navigatie matrix. <br><billy-matrix><p>");
+            g.setContent("<p>Dit is de navigatie matrix. <br><billy-matrix></p>");
             g.setLastEdited(LocalDateTime.now());
             g.setCategory(actualCategories.get(5));
             g.setSubcategory(actualSubCats.get(5));
             this.articleRepository.save(g);
+
+            Article h = new Article();
+            h.setTitle("recent");
+            h.setContent("<p>Dit zijn de recente wijzigingen. <br><billy-recentchanges></p>");
+            h.setLastEdited(LocalDateTime.now());
+            h.setCategory(actualCategories.get(5));
+            h.setSubcategory(actualSubCats.get(5));
+            this.articleRepository.save(h);
 
             this.categoryRepository.findAll().forEach(category -> {
                 if (category.getName().equals("Standaardpagina")) {

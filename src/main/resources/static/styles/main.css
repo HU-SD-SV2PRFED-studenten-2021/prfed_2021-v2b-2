@@ -4,6 +4,16 @@
     box-sizing: border-box;
 }
 
+#loginBtn {
+    color: var(--main-text-color);
+    background-color: var(--main-color);
+    border-color: var(--main-text-color);
+    border-radius: 5px;
+    border-width: 1px;
+    padding: 2px;
+    transition: background-color 0.4s ease-out, color 0.4s ease-out;
+}
+
 body {
     display: grid;
     grid-area: auto;
@@ -14,6 +24,7 @@ body {
     --main-popup-color: lightgrey;
     --main-active-color: red;
     --main-dark-accent-color: darkred;
+    --main-table-accent-color: #ddd;
     background: var(--main-color);
     transition: background-color 0.4s ease-out, color 0.4s ease-out;
     --width: width;
