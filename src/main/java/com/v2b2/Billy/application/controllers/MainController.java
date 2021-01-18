@@ -21,7 +21,6 @@ public class MainController {
 
     @PostMapping("/test")
     public boolean getTest(Authentication authentication) {
-        System.out.println(((UserProfile) authentication.getPrincipal()).getUsername());
         return true;
     }
 
@@ -115,6 +114,14 @@ public class MainController {
         ArticleDTO articleDTO = this.mainService.rollback(id);
         if (articleDTO != null) {
             return new ResponseEntity<>(articleDTO, HttpStatus.OK);
+        } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/recent")
+    public ResponseEntity<?> getRecentHistory() {
+        List<HistoryDTO> historyDTOS = this.mainService.getRecentHistory();
+        if (historyDTOS != null) {
+            return new ResponseEntity<>(historyDTOS, HttpStatus.OK);
         } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
     }
 }
