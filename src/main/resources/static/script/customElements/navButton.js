@@ -89,7 +89,6 @@ class navButton extends HTMLElement {
                     <div id="modeList">
                         <li><a href="#" id="hoofdpagina" class="modebutton active">Hoofdpagina</a></li>
                         <li><a href="#" id="overleg" class="modebutton">Overleg</a></li>
-                        <li><a href="#" id="lezen" class="modebutton">Lezen</a></li>
                         <li><a href="#" id="brontext" class="modebutton">Brontext</a></li>
                         <li><a href="#" id="geschiedenis" class="modebutton">Geschiedenis</a></li>
                     </div>

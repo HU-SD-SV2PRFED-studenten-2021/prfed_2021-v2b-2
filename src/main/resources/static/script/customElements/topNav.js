@@ -81,7 +81,6 @@ class topNav extends HTMLElement {
                     <ul class="top-navigation-list" id="topnav">
                         <li><a href="" class="active" id="hoofdpagina">Hoofdpagina</a></li>
                         <li><a href="" id="overleg">Overleg</a></li>
-                        <li><a href="" id="lezen">Lezen</a></li>
                         <li><a href="" id="brontext">Brontext bekijken</a></li>
                         <li><a href="" id="geschiedenis">Geschiedenis weergeven</a></li>
                         <li><billy-search></billy-search></li>
