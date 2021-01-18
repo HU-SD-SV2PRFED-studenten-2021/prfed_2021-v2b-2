@@ -13,6 +13,7 @@ body {
     --main-link-color: #0000EE;
     --main-popup-color: lightgrey;
     --main-active-color: red;
+    --main-dark-accent-color: darkred;
     background: var(--main-color);
     transition: background-color 0.4s ease-out, color 0.4s ease-out;
     --width: width;
