@@ -12,8 +12,23 @@ class categoryMatrix extends HTMLElement {
                     color: var(--main-link-color);
                 }
                 th, td {
-                    border: 1px solid var(--main-text-color);
+                    /*border: 1px solid var(--main-text-color);*/
                     padding: 3px;
+                }
+                thead {
+                    background-color: var(--main-active-color);
+                }
+                thead a {
+                    color: var(--main-color);
+                }
+                tr:nth-child(even){
+                    background-color: #ddd;  
+                }
+                tbody tr td:first-child {
+                    background-color: darkred;
+                }
+                tbody tr td:first-child a {
+                    color: var(--main-color);
                 }
                 @media screen and (max-width: 930px) {
                   table thead {

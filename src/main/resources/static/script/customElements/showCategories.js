@@ -11,7 +11,6 @@ class showCategories extends HTMLElement {
             a{
                 text-decoration: none;
                 color: var(--main-link-color);
-                
             }
             table, th, td {
                 border: 1px solid var(--main-text-color);
@@ -31,6 +30,7 @@ class showCategories extends HTMLElement {
                     content: attr(categorie);
                     width: 50px;
                     min-width: 155px;
+                    
                   }
                 }
         </style>

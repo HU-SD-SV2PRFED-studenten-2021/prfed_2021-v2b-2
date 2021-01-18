@@ -16,7 +16,22 @@ class sideNavigation extends HTMLElement {
                     }
                     a {
                         text-decoration: none;
-                        color: var(--main-link-color);
+                        background-color: var(--main-active-color);
+                        box-shadow: 5px 5px darkred;
+                        color: var(--main-color);
+                        padding: 0.5em 0.5em;
+                        position: relative;
+                        transition: all ease-in 0.5s;
+                    }
+                    a:hover {
+                      background-color: #ce0606;
+                      cursor: pointer;
+                    }
+                    
+                    a:active {
+                      box-shadow: none;
+                      top: 5px;
+                      transition: all ease-in 0.2s;
                     }
                     ul {
                         list-style-type: none;
@@ -35,9 +50,6 @@ class sideNavigation extends HTMLElement {
                         margin-left: 5%;
                         height: 100vh;
                         background-color: var(--main-color);
-                    }
-                    .navigation li {
-                        border-bottom: 1px solid var(--main-text-color);
                     }
                     @media (max-width: 850px) {
                         nav {
