@@ -24,7 +24,7 @@ class categoryMatrix extends HTMLElement {
                     color: var(--main-color);
                 }
                 tr:nth-child(even){
-                    background-color: #ddd;  
+                    background-color: var(--main-table-accent-color);  
                 }
                 tbody tr td:first-child {
                     background-color: var(--main-dark-accent-color);
