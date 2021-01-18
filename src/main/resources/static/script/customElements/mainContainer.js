@@ -209,7 +209,7 @@ class mainContainer extends HTMLElement {
                         border-top: solid var(--main-text-color) 1px;
                     }
                     .footer-info {
-                        margin-left: 20px;
+                        margin-left: 5px;
                     }
                     .categories-list {
                         display: block;

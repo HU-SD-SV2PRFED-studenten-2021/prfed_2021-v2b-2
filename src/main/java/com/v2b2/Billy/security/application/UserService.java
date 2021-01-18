@@ -21,10 +21,10 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void register(String username, String password, String firstName, String lastName) {
+    public void register(String username, String password, String firstName, String lastName, String role) {
         String encodedPassword = this.passwordEncoder.encode(password);
 
-        User user = new User(username, encodedPassword, firstName, lastName, "ROLE_USER");
+        User user = new User(username, encodedPassword, firstName, lastName, role);
 
         this.userRepository.save(user);
     }
@@ -32,7 +32,8 @@ public class UserService implements UserDetailsService {
     public void insertFirstUser() {
         User user = this.userRepository.findByUsername("admin").orElse(null);
         if (user == null) {
-            this.register("admin", "admin", "ad", "min");
+            this.register("admin", "admin", "ad", "min", "ROLE_ADMIN");
+            this.register("notadmin", "notadmin", "Not", "Admin", "ROLE_USER");
         }
     }
 

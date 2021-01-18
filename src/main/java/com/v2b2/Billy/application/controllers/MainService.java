@@ -170,7 +170,7 @@ public class MainService {
                     Article article = new Article(articleName.toLowerCase(), articleContent, LocalDateTime.now(), category, subcategory);
                     this.articleRepository.save(article);
                     String secondArticleName = String.format("%s %s dummy", category.getName(), subcategory.getName());
-                    String secondArticleContent = String.format("<p>Welkom op de %s pagina! <br>", articleName);
+                    String secondArticleContent = String.format("<p>Welkom op de %s pagina! </p>", articleName);
                     Article secondArticle = new Article(secondArticleName.toLowerCase(), secondArticleContent, LocalDateTime.now(), category, subcategory);
                     this.articleRepository.save(secondArticle);
                 });
@@ -334,6 +334,7 @@ public class MainService {
             article.setSubcategory(history.getSubcategory());
             article.setLastEdited(history.getEditDateTime());
             this.articleRepository.save(article);
+            this.historyRepository.delete(history);
             return new ArticleDTO(article);
         } else return null;
     }

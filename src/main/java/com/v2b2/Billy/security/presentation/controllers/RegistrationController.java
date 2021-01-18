@@ -31,7 +31,8 @@ public class RegistrationController {
                 registration.username,
                 registration.password,
                 registration.firstName,
-                registration.lastName
+                registration.lastName,
+                "ROLE_USER"
         );
     }
 }

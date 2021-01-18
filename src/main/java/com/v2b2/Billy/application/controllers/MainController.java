@@ -1,9 +1,11 @@
 package com.v2b2.Billy.application.controllers;
 
 import com.v2b2.Billy.application.dto.*;
+import com.v2b2.Billy.security.data.UserProfile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +20,8 @@ public class MainController {
     }
 
     @PostMapping("/test")
-    public boolean getTest() {
+    public boolean getTest(Authentication authentication) {
+        System.out.println(((UserProfile) authentication.getPrincipal()).getUsername());
         return true;
     }
 

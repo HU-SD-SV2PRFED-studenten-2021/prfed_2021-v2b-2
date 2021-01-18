@@ -22,6 +22,7 @@ class topNav extends HTMLElement {
                 }
                 ul {
                     list-style-type: none;
+                    padding-inline-start: 25px;
                 }
                 .top-navigation-list li a.active {
                     padding-bottom: 10px;
