@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -337,5 +338,14 @@ public class MainService {
             this.historyRepository.delete(history);
             return new ArticleDTO(article);
         } else return null;
+    }
+
+    public List<HistoryDTO> getRecentHistory() {
+        List<History> histories = this.historyRepository.findAll();
+        histories.sort((item1, item2) -> item2.getEditDateTime().compareTo(item1.getEditDateTime()));
+        if (histories.size() > 20) {
+            histories = histories.stream().limit(20).collect(Collectors.toList());
+        }
+        return HistoryDTO.getFromList(histories);
     }
 }
