@@ -17,14 +17,14 @@ class sideNavigation extends HTMLElement {
                     a {
                         text-decoration: none;
                         background-color: var(--main-active-color);
-                        box-shadow: 5px 5px darkred;
+                        box-shadow: 5px 5px var(--main-dark-accent-color);
                         color: var(--main-color);
                         padding: 0.5em 0.5em;
                         position: relative;
                         transition: all ease-in 0.5s;
                     }
                     a:hover {
-                      background-color: #ce0606;
+                      background-color: var(--main-dark-accent-color);
                       cursor: pointer;
                     }
                     

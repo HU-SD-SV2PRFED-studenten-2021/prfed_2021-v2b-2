@@ -8,11 +8,13 @@ class categoryMatrix extends HTMLElement {
         this._shadowRoot.innerHTML =
             `<!-- HTML -->
             <style>
+                * {
+                    transition: background-color ease-out 0.5s, color ease-out 0.5s;
+                }
                 a {
                     color: var(--main-link-color);
                 }
                 th, td {
-                    /*border: 1px solid var(--main-text-color);*/
                     padding: 3px;
                 }
                 thead {
@@ -25,7 +27,7 @@ class categoryMatrix extends HTMLElement {
                     background-color: #ddd;  
                 }
                 tbody tr td:first-child {
-                    background-color: darkred;
+                    background-color: var(--main-dark-accent-color);
                 }
                 tbody tr td:first-child a {
                     color: var(--main-color);

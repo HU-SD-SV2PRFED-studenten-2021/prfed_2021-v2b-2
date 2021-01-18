@@ -788,24 +788,18 @@ class mainContainer extends HTMLElement {
                 document.querySelector("body").style.setProperty("--main-link-color", "#5881ff")
                 document.querySelector("body").style.setProperty("--main-popup-color", "rgb(49, 49, 49)")
                 document.querySelector("body").style.setProperty("--main-active-color", "yellow")
+                document.querySelector("body").style.setProperty("--main-dark-accent-color", "darkgoldenrod")
                 window.localStorage.setItem("readMode", "Nacht mode")
                 return
             case "Dag mode":
+            default:
                 darkButton.textContent = "Nacht mode"
                 document.querySelector("body").style.setProperty("--main-color", "white")
                 document.querySelector("body").style.setProperty("--main-text-color", "rgb(33, 33, 33)")
                 document.querySelector("body").style.setProperty("--main-link-color", "#0000EE")
                 document.querySelector("body").style.setProperty("--main-popup-color", "lightgrey")
                 document.querySelector("body").style.setProperty("--main-active-color", "red")
-                window.localStorage.setItem("readMode", "Dag mode")
-                return
-            default:
-                darkButton.textContent = "Nacht mode"
-                document.querySelector("body").style.setProperty("--main-color", "white")
-                document.querySelector("body").style.setProperty("--main-text-color", "rgb(33, 33, 33)")
-                document.querySelector("body").style.setProperty("--main-link-color", "#5881ff")
-                document.querySelector("body").style.setProperty("--main-popup-color", "rgb(49, 49, 49)")
-                document.querySelector("body").style.setProperty("--main-active-color", "yellow")
+                document.querySelector("body").style.setProperty("--main-dark-accent-color", "darkred")
                 window.localStorage.setItem("readMode", "Dag mode")
                 return
         }
