@@ -58,6 +58,11 @@ class showHistory extends HTMLElement {
                 response.json().then(json => {
                     let table = this._shadowRoot.querySelector("table")
                     let tBody = table.createTBody()
+                    if(json[0] === undefined) {
+                        let message = document.createElement('p')
+                        message.innerText = `Er is (nog) geen geschiedenis`
+                        table.parentNode.appendChild(message)
+                    }
                     fetch("/rest/testadmin", {
                         method: "POST",
                         headers: {
