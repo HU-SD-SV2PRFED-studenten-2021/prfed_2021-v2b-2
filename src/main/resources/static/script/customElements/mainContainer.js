@@ -545,7 +545,6 @@ class mainContainer extends HTMLElement {
             textElement.style.height = "auto";
             textElement.textContent = isEdit? text: "";
             textElement.value = isEdit? text: "";
-            console.log(textElement.scrollHeight)
             modalElement.style.display = "none";
             modalOverlay.style.display = "none";
             toggleButton.focus()
@@ -630,7 +629,8 @@ class mainContainer extends HTMLElement {
                     response.json().then(response => {
                         this.cat = response.category
                         this.subCat = response.subcategory
-                        this._shadowRoot.getElementById('footerdate').innerText = `Deze pagina is voor het laatst bewerkt op ${response.lastEdited}`
+                        this._shadowRoot.getElementById('footerdate').innerText =
+                            `Deze pagina is voor het laatst bewerkt op ${response.lastEdited} door ${response.user.firstName} ${response.user.lastName} (${response.user.username})`
                         const mc = this._shadowRoot.getElementById('maincontent')
                         let editAreaText = response.content.replaceAll('\n', '\r\n');
                         editAreaText = editAreaText.slice(3, editAreaText.length - 4)

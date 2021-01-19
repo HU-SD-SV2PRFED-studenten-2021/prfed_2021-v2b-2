@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 
 @Service
 @Transactional
@@ -24,7 +25,7 @@ public class UserService implements UserDetailsService {
     public void register(String username, String password, String firstName, String lastName, String role) {
         String encodedPassword = this.passwordEncoder.encode(password);
 
-        User user = new User(username, encodedPassword, firstName, lastName, role);
+        User user = new User(username, encodedPassword, firstName, lastName, role, new ArrayList<>(), new ArrayList<>());
 
         this.userRepository.save(user);
     }

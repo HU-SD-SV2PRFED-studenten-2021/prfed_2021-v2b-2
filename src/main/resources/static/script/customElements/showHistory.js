@@ -36,6 +36,7 @@ class showHistory extends HTMLElement {
                     <th>Bewerkt op</th>
                     <th>Categorie</th>
                     <th>Subcategorie</th>
+                    <th>Gebruiker</th>
                 </tr>
             </thead>
         </table>
@@ -75,9 +76,9 @@ class showHistory extends HTMLElement {
                         json.forEach(historyItem => {
                             let row = tBody.insertRow()
                             let count = 0
-                            let items = ["Inhoud", "Bewerkt op", "Categorie", "Subcategorie"]
+                            let items = ["Inhoud", "Bewerkt op", "Categorie", "Subcategorie", "Gebruiker"]
                             Object.keys(historyItem).forEach(actualItem => {
-                                let itemTitle = historyItem[actualItem].name || historyItem[actualItem]
+                                let itemTitle = historyItem[actualItem].name || historyItem[actualItem].username || historyItem[actualItem]
                                 if (itemTitle !== this.filename && actualItem !== "id") {
                                     let cell = row.insertCell()
                                     cell.innerText = `${itemTitle}`

@@ -22,10 +22,10 @@ class topNav extends HTMLElement {
                 }
                 ul {
                     list-style-type: none;
-                    padding-inline-start: 25px;
+                    padding-inline-start: 5px;
                 }
                 .top-navigation-list li a.active {
-                    padding-bottom: 10px;
+                    padding-bottom: 50px;
                     background-color: var(--main-color);
                     background-clip: padding-box;
                     color: var(--main-active-color);
@@ -36,7 +36,7 @@ class topNav extends HTMLElement {
                     background-color: var(--main-color);
                 }
                 .bottom-container {
-                    margin-top: 50px;
+                    margin-top: 30px;
                     padding-bottom: 5px;
                     margin-left: -5%;
                 }
@@ -68,6 +68,9 @@ class topNav extends HTMLElement {
                     .top-navigation-list li a.active {
                         background-color: var(--main-color);
                         color: var(--main-active-color);
+                    }
+                    .bottom-container {
+                        margin-left: 0;
                     }
                 }
                 @media (max-width: 620px) {

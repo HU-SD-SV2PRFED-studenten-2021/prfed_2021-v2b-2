@@ -2,6 +2,9 @@ package com.v2b2.Billy.application.controllers;
 
 import com.v2b2.Billy.application.data.*;
 import com.v2b2.Billy.application.dto.*;
+import com.v2b2.Billy.security.data.SpringUserRepository;
+import com.v2b2.Billy.security.data.User;
+import com.v2b2.Billy.security.data.UserProfile;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,12 +21,14 @@ public class MainService {
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
     private final HistoryRepository historyRepository;
+    private final SpringUserRepository userRepository;
 
-    public MainService(ArticleRepository articleRepository, CategoryRepository categoryRepository, SubcategoryRepository subcategoryRepository, HistoryRepository historyRepository) {
+    public MainService(ArticleRepository articleRepository, CategoryRepository categoryRepository, SubcategoryRepository subcategoryRepository, HistoryRepository historyRepository, SpringUserRepository userRepository) {
         this.articleRepository = articleRepository;
         this.categoryRepository = categoryRepository;
         this.subcategoryRepository = subcategoryRepository;
         this.historyRepository = historyRepository;
+        this.userRepository = userRepository;
     }
 
     public ArticleDTO getArticle(String id) {
@@ -34,6 +39,7 @@ public class MainService {
     }
 
     public void insertFirst() {
+        User user = this.userRepository.findUserByUsername("admin").orElse(null);
         if (this.categoryRepository.findAllByName("Software") == null) {
             ArrayList<String> categories = new ArrayList<>();
             categories.add("Software");
@@ -72,6 +78,7 @@ public class MainService {
             a.setLastEdited(LocalDateTime.now());
             a.setCategory(actualCategories.get(5));
             a.setSubcategory(actualSubCats.get(5));
+            a.setUser(user);
             this.articleRepository.save(a);
 
             Article b = new Article();
@@ -80,6 +87,7 @@ public class MainService {
             b.setLastEdited(LocalDateTime.now());
             b.setCategory(actualCategories.get(5));
             b.setSubcategory(actualSubCats.get(5));
+            b.setUser(user);
             this.articleRepository.save(b);
 
             Article d = new Article();
@@ -88,6 +96,7 @@ public class MainService {
             d.setLastEdited(LocalDateTime.now());
             d.setCategory(actualCategories.get(5));
             d.setSubcategory(actualSubCats.get(5));
+            d.setUser(user);
             this.articleRepository.save(d);
 
             Article e = new Article();
@@ -96,6 +105,7 @@ public class MainService {
             e.setLastEdited(LocalDateTime.now());
             e.setCategory(actualCategories.get(5));
             e.setSubcategory(actualSubCats.get(5));
+            e.setUser(user);
             this.articleRepository.save(e);
 
             Article f = new Article();
@@ -112,6 +122,7 @@ public class MainService {
             f.setLastEdited(LocalDateTime.now());
             f.setCategory(actualCategories.get(5));
             f.setSubcategory(actualSubCats.get(5));
+            f.setUser(user);
             this.articleRepository.save(f);
 
             Article g = new Article();
@@ -120,6 +131,7 @@ public class MainService {
             g.setLastEdited(LocalDateTime.now());
             g.setCategory(actualCategories.get(5));
             g.setSubcategory(actualSubCats.get(5));
+            g.setUser(user);
             this.articleRepository.save(g);
 
             Article h = new Article();
@@ -128,6 +140,7 @@ public class MainService {
             h.setLastEdited(LocalDateTime.now());
             h.setCategory(actualCategories.get(5));
             h.setSubcategory(actualSubCats.get(5));
+            h.setUser(user);
             this.articleRepository.save(h);
 
             this.categoryRepository.findAll().forEach(category -> {
@@ -144,6 +157,7 @@ public class MainService {
                 article.setLastEdited(LocalDateTime.now());
                 article.setSubcategory(actualSubCats.get(5));
                 category.addArticle(article);
+                article.setUser(user);
                 this.articleRepository.save(article);
                 this.categoryRepository.save(category);
             });
@@ -161,6 +175,7 @@ public class MainService {
                 article.setLastEdited(LocalDateTime.now());
                 article.setCategory(actualCategories.get(5));
                 subcategory.addArticle(article);
+                article.setUser(user);
                 this.articleRepository.save(article);
                 this.subcategoryRepository.save(subcategory);
             });
@@ -177,10 +192,12 @@ public class MainService {
                             "De volgende artikelen hebben deze categorieën:<br>" +
                             "<billy-categories></p>", articleName);
                     Article article = new Article(articleName.toLowerCase(), articleContent, LocalDateTime.now(), category, subcategory);
+                    article.setUser(user);
                     this.articleRepository.save(article);
                     String secondArticleName = String.format("%s %s dummy", category.getName(), subcategory.getName());
                     String secondArticleContent = String.format("<p>Welkom op de %s pagina! </p>", articleName);
                     Article secondArticle = new Article(secondArticleName.toLowerCase(), secondArticleContent, LocalDateTime.now(), category, subcategory);
+                    secondArticle.setUser(user);
                     this.articleRepository.save(secondArticle);
                 });
             });
@@ -234,8 +251,9 @@ public class MainService {
         return null;
     }
 
-    public ArticleDTO createArticle(ArticleCreateDTO acd) {
-        if (this.getArticle(acd.getTitle()) == null) {
+    public ArticleDTO createArticle(ArticleCreateDTO acd, String principal) {
+        User user = this.userRepository.findByUsername(principal).orElse(null);
+        if (this.getArticle(acd.getTitle()) == null && user != null) {
             Article a = new Article();
             a.setTitle(acd.getTitle().toLowerCase());
             a.setContent(acd.getContent());
@@ -250,6 +268,7 @@ public class MainService {
                 sc.addArticle(a);
             }
             a.setLastEdited(LocalDateTime.now());
+            a.setUser(user);
             this.articleRepository.save(a);
             this.categoryRepository.save(a.getCategory());
             this.subcategoryRepository.save(a.getSubcategory());
@@ -257,12 +276,13 @@ public class MainService {
         } else return null;
     }
 
-    public ArticleDTO updateArticle(String id, ArticleCreateDTO articleDTO) {
+    public ArticleDTO updateArticle(String id, ArticleCreateDTO articleDTO, String principal) {
+        User user = this.userRepository.findByUsername(principal).orElse(null);
         Article article = this.articleRepository.findArticleByTitle(id);
-        if (article != null) {
+        if (article != null && user != null) {
             int historyId = this.historyRepository.getId().orElse(0) + 1;
             History history = new History(historyId, article.getLastEdited(), article, article.getContent(),
-                    article.getCategory(), article.getSubcategory());
+                    article.getCategory(), article.getSubcategory(), article.getUser());
             this.historyRepository.save(history);
             article.setContent(articleDTO.getContent());
             article.setLastEdited(LocalDateTime.now());
@@ -284,6 +304,7 @@ public class MainService {
                     this.categoryRepository.save(prevCat);
                 }
             }
+            article.setUser(user);
             this.articleRepository.save(article);
             this.categoryRepository.save(article.getCategory());
             this.subcategoryRepository.save(article.getSubcategory());
@@ -336,12 +357,13 @@ public class MainService {
             Article article = history.getArticle();
             int newId = this.historyRepository.getId().orElse(0) + 1;
             History newHistory = new History(newId, article.getLastEdited(), article, article.getContent(),
-                    article.getCategory(), article.getSubcategory());
+                    article.getCategory(), article.getSubcategory(), article.getUser());
             this.historyRepository.save(newHistory);
             article.setContent(history.getContent());
             article.setCategory(history.getCategory());
             article.setSubcategory(history.getSubcategory());
             article.setLastEdited(history.getEditDateTime());
+            article.setUser(history.getUser());
             this.articleRepository.save(article);
             this.historyRepository.delete(history);
             return new ArticleDTO(article);
