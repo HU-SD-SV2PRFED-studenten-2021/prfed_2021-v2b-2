@@ -9,8 +9,8 @@ class recentChanges extends HTMLElement{
     connectedCallback() {
         this._shadowRoot.innerHTML = `<!-- HTML -->
         <style>
-        * {
-                    transition: background-color ease-out 0.5s, color ease-out 0.5s;
+                * {
+                    transition: background-color ease-out 0.1s, color ease-out 0.1s;
                 }
                 a {
                     color: var(--main-link-color);
@@ -27,6 +27,12 @@ class recentChanges extends HTMLElement{
                 tr:nth-child(even){
                     background-color: var(--main-table-accent-color);  
                 }
+                tbody tr td:first-child {
+                    background-color: var(--main-dark-accent-color);
+                }
+                tbody tr td:first-child a {
+                    color: var(--main-color);
+                }
                 @media screen and (max-width: 930px) {
                   table thead {
                     display: none;
@@ -36,9 +42,13 @@ class recentChanges extends HTMLElement{
                   }
                   
                   table td::before {
-                    content: attr(categorie);
-                    width: 75%;
-                    min-width: 120px;
+                    content: attr(title);
+                    width: 95px;
+                    border-right: solid 1px var(--main-text-color);
+                    margin-right: 5px;
+                  }
+                  tbody tr td:first-child::before {
+                    color: var(--main-color);
                   }
                 }
         </style>    
@@ -50,6 +60,7 @@ class recentChanges extends HTMLElement{
                     <th>Bewerkt op</th>
                     <th>Categorie</th>
                     <th>Subcategorie</th>
+                    <th>Gebruiker</th>
                 </tr>
             </thead>
         </table>
@@ -76,17 +87,15 @@ class recentChanges extends HTMLElement{
                     json.forEach(historyItem => {
                         let row = tBody.insertRow()
                         let count = 0
-                        let items = ["Titel", "Inhoud", "Bewerkt op", "Categorie", "Subcategorie"]
+                        let items = ["Titel", "Inhoud", "Bewerkt op", "Categorie", "Subcategorie", "Gebruiker"]
                         Object.keys(historyItem).forEach(actualItem => {
-
-                            let itemTitle = historyItem[actualItem].name || historyItem[actualItem]
+                            let itemTitle = historyItem[actualItem].name || historyItem[actualItem].username || historyItem[actualItem]
                             if (actualItem !== "id") {
                                 let cell = row.insertCell()
                                 if(actualItem === 'title') {
-                                    cell.innerHTML = `<a href="/${itemTitle}.html">${itemTitle}</a>`
+                                    cell.innerHTML = `<a href="/${itemTitle}.html" aria-label="link naar ${itemTitle}">${itemTitle}</a>`
                                 } else {
                                     cell.innerHTML = `${itemTitle}`
-
                                 }
                                 cell.setAttribute("title", items[count])
                                 count += 1

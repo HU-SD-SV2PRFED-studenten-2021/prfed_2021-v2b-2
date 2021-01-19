@@ -1,5 +1,7 @@
 package com.v2b2.Billy.application.data;
 
+import com.v2b2.Billy.security.data.User;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -20,14 +22,18 @@ public class History {
     @ManyToOne
     @JoinColumn(name = "subcategory_id")
     private Subcategory subcategory;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public History(int id, LocalDateTime editDateTime, Article article, String content, Category category, Subcategory subcategory) {
+    public History(int id, LocalDateTime editDateTime, Article article, String content, Category category, Subcategory subcategory, User user) {
         this.id = id;
         this.editDateTime = editDateTime;
         this.article = article;
         this.content = content;
         this.category = category;
         this.subcategory = subcategory;
+        this.user = user;
     }
 
     public History() {
@@ -79,5 +85,9 @@ public class History {
 
     public void setSubcategory(Subcategory subcategory) {
         this.subcategory = subcategory;
+    }
+
+    public User getUser() {
+        return this.user;
     }
 }

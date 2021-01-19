@@ -1,5 +1,6 @@
 package com.v2b2.Billy.application.data;
 
+import com.v2b2.Billy.security.data.User;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -24,6 +25,9 @@ public class Article {
     private Subcategory subcategory;
     @OneToMany(mappedBy = "article")
     private List<History> histories = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "userid")
+    private User user;
 
     public Article(String title, String content, LocalDateTime lastEdited, Category category, Subcategory subcategory) {
         this.title = title;
@@ -102,5 +106,13 @@ public class Article {
 
     public void setHistories(List<History> histories) {
         this.histories = histories;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

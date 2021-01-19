@@ -14,14 +14,16 @@ public class HistoryDTO {
     public CategoryDTO category;
     public SubcategoryDTO subcategory;
     public int id;
+    public UserDTO user;
 
-    public HistoryDTO(String title, String content, LocalDateTime editTime, CategoryDTO category, SubcategoryDTO subcategory, int id) {
+    public HistoryDTO(String title, String content, LocalDateTime editTime, CategoryDTO category, SubcategoryDTO subcategory, int id, UserDTO user) {
         this.title = title;
         this.content = content;
         this.editTime = formatEdit(editTime);
         this.category = category;
         this.subcategory = subcategory;
         this.id = id;
+        this.user = user;
     }
 
     public HistoryDTO(History history) {
@@ -31,6 +33,7 @@ public class HistoryDTO {
         this.category = new CategoryDTO(history.getCategory().getName());
         this.subcategory = new SubcategoryDTO(history.getSubcategory().getName());
         this.id = history.getId();
+        this.user = new UserDTO(history.getUser());
     }
 
     public static List<HistoryDTO> getFromList(List<History> histories) {
@@ -66,5 +69,9 @@ public class HistoryDTO {
 
     public int getId() {
         return id;
+    }
+
+    public UserDTO getUser() {
+        return user;
     }
 }

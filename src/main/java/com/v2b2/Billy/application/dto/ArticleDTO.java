@@ -11,13 +11,15 @@ public class ArticleDTO {
     public String lastEdited;
     public CategoryDTO category;
     public SubcategoryDTO subcategory;
+    public UserDTO user;
 
-    public ArticleDTO(String title, String content, String lastEdited, CategoryDTO category, SubcategoryDTO subcategory) {
+    public ArticleDTO(String title, String content, String lastEdited, CategoryDTO category, SubcategoryDTO subcategory, UserDTO user) {
         this.title = title;
         this.content = content;
         this.lastEdited = lastEdited;
         this.category = category;
         this.subcategory = subcategory;
+        this.user = user;
     }
 
     public ArticleDTO(String title, String content) {
@@ -31,6 +33,7 @@ public class ArticleDTO {
         this.lastEdited = formatEdit(a.getLastEdited());
         this.category = new CategoryDTO(a.getCategory().getName());
         this.subcategory = new SubcategoryDTO(a.getSubcategory().getName());
+        this.user = new UserDTO(a.getUser());
     }
 
     private String formatEdit(LocalDateTime ldt) {
@@ -56,5 +59,9 @@ public class ArticleDTO {
 
     public SubcategoryDTO getSubcategory() {
         return subcategory;
+    }
+
+    public UserDTO getUser() {
+        return user;
     }
 }

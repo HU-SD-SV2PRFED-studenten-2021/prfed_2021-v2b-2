@@ -20,7 +20,7 @@ public class MainController {
     }
 
     @PostMapping("/test")
-    public boolean getTest(Authentication authentication) {
+    public boolean getTest() {
         return true;
     }
 
@@ -39,8 +39,8 @@ public class MainController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateArticle(@PathVariable String id, @RequestBody ArticleCreateDTO articleDTO) {
-        ArticleDTO newArticle = this.mainService.updateArticle(id, articleDTO);
+    public ResponseEntity<?> updateArticle(@PathVariable String id, @RequestBody ArticleCreateDTO articleDTO, Authentication authentication) {
+        ArticleDTO newArticle = this.mainService.updateArticle(id, articleDTO, ((UserProfile) authentication.getPrincipal()).getUsername());
         if (newArticle != null) {
             return new ResponseEntity<>(newArticle, HttpStatus.OK);
         } else return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
@@ -66,8 +66,8 @@ public class MainController {
     }
 
     @PostMapping("/article")
-    public ResponseEntity<?> postArticle(@RequestBody ArticleCreateDTO acd) {
-        ArticleDTO articleDTO = this.mainService.createArticle(acd);
+    public ResponseEntity<?> postArticle(@RequestBody ArticleCreateDTO acd, Authentication authentication) {
+        ArticleDTO articleDTO = this.mainService.createArticle(acd, ((UserProfile) authentication.getPrincipal()).getUsername());
         if (articleDTO != null) {
             return new ResponseEntity<>(articleDTO, HttpStatus.OK);
         } else return new ResponseEntity<>("Already exists", HttpStatus.CONFLICT);
