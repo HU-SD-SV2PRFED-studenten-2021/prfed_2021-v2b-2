@@ -49,6 +49,11 @@ class searchBar extends HTMLElement {
                 input#searchField {
                     width: 45%;
                 }
+                .article-searchbar-container{
+                    margin-top: 1px;
+                    margin-left: 130px;
+                    width: auto;
+                }
             }
             .article-searchbar-container{
                 display: none;
@@ -70,7 +75,7 @@ class searchBar extends HTMLElement {
         const searchField = this._shadowRoot.getElementById('searchField')
         const searchContainer = this._shadowRoot.querySelector('#article-searchbar-container');
 
-        const BASE_URL = "/rest/articles";
+        const BASE_URL = "rest/articles";
         let articles;
 
         searchField.addEventListener('focus', function () {
@@ -101,7 +106,7 @@ class searchBar extends HTMLElement {
             // End filtering process...
             //Adding div(children) to container element based on input
             for(let i = 0; i < articles.length; i++){
-                if(articles[i].title.includes(searchField.value)){
+                if(articles[i].title.includes(searchField.value) && searchContainer.childElementCount < 10){
                     let itemList = document.createElement("div");
                     itemList.setAttribute("id", articles[i].title);
                     itemList.setAttribute("class", "item-list");
