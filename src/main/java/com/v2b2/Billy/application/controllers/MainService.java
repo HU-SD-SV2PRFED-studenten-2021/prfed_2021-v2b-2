@@ -378,4 +378,13 @@ public class MainService {
         }
         return HistoryDTO.getFromList(histories);
     }
+
+    public List<ArticleDTO> getAllArticles() {
+        List<ArticleDTO> articles = new ArrayList<>();
+        for(int i = 0; i < articleRepository.findAll().size(); i++){
+            articles.add(new ArticleDTO(articleRepository.findAll().get(i)));
+        }
+
+        return articles;
+    }
 }

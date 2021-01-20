@@ -12,6 +12,5 @@ public class LoginController {
     @PostMapping
     public void login(@RequestBody Login login) {
 
-
     }
 }

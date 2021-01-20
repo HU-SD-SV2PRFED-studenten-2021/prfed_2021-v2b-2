@@ -27,6 +27,9 @@ public class ArticleDTO {
         this.content = content;
     }
 
+    public ArticleDTO(String title, CategoryDTO category, SubcategoryDTO subcategory){
+    }
+
     public ArticleDTO(Article a) {
         this.title = a.getTitle();
         this.content = a.getContent();
