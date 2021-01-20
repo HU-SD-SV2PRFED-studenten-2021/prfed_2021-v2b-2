@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Billy boekenkast">
+    <title>Billy</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <script>
+        let colorMode = window.localStorage.getItem("readMode") || "Light mode"
+        if (colorMode === "Dark mode") {
+            document.querySelector("body").style.setProperty("--main-color", "rgb(33, 33, 33)")
+            document.querySelector("body").style.setProperty("--main-text-color", "white")
+        }
+    </script>
+    <script src="script/namecheck.js"></script>
+    <script type="module" src="script/customElements/logoElement.js"></script>
+    <script type="module" src="script/customElements/mainContainer.js"></script>
+    <script type="module" src="script/customElements/navButton.js"></script>
+    <script type="module" src="script/customElements/searchBar.js"></script>
+    <script type="module" src="script/customElements/showCategories.js"></script>
+    <script type="module" src="script/customElements/sideNavigation.js"></script>
+    <script type="module" src="script/customElements/topNav.js"></script>
+    <script type="module" src="script/customElements/categoryMatrix.js"></script>
+    <script type="module" src="script/customElements/showHistory.js"></script>
+    <script type="module" src="script/customElements/recentChanges.js"></script>
+<div class="header-container">
+    <div class="top-container" role="banner">
+        <button id="loginBtn" class="login-button" type="button" onclick="{window.sessionStorage.setItem('previous', window.location); window.location='/login.html'}" role="button" aria-label="login button">Aanmelden</button>
+    </div>
+    <billy-topnav></billy-topnav>
+</div>
+<billy-main></billy-main>
+<billy-sidebar></billy-sidebar>
+<billy-navbutton></billy-navbutton>
+</body>
+</html>
