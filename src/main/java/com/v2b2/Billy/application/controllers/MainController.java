@@ -65,6 +65,17 @@ public class MainController {
         }
     }
 
+    @GetMapping("articles")
+    public ResponseEntity<?> getAllArticles(){
+        List<ArticleDTO> articleDTOS = this.mainService.getAllArticles();
+        if(articleDTOS != null){
+            return new ResponseEntity<>(articleDTOS, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>("Already exists", HttpStatus.CONFLICT);
+        }
+    }
+
     @PostMapping("/article")
     public ResponseEntity<?> postArticle(@RequestBody ArticleCreateDTO acd, Authentication authentication) {
         ArticleDTO articleDTO = this.mainService.createArticle(acd, ((UserProfile) authentication.getPrincipal()).getUsername());
