@@ -70,7 +70,7 @@ class searchBar extends HTMLElement {
         const searchField = this._shadowRoot.getElementById('searchField')
         const searchContainer = this._shadowRoot.querySelector('#article-searchbar-container');
 
-        const BASE_URL = "http://localhost:8080/rest/articles";
+        const BASE_URL = "/rest/articles";
         let articles;
 
         searchField.addEventListener('focus', function () {

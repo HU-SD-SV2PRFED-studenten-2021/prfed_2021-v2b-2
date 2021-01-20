@@ -68,6 +68,10 @@ class showCategories extends HTMLElement {
                 return "Categorie"
             case "subcategory":
                 return "Subcategorie"
+            case "user":
+                return "Bewerkt door"
+            default:
+                return "Anders"
         }
     }
 
@@ -99,7 +103,7 @@ class showCategories extends HTMLElement {
                             let row = table.insertRow()
                             for (let key in element) {
                                 if (key !== "content") {
-                                    let name = element[key].name || element[key]
+                                    let name = element[key].name || element[key].username || element[key]
                                     name = name.charAt(0).toUpperCase() + name.slice(1)
                                     let cell = row.insertCell()
                                     if (key === "title") {
