@@ -1,0 +1,53 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#loginBtn {
+    color: var(--main-text-color);
+    background-color: var(--main-color);
+    border-color: var(--main-text-color);
+    border-radius: 5px;
+    border-width: 1px;
+    padding: 2px;
+    transition: background-color 0.4s ease-out, color 0.4s ease-out;
+}
+
+body {
+    display: grid;
+    grid-area: auto;
+    font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
+    --main-color: white;
+    --main-text-color: black;
+    --main-link-color: #0000EE;
+    --main-popup-color: lightgrey;
+    --main-active-color: red;
+    --main-dark-accent-color: darkred;
+    --main-table-accent-color: #ddd;
+    background: var(--main-color);
+    transition: background-color 0.4s ease-out, color 0.4s ease-out;
+    --width: width;
+}
+
+.header-container {
+    margin-left: 25%;
+}
+
+.top-container {
+    margin-right: 2.5%;
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 1040px) {
+    body {
+        display: inline;
+    }
+}
+@media (max-width: 850px) {
+    .header-container {
+        margin-left: 0;
+    }
+}
